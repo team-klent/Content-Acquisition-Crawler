@@ -1,9 +1,7 @@
-export interface CrawlerSource {
-  id: string
-  source: string
-  script: string
-  status: string
-  interval: string
-  initial: string
-  type: string
-}
+export type Metadata = {
+  isActive: boolean;
+  createdAt: string;
+  updatedAt: string;
+  updateBy: string;
+  createdBy: string;
+};
