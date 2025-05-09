@@ -1,6 +1,7 @@
 import { CrawlerDashboard } from '@/app/(main)/_components/crawler-dashboard';
 import { CrawlerSource } from './_components/utils';
-export const sourcesData: CrawlerSource[] = [
+
+const sourcesData: CrawlerSource[] = [
   {
     id: '1',
     source: 'https://example.com',
