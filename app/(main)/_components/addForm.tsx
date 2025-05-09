@@ -20,9 +20,9 @@ import {
   SelectTrigger,
   SelectValue,
 } from '@/components/ui/select';
-import type { CrawlerSource } from '@/lib/types';
-import { useState } from 'react';
 
+import { useState } from 'react';
+import { CrawlerSource } from './utils';
 interface AddSourceDialogProps {
   open: boolean;
   onOpenChange: (open: boolean) => void;
@@ -41,6 +41,13 @@ export function AddSourceDialog({
     interval: '1h',
     initial: new Date().toISOString(),
     type: 'website',
+
+    // metadata fields
+    isActive: true,
+    createdAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+    updateBy: '',
+    createdBy: '',
   });
 
   const handleSubmit = (e: React.FormEvent) => {
@@ -53,6 +60,11 @@ export function AddSourceDialog({
       interval: '1h',
       initial: new Date().toISOString(),
       type: 'website',
+      isActive: true,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+      updateBy: '',
+      createdBy: '',
     });
   };
 
