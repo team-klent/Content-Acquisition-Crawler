@@ -4,7 +4,7 @@ export interface CrawlerSource extends Metadata {
   id: string;
   source: string;
   script: string;
-  status: string;
+  status?: string;
   interval: string;
   initial: string;
   type: string;

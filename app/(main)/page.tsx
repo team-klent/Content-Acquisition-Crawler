@@ -1,7 +1,19 @@
-import { CrawlerDashboard } from '@/app/(main)/_components/crawler-dashboard';
+'use client';
+
+import { Button } from '@/components/ui/button';
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
+import { Check, FileText, ImageIcon, Package } from 'lucide-react';
+import { useState } from 'react';
 import { CrawlerSource } from './_components/utils';
 
-const sourcesData: CrawlerSource[] = [
+const scrapers: CrawlerSource[] = [
   {
     id: '1',
     source: 'https://example.com',
@@ -74,10 +86,104 @@ const sourcesData: CrawlerSource[] = [
   },
 ];
 
-export default async function MainPage() {
+export default function ScraperList() {
+  const [selectedScraper, setSelectedScraper] = useState<string | null>(null);
+
+  const selectScraper = (scraperId: string) => {
+    setSelectedScraper(selectedScraper === scraperId ? null : scraperId);
+  };
+
+  const handleSelectButtonClick = () => {
+    if (selectedScraper) {
+      const scraper = scrapers.find((s) => s.id === selectedScraper);
+      alert(`Selected scraper: ${scraper?.source || 'None'}`);
+    } else {
+      alert('No scraper selected');
+    }
+  };
+
+  const getIconForScraper = (type: string) => {
+    switch (type) {
+      case 'blog':
+        return <FileText className='h-4 w-4 text-blue-500' />;
+      case 'news':
+        return <FileText className='h-4 w-4 text-green-500' />;
+      case 'forum':
+        return <Package className='h-4 w-4 text-amber-500' />;
+      case 'repository':
+        return <ImageIcon className='h-4 w-4 text-purple-500' />;
+      default:
+        return <FileText className='h-4 w-4 text-gray-500' />;
+    }
+  };
+
   return (
-    <main className='min-h-screen bg-gray-50 dark:bg-gray-900'>
-      <CrawlerDashboard sourcesData={sourcesData} />
-    </main>
+    <div className='container mx-auto py-6'>
+      <div className='bg-white border rounded-md shadow-sm'>
+        <div className='p-4 border-b flex items-center justify-between bg-gray-50'>
+          <h1 className='text-lg font-medium'>Scrapers</h1>
+          <div className='flex items-center gap-2'>
+            <span className='text-sm text-muted-foreground'>
+              {selectedScraper ? '1 scraper' : 'No scraper'} selected
+            </span>
+            <Button
+              onClick={handleSelectButtonClick}
+              disabled={!selectedScraper}
+              className='bg-blue-600 text-white hover:bg-blue-700'
+            >
+              Select
+            </Button>
+          </div>
+        </div>
+
+        <div className='overflow-auto'>
+          <Table>
+            <TableHeader>
+              <TableRow className='bg-gray-50 hover:bg-gray-50'>
+                <TableHead className='w-[40px]'></TableHead>
+                <TableHead>Source</TableHead>
+                <TableHead>Script</TableHead>
+                <TableHead>Type</TableHead>
+                <TableHead>Last Updated</TableHead>
+              </TableRow>
+            </TableHeader>
+            <TableBody>
+              {scrapers.map((scraper) => (
+                <TableRow
+                  key={scraper.id}
+                  className={`cursor-pointer ${
+                    selectedScraper === scraper.id ? 'bg-blue-50' : ''
+                  }`}
+                  onClick={() => selectScraper(scraper.id)}
+                >
+                  <TableCell className='w-[40px]'>
+                    {selectedScraper === scraper.id ? (
+                      <div className='flex h-4 w-4 items-center justify-center rounded-sm border border-blue-600 bg-blue-600 text-white'>
+                        <Check className='h-3 w-3' />
+                      </div>
+                    ) : (
+                      <div className='flex h-4 w-4 items-center justify-center rounded-sm border border-input'></div>
+                    )}
+                  </TableCell>
+                  <TableCell className='font-medium flex items-center gap-2'>
+                    {getIconForScraper(scraper.type)}
+                    {scraper.source}
+                  </TableCell>
+                  <TableCell>{scraper.script}</TableCell>
+                  <TableCell>{scraper.type}</TableCell>
+                  <TableCell>
+                    {new Date(scraper.updatedAt).toLocaleString()}
+                  </TableCell>
+                </TableRow>
+              ))}
+            </TableBody>
+          </Table>
+        </div>
+
+        <div className='p-2 border-t bg-gray-50 text-xs text-muted-foreground'>
+          {scrapers.length} scrapers
+        </div>
+      </div>
+    </div>
   );
 }

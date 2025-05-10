@@ -21,7 +21,7 @@ import {
   TooltipTrigger,
 } from '../ui/tooltip';
 
-const TablePagination = ({
+const CustomPagination = ({
   currentPage,
   totalLength,
   pageSize,
@@ -142,4 +142,4 @@ const TablePagination = ({
   );
 };
 
-export default TablePagination;
+export default CustomPagination;

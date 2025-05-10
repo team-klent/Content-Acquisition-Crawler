@@ -23,15 +23,12 @@ import {
 } from '@/components/ui/table';
 import { useState } from 'react';
 
-interface TableComponentProps<TData> {
+interface CustomTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, unknown>[];
 }
 
-export function TableComponent<TData>({
-  data,
-  columns,
-}: TableComponentProps<TData>) {
+export function CustomTable<TData>({ data, columns }: CustomTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
