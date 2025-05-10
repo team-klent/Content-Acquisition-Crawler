@@ -26,9 +26,14 @@ import { useState } from 'react';
 interface CustomTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, unknown>[];
+  setSelection?: (selection: TData) => void;
 }
 
-export function CustomTable<TData>({ data, columns }: CustomTableProps<TData>) {
+export function CustomTable<TData>({
+  data,
+  columns,
+  setSelection,
+}: CustomTableProps<TData>) {
   const [sorting, setSorting] = useState<SortingState>([]);
   const [columnFilters, setColumnFilters] = useState<ColumnFiltersState>([]);
   const [columnVisibility, setColumnVisibility] = useState<VisibilityState>({});
@@ -45,6 +50,8 @@ export function CustomTable<TData>({ data, columns }: CustomTableProps<TData>) {
     getFilteredRowModel: getFilteredRowModel(),
     onColumnVisibilityChange: setColumnVisibility,
     onRowSelectionChange: setRowSelection,
+    enableMultiRowSelection: false,
+    enableRowSelection: true,
     state: {
       sorting,
       columnFilters,
@@ -82,6 +89,16 @@ export function CustomTable<TData>({ data, columns }: CustomTableProps<TData>) {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
+                    onClick={() => {
+                      row.toggleSelected(!row.getIsSelected());
+                      if (setSelection) {
+                        if (!row.getIsSelected()) {
+                          setSelection(row.original);
+                        } else {
+                          setSelection(null);
+                        }
+                      }
+                    }}
                   >
                     {row.getVisibleCells().map((cell) => {
                       return (

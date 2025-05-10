@@ -1,5 +1,3 @@
-import { SignedIn, SignOutButton, UserButton } from '@clerk/nextjs';
-
 export default function MainPageLayout({
   children,
 }: Readonly<{
@@ -7,13 +5,13 @@ export default function MainPageLayout({
 }>) {
   return (
     <>
-      <SignedIn>
+      {/* <SignedIn>
         <header className='flex justify-end items-center p-4 gap-4 h-16'>
           <UserButton />
           <SignOutButton />
         </header>
-      </SignedIn>
-      <main>{children} </main>
+      </SignedIn> */}
+      <main className='h-dvh w-full'>{children} </main>
     </>
   );
 }
