@@ -26,7 +26,7 @@ import { useState } from 'react';
 interface CustomTableProps<TData> {
   data: TData[];
   columns: ColumnDef<TData, unknown>[];
-  setSelection?: (selection: TData) => void;
+  setSelection?: (selection: TData | null) => void;
 }
 
 export function CustomTable<TData>({

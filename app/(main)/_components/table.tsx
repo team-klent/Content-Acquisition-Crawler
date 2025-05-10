@@ -36,52 +36,9 @@ export default function ContentAcquisitionTable({
           columns={contentAcquisitionColumns}
           setSelection={setSelection}
         />
-        {/* <div className='overflow-auto'>
-          <Table>
-            <TableHeader>
-              <TableRow className='bg-gray-50 hover:bg-gray-50'>
-                <TableHead className='w-[40px]'></TableHead>
-                <TableHead>Source</TableHead>
-                <TableHead>Script</TableHead>
-                <TableHead>Type</TableHead>
-                <TableHead>Last Updated</TableHead>
-              </TableRow>
-            </TableHeader>
-            <TableBody>
-              {data.map((scraper) => (
-                <TableRow
-                  key={scraper.id}
-                  className={`cursor-pointer ${
-                    selectedScraper === scraper.id ? 'bg-blue-50' : ''
-                  }`}
-                  onClick={() => selectScraper(scraper.id)}
-                >
-                  <TableCell className='w-[40px]'>
-                    {selectedScraper === scraper.id ? (
-                      <div className='flex h-4 w-4 items-center justify-center rounded-sm border border-blue-600 bg-blue-600 text-white'>
-                        <Check className='h-3 w-3' />
-                      </div>
-                    ) : (
-                      <div className='flex h-4 w-4 items-center justify-center rounded-sm border border-input'></div>
-                    )}
-                  </TableCell>
-                  <TableCell className='font-medium flex items-center gap-2'>
-                    {getIconForScraper(scraper.type)}
-                    {scraper.source}
-                  </TableCell>
-                  <TableCell>{scraper.script}</TableCell>
-                  <TableCell>{scraper.type}</TableCell>
-                  <TableCell>
-                    {new Date(scraper.updatedAt).toLocaleString()}
-                  </TableCell>
-                </TableRow>
-              ))}
-            </TableBody>
-          </Table>
-        </div> */}
 
         <div className='p-2 border-t bg-gray-50 text-xs text-muted-foreground'>
-          {data.length}
+          {data.length} Total Length
         </div>
       </div>
     </div>

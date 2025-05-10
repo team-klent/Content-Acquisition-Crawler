@@ -19,7 +19,6 @@ const columns: ColumnDef<CrawlerSource>[] = [
       />
     ),
   },
-
   {
     accessorKey: 'id',
     header: ({ column }) => {
