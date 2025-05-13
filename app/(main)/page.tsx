@@ -31,6 +31,9 @@ const MainPage = async ({ searchParams }: IProps) => {
           {data.length} Total Length
         </div>
       </div>
+      <p>
+        {process.env.VERCEL_URL} {process.env.NEXT_PUBLIC_URL}
+      </p>
       <CustomPagination
         totalLength={data.length}
         currentPage={currentPage}
