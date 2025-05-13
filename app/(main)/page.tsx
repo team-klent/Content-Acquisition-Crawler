@@ -1,83 +1,41 @@
+import CustomPagination from '@/components/shared/custom-pagination';
 import ContentAcquisitionTable from './_components/table';
-import { CrawlerSource } from './_components/utils';
+import { TableSelection } from './_components/table-selection';
 
-const data: CrawlerSource[] = [
-  {
-    id: 1,
-    source: 'https://example.com',
-    script: 'ExampleScraper',
-    status: 'active',
-    interval: '1h',
-    initial: '2023-05-01T08:00:00Z',
-    type: 'blog',
-    isActive: true,
-    createdAt: '2023-04-20T08:00:00Z',
-    updatedAt: '2023-05-01T08:00:00Z',
-    updateBy: 'admin',
-    createdBy: 'admin',
-  },
-  {
-    id: 2,
-    source: 'https://news.ycombinator.com',
-    script: 'HackerNewsScraper',
-    status: 'paused',
-    interval: '30m',
-    initial: '2023-04-15T12:30:00Z',
-    type: 'news',
-    isActive: false,
-    createdAt: '2023-04-10T10:00:00Z',
-    updatedAt: '2023-04-20T14:30:00Z',
-    updateBy: 'admin',
-    createdBy: 'admin',
-  },
-  {
-    id: 3,
-    source: 'https://reddit.com/r/programming',
-    script: 'RedditScraper',
-    status: 'error',
-    interval: '2h',
-    initial: '2023-05-10T10:00:00Z',
-    type: 'forum',
-    isActive: true,
-    createdAt: '2023-05-01T15:00:00Z',
-    updatedAt: '2023-05-10T11:20:00Z',
-    updateBy: 'system',
-    createdBy: 'admin',
-  },
-  {
-    id: 4,
-    source: 'https://dev.to',
-    script: 'DevToScraper',
-    status: 'active',
-    interval: '4h',
-    initial: '2023-05-05T09:15:00Z',
-    type: 'blog',
-    isActive: true,
-    createdAt: '2023-04-25T16:30:00Z',
-    updatedAt: '2023-05-05T09:15:00Z',
-    updateBy: 'admin',
-    createdBy: 'admin',
-  },
-  {
-    id: 5,
-    source: 'https://github.com/trending',
-    script: 'GithubTrendingScraper',
-    status: 'active',
-    interval: '12h',
-    initial: '2023-05-02T00:00:00Z',
-    type: 'repository',
-    isActive: true,
-    createdAt: '2023-04-28T17:45:00Z',
-    updatedAt: '2023-05-02T00:00:00Z',
-    updateBy: 'admin',
-    createdBy: 'admin',
-  },
-];
+interface IProps {
+  searchParams: Promise<{ page: string }>;
+}
 
-const MainPage = async () => {
+const MainPage = async ({ searchParams }: IProps) => {
+  const { page } = await searchParams;
+  const currentPage = Number(page) || 1;
+  const pageSize = 4;
+
+  const res = await fetch('http://localhost:3000/api/crawl', {
+    method: 'GET',
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  const data = await res.json();
+
   return (
     <div className='container mx-auto py-4'>
-      <ContentAcquisitionTable data={data} />
+      <div className='container mx-auto bg-white border rounded-md'>
+        <div className='bg-white border   '>
+          <TableSelection data={data} />
+        </div>
+        <ContentAcquisitionTable data={data} />
+        <div className='p-2 border-t bg-gray-50 text-xs text-muted-foreground'>
+          {data.length} Total Length
+        </div>
+      </div>
+      <CustomPagination
+        totalLength={data.length}
+        currentPage={currentPage}
+        pageSize={pageSize}
+      />
     </div>
   );
 };

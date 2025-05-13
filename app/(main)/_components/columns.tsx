@@ -3,7 +3,7 @@
 import { Button } from '@/components/ui/button';
 import { Checkbox } from '@/components/ui/checkbox';
 import { ColumnDef } from '@tanstack/react-table';
-import { ArrowUpDown } from 'lucide-react';
+import { ArrowUpDown, FileText, Folder } from 'lucide-react';
 import { CrawlerSource } from './utils';
 
 const columns: ColumnDef<CrawlerSource>[] = [
@@ -41,6 +41,37 @@ const columns: ColumnDef<CrawlerSource>[] = [
   },
 
   {
+    accessorKey: 'script',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='uppercase'
+        >
+          script{' '}
+          {column.getIsSorted() === 'asc'
+            ? '↑'
+            : column.getIsSorted() === 'desc'
+            ? '↓'
+            : ''}
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: (cell) => (
+      <div className='flex flex-row items-center gap-2'>
+        {cell.row.original.type.includes('pdf') ? (
+          <FileText className='h-4 w-4 my-auto' />
+        ) : (
+          <Folder className='h-4 w-4 my-auto' />
+        )}
+        <p>{cell.row.original.script}</p>
+      </div>
+    ),
+  },
+
+  {
     accessorKey: 'source',
     header: ({ column }) => {
       return (
@@ -60,28 +91,6 @@ const columns: ColumnDef<CrawlerSource>[] = [
       );
     },
     cell: (cell) => <p>{cell.row.original.source}</p>,
-  },
-
-  {
-    accessorKey: 'script',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='uppercase'
-        >
-          script{' '}
-          {column.getIsSorted() === 'asc'
-            ? '↑'
-            : column.getIsSorted() === 'desc'
-            ? '↓'
-            : ''}
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      );
-    },
-    cell: (cell) => <p>{cell.row.original.script}</p>,
   },
 
   {

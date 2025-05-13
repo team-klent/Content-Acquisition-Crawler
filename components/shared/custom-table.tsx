@@ -62,7 +62,7 @@ export function CustomTable<TData>({
 
   return (
     <div className='w-full'>
-      <div className='rounded-md border'>
+      <div className=' border'>
         <Table>
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
