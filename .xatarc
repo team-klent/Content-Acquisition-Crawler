@@ -1,0 +1,7 @@
+{
+  "databaseURL": "https://Francis-Frias-s-workspace-smfut0.ap-southeast-2.xata.sh/db/Demo-Application",
+  "codegen": {
+    "output": "src/xata.ts"
+  },
+  "branch": "main"
+}
