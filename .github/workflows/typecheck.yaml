@@ -1,0 +1,31 @@
+name: Typecheck
+ 
+on:
+  push:
+    branches-ignore:
+      - staging
+      - main
+
+jobs:
+  build:
+    name: Typecheck
+    timeout-minutes: 15
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 1
+
+      - name: Setup Node.js environment
+        uses: actions/setup-node@v3
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Typecheck
+        run: npm run type-check
