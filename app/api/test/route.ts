@@ -1,7 +1,7 @@
 import { getXataClient } from '@/src/xata';
 import { NextResponse } from 'next/server';
 
-const GET = async (req: Request) => {
+const GET = async () => {
   const xata = getXataClient();
 
   const record = await xata.db.test.getAll();
