@@ -21,7 +21,7 @@ export function TableSelection({ data }: { data: CrawlerSource[] }) {
       <h1 className='text-lg font-medium'>Content Acquisition</h1>
       <div className='flex items-center gap-2'>
         <span className='text-sm text-muted-foreground'>
-          {selection?.script} selected
+          {selection ? `${selection?.script} selected` : ''}
         </span>
         <Button
           onClick={handleSelectButtonClick}
