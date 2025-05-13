@@ -11,7 +11,7 @@ const MainPage = async ({ searchParams }: IProps) => {
   const currentPage = Number(page) || 1;
   const pageSize = 4;
 
-  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/crawl`, {
+  const res = await fetch(`${process.env.VERCEL_URL}/api/crawl`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
@@ -31,9 +31,7 @@ const MainPage = async ({ searchParams }: IProps) => {
           {data.length} Total Length
         </div>
       </div>
-      <p>
-        {process.env.VERCEL_URL} {process.env.NEXT_PUBLIC_URL}
-      </p>
+
       <CustomPagination
         totalLength={data.length}
         currentPage={currentPage}
