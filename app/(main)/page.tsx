@@ -11,7 +11,7 @@ const MainPage = async ({ searchParams }: IProps) => {
   const currentPage = Number(page) || 1;
   const pageSize = 4;
 
-  const res = await fetch('http://localhost:3000/api/crawl', {
+  const res = await fetch(`${process.env.NEXTAUTH_URL}/api/crawl`, {
     method: 'GET',
     headers: {
       'Content-Type': 'application/json',
