@@ -59,7 +59,7 @@ const data: CrawlerSource[] = [
 ];
 
 const GET = async () => {
-  await new Promise((resolve) => setTimeout(resolve, 6000)); // Simulate a delay
+  await new Promise((resolve) => setTimeout(resolve, 250)); // Simulate a delay
   return NextResponse.json(data);
 };
 
