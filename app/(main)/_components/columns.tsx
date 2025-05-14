@@ -19,29 +19,9 @@ const columns: ColumnDef<CrawlerSource>[] = [
       />
     ),
   },
-  {
-    accessorKey: 'id',
-    header: ({ column }) => {
-      return (
-        <Button
-          variant='ghost'
-          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-        >
-          #{' '}
-          {column.getIsSorted() === 'asc'
-            ? '↑'
-            : column.getIsSorted() === 'desc'
-            ? '↓'
-            : ''}
-          <ArrowUpDown className='ml-2 h-4 w-4' />
-        </Button>
-      );
-    },
-    cell: (cell) => <p>{cell.row.original.id}</p>,
-  },
 
   {
-    accessorKey: 'script',
+    accessorKey: 'name',
     header: ({ column }) => {
       return (
         <Button
@@ -49,7 +29,7 @@ const columns: ColumnDef<CrawlerSource>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='uppercase'
         >
-          script{' '}
+          Name{' '}
           {column.getIsSorted() === 'asc'
             ? '↑'
             : column.getIsSorted() === 'desc'
@@ -66,7 +46,7 @@ const columns: ColumnDef<CrawlerSource>[] = [
         ) : (
           <Folder className='h-4 w-4 my-auto' />
         )}
-        <p>{cell.row.original.script}</p>
+        <p>{cell.row.original.name}</p>
       </div>
     ),
   },
@@ -108,6 +88,46 @@ const columns: ColumnDef<CrawlerSource>[] = [
       );
     },
     cell: (cell) => <p>{cell.row.original.type}</p>,
+  },
+  {
+    accessorKey: 'createdAt',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='uppercase'
+        >
+          Date Created
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: (cell) => {
+      if (!cell?.row?.original?.createdAt) return <p>Not Available</p>;
+      const date = new Date(cell?.row?.original?.createdAt);
+      return <p>{date.toLocaleDateString()}</p>;
+    },
+  },
+  {
+    accessorKey: 'updatedAt',
+    header: ({ column }) => {
+      return (
+        <Button
+          variant='ghost'
+          onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
+          className='uppercase'
+        >
+          Date Modified
+          <ArrowUpDown className='ml-2 h-4 w-4' />
+        </Button>
+      );
+    },
+    cell: (cell) => {
+      if (!cell?.row?.original?.updatedAt) return <p>Not Available</p>;
+      const date = new Date(cell.row.original.updatedAt);
+      return <p>{date.toLocaleDateString()}</p>;
+    },
   },
 
   // {

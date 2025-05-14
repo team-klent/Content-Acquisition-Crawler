@@ -18,8 +18,7 @@ const stateInitialValue: ICrawlerStateContext = {
   selection: {
     id: '',
     source: '',
-    script: '',
-    status: '',
+    name: '',
     type: '',
   },
   setSelection: () => {},
