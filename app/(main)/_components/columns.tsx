@@ -29,12 +29,7 @@ const columns: ColumnDef<CrawlerSource>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='uppercase'
         >
-          Name{' '}
-          {column.getIsSorted() === 'asc'
-            ? '↑'
-            : column.getIsSorted() === 'desc'
-            ? '↓'
-            : ''}
+          Name
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
@@ -60,12 +55,7 @@ const columns: ColumnDef<CrawlerSource>[] = [
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
           className='uppercase'
         >
-          source{' '}
-          {column.getIsSorted() === 'asc'
-            ? '↑'
-            : column.getIsSorted() === 'desc'
-            ? '↓'
-            : ''}
+          source
           <ArrowUpDown className='ml-2 h-4 w-4' />
         </Button>
       );
