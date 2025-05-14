@@ -1,7 +1,7 @@
 export type Metadata = {
   isActive?: boolean;
-  createdAt?: string;
-  updatedAt?: string;
+  createdAt?: Date;
+  updatedAt?: Date;
   updateBy?: string;
   createdBy?: string;
 };

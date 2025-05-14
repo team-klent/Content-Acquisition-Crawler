@@ -1,4 +1,9 @@
-import { Button } from '@/components/ui/button';
+import {
+  Pagination,
+  PaginationContent,
+  PaginationItem,
+  PaginationLink,
+} from '@/components/ui/pagination';
 import { Skeleton } from '@/components/ui/skeleton';
 import {
   Table,
@@ -7,25 +12,15 @@ import {
   TableHeader,
   TableRow,
 } from '@/components/ui/table';
+import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { TableSelection } from './_components/table-selection';
 
 const Loader = async () => {
   return (
     <div className='container mx-auto py-4'>
       <div className='container mx-auto bg-white border rounded-md'>
         <div className='bg-white border rounded-md '>
-          <div className='p-4 border-b flex items-center justify-between bg-gray-50'>
-            <h1 className='text-lg font-medium'>Content Acquisition</h1>
-            <div className='flex items-center gap-2'>
-              <span className='text-sm text-muted-foreground'>...</span>
-              <Button
-                className='bg-blue-600 text-white hover:bg-blue-700'
-                disabled
-              >
-                Loading...
-              </Button>
-            </div>
-          </div>
-
+          <TableSelection />
           <Table>
             <TableHeader>
               <TableRow>
@@ -53,6 +48,42 @@ const Loader = async () => {
           </div>
         </div>
       </div>
+      <Pagination className='justify-end mt-3 pr-3'>
+        <PaginationContent>
+          <PaginationItem>
+            <PaginationLink
+              className={
+                'hover:bg-transparent cursor-not-allowed text-gray-300 hover:text-gray-300'
+              }
+              aria-disabled={true}
+              tabIndex={-1}
+            >
+              <ChevronLeft className='h-4 w-4' />
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              className='ring-1 ring-gray-200 rounded-md hover:bg-transparent cursor-not-allowed'
+              href='#'
+              aria-disabled={true}
+              tabIndex={-1}
+            >
+              ...
+            </PaginationLink>
+          </PaginationItem>
+          <PaginationItem>
+            <PaginationLink
+              className={
+                'hover:bg-transparent cursor-not-allowed text-gray-300 hover:text-gray-300'
+              }
+              aria-disabled={true}
+              tabIndex={-1}
+            >
+              <ChevronRight className='h-4 w-4' />
+            </PaginationLink>
+          </PaginationItem>
+        </PaginationContent>
+      </Pagination>
     </div>
   );
 };

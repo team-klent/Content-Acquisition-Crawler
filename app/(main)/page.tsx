@@ -1,8 +1,7 @@
 import CustomPagination from '@/components/shared/custom-pagination';
-import CustomTableSkeleton from '@/components/shared/custom-table-skeleton';
-import { Suspense } from 'react';
 import ContentAcquisitionTable from './_components/table';
 import { TableSelection } from './_components/table-selection';
+import { getAllCrawlerData } from './_services/api';
 
 interface IProps {
   searchParams: Promise<{ page: string }>;
@@ -13,14 +12,7 @@ const MainPage = async ({ searchParams }: IProps) => {
   const currentPage = Number(page) || 1;
   const pageSize = 8;
 
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/crawl`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-  });
-
-  const data = await res.json();
+  const data = await getAllCrawlerData();
 
   return (
     <div className='container mx-auto py-4'>
@@ -28,9 +20,7 @@ const MainPage = async ({ searchParams }: IProps) => {
         <div className='bg-white border   '>
           <TableSelection data={data} />
         </div>
-        <Suspense fallback={<CustomTableSkeleton columns={4} length={5} />}>
-          <ContentAcquisitionTable data={data} />
-        </Suspense>
+        <ContentAcquisitionTable data={data} />
         <div className='p-2 border-t bg-gray-50 text-xs text-muted-foreground'>
           {data.length} Total Length
         </div>

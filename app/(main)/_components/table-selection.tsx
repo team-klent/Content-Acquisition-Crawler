@@ -4,13 +4,14 @@ import { useCrawlerStateContext } from '@/app/context/CrawlerStateContext';
 import { Button } from '@/components/ui/button';
 import { CrawlerSource } from './utils';
 
-export function TableSelection({ data }: { data: CrawlerSource[] }) {
+export function TableSelection({ data }: { data?: CrawlerSource[] }) {
   const { selection } = useCrawlerStateContext();
 
   const handleSelectButtonClick = () => {
+    if (!data) return;
     if (selection) {
       const scraper = data.find((s) => s.id === selection.id);
-      alert(`Selected scraper: ${scraper?.script || 'None'}`);
+      alert(`Selected scraper: ${scraper?.name || 'None'}`);
     } else {
       alert('No scraper selected');
     }
@@ -21,7 +22,7 @@ export function TableSelection({ data }: { data: CrawlerSource[] }) {
       <h1 className='text-lg font-medium'>Content Acquisition</h1>
       <div className='flex items-center gap-2'>
         <span className='text-sm text-muted-foreground'>
-          {selection ? `${selection?.script} selected` : ''}
+          {selection ? `${selection?.name} selected` : ''}
         </span>
         <Button
           onClick={handleSelectButtonClick}
