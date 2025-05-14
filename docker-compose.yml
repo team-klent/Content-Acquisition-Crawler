@@ -1,0 +1,20 @@
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+    environment:
+      - NODE_ENV=production
+      # Add any other environment variables your app needs below
+      # - CLERK_SECRET_KEY=
+      # - XATA_API_KEY=
+    restart: always
+    # Uncomment the following section if you need to persist data
+    # volumes:
+    #   - app-data:/app/data
+
+# Uncomment if you need to persist data
+# volumes:
+#   app-data:
