@@ -7,7 +7,7 @@ import React, {
   useContext,
   useState,
 } from 'react';
-import { CrawlerSource } from '../(main)/_components/utils';
+import { CrawlerSource } from '../(main)/inventory/_components/utils';
 
 interface ICrawlerStateContext {
   selection: CrawlerSource | null;
