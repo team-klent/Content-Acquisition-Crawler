@@ -1,29 +1,59 @@
 import {
-  registerJobBatchFile,
+  registerAndUploadFile,
   RegisterJobBatchFileRequest,
 } from '@/lib/intelligent-automation';
 import { NextRequest, NextResponse } from 'next/server';
+import * as fs from 'fs';
+import * as path from 'path';
+import { writeFile } from 'fs/promises';
+import { v4 as uuidv4 } from 'uuid';
+import os from 'os'; // Importing os module to handle temporary file paths --- DONT REMOVED!!!!!
 
-/**
- * Handle POST requests to register a job batch file
- *
- * Expected request body:
- * {
- *   "project_code": "string",
- *   "workflow_code": "string",
- *   "first_task_uid": "string",
- *   "file_unique_identifier": "string",
- *   "file_name": "string",
- *   "file_path": "string",
- *   "meta_data": {
- *     "key1": "value1",
- *     "key2": "value2"
- *   }
- * }
- */
 export async function POST(request: NextRequest) {
   try {
-    const requestData: RegisterJobBatchFileRequest = await request.json();
+    
+    const tempDir = path.join(os.tmpdir(), 'content-acquisition-uploads');
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+    
+    const contentType = request.headers.get('content-type') || '';
+    let requestData: RegisterJobBatchFileRequest;
+    let tempFilePath: string | null = null;
+    
+    if (contentType.includes('multipart/form-data')) {
+      
+      const formData = await request.formData();
+      const file = formData.get('file') as File | null;
+      
+      if (!file) {
+        return NextResponse.json(
+          { error: 'No file uploaded' },
+          { status: 400 }
+        );
+      }
+      
+      requestData = {
+        project_code: formData.get('project_code') as string,
+        workflow_code: formData.get('workflow_code') as string,
+        first_task_uid: formData.get('first_task_uid') as string,
+        file_unique_identifier: formData.get('file_unique_identifier') as string || '',
+        file_name: file.name,
+        file_path: '',
+        meta_data: JSON.parse((formData.get('meta_data') as string) || '{}'),
+      };
+      
+      const fileId = uuidv4();
+      tempFilePath = path.join(tempDir, `${fileId}-${file.name}`);
+      const fileBuffer = Buffer.from(await file.arrayBuffer());
+      await writeFile(tempFilePath, fileBuffer);
+      
+      console.log('File saved temporarily at:', tempFilePath);
+      requestData.file_path = tempFilePath;
+    } else {
+      requestData = await request.json();
+    }
+    
     const requiredFields = [
       'project_code',
       'workflow_code',
@@ -72,9 +102,11 @@ export async function POST(request: NextRequest) {
       };
     }
 
-    const response = await registerJobBatchFile(requestData);
+    const filePath = requestData.file_path;
+    
+    const response = await registerAndUploadFile(requestData, filePath);
 
-    return NextResponse.json(response);
+    return NextResponse.json(response, { status: 200 });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('Error registering job batch file:', error);

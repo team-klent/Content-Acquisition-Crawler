@@ -1,9 +1,7 @@
 import type { NextConfig } from 'next';
 
 const nextConfig: NextConfig = {
-
-
-  basePath: process.env.IS_VERCEL ? '' : '/ca',
+  basePath: process.env.NODE_ENV === 'production' ? '/ca' : '',
 };
 
 export default nextConfig;

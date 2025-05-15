@@ -117,27 +117,57 @@ export default function RegisterJobBatchPage() {
       return;
     }
 
-    const payload = {
-      project_code: formData.project_code,
-      workflow_code: formData.workflow_code,
-      first_task_uid: formData.first_task_uid,
-      file_name: formData.file_name,
-      file_unique_identifier:
-        formData.file_unique_identifier ||
-        `file-uid-${formData.file_name}-${Date.now()}`,
-      file_path: formData.file_path || '-',
-      meta_data: formData.meta_data || { M1: 'V1', M2: 'V2' },
-    };
-
-    console.log('Payload to be sent:', payload);
-
     try {
-      const response = await fetch('/api/register-job-batch-file', {
-        method: 'POST',
-        body: JSON.stringify(payload),
-      });
-
+      let response;
       let data;
+      
+      // If we have a selected file, use FormData for multipart upload
+      if (selectedFile) {
+        // Create FormData object for file upload
+        const formDataToSend = new FormData();
+        formDataToSend.append('file', selectedFile);
+        formDataToSend.append('project_code', formData.project_code);
+        formDataToSend.append('workflow_code', formData.workflow_code);
+        formDataToSend.append('first_task_uid', formData.first_task_uid);
+        
+        if (formData.file_unique_identifier) {
+          formDataToSend.append('file_unique_identifier', formData.file_unique_identifier);
+        }
+        
+        // Convert meta_data object to JSON string
+        formDataToSend.append('meta_data', JSON.stringify(formData.meta_data || { M1: 'V1', M2: 'V2' }));
+        
+        console.log('Sending file upload with FormData');
+        
+        response = await fetch('/api/register-job-batch-file', {
+          method: 'POST',
+          body: formDataToSend, // FormData automatically sets the correct content-type header
+        });
+      } else {
+        // Use JSON payload for non-file requests
+        const payload = {
+          project_code: formData.project_code,
+          workflow_code: formData.workflow_code,
+          first_task_uid: formData.first_task_uid,
+          file_name: formData.file_name,
+          file_unique_identifier:
+            formData.file_unique_identifier ||
+            `file-uid-${formData.file_name}-${Date.now()}`,
+          file_path: formData.file_path || '-',
+          meta_data: formData.meta_data || { M1: 'V1', M2: 'V2' },
+        };
+
+        console.log('Sending JSON payload:', payload);
+        
+        response = await fetch('/api/register-job-batch-file', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
+      }
+
       try {
         data = await response.json();
         console.log('API response data:', data);
@@ -200,8 +230,13 @@ export default function RegisterJobBatchPage() {
                 className='cursor-pointer'
               />
               <p className='text-xs text-gray-500 mt-1'>
-                Select a file to automatically populate the file name field
+                Select a file to upload. When you submit the form, the file will be uploaded automatically.
               </p>
+              {selectedFile && (
+                <div className='mt-2 p-2 bg-blue-50 text-blue-700 text-xs rounded border border-blue-200'>
+                  Selected file: <strong>{selectedFile.name}</strong> ({(selectedFile.size / 1024).toFixed(1)} KB)
+                </div>
+              )}
             </div>
           </div>
 
@@ -220,7 +255,7 @@ export default function RegisterJobBatchPage() {
                 <div className='flex items-center space-x-2'>
                   <span className='font-medium'>File ID:</span>
                   <code className='bg-slate-200 px-2 py-1 rounded'>
-                    {response.file_id}
+                    {response.registration?.file_id || response.file_id}
                   </code>
                 </div>
 
@@ -228,12 +263,32 @@ export default function RegisterJobBatchPage() {
                   <span className='font-medium'>File Output Upload URL:</span>
                   <div className='bg-slate-200 px-2 py-1 rounded overflow-x-auto'>
                     <code className='text-xs'>
-                      {response.file_output_upload_url}
+                      {response.registration?.file_output_upload_url || response.file_output_upload_url}
                     </code>
                   </div>
                 </div>
 
                 {selectedFile && (
+                  <div className='mt-4 p-4 bg-green-50 border border-green-200 rounded-md'>
+                    <h3 className='text-md font-semibold mb-2'>File Successfully Uploaded</h3>
+                    <p className='text-sm'>
+                      You&apos;ve successfully registered and uploaded{' '}
+                      <strong>{formData.file_name}</strong> to the system.
+                      {response.upload?.success && (
+                        <span className="block mt-2 text-green-600">✓ File upload completed successfully</span>
+                      )}
+                    </p>
+                    {response.registration?.file_path && (
+                      <div className='mt-2 text-xs text-gray-600'>
+                        <span className='font-medium'>Server-side path: </span>
+                        <code className='bg-slate-200 px-1 py-0.5 rounded'>{response.registration.file_path}</code>
+                        <p className='mt-1 italic'>Note: This is the temporary path where the file is stored on the server.</p>
+                      </div>
+                    )}
+                  </div>
+                )}
+                
+                {!selectedFile && response.file_output_upload_url && (
                   <div className='mt-4 p-4 bg-blue-50 border border-blue-200 rounded-md'>
                     <h3 className='text-md font-semibold mb-2'>Next Steps</h3>
                     <p className='text-sm'>
