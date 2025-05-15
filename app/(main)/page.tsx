@@ -40,27 +40,6 @@ export default function RegisterJobBatchPage() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.meta_data]);
 
-  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  //   const { name, value } = e.target;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     [name]: value,
-  //   }));
-  // };
-
-  // const handleMetadataChange = (
-  //   e: React.ChangeEvent<HTMLInputElement>,
-  //   key: string
-  // ) => {
-  //   const { value } = e.target;
-  //   setFormData((prev) => ({
-  //     ...prev,
-  //     meta_data: {
-  //       ...prev.meta_data,
-  //       [key]: value,
-  //     },
-  //   }));
-  // };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
