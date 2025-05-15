@@ -302,7 +302,7 @@ export async function updateFileStatus(
           errorDetails = await response.text();
         }
       } catch (e) {
-        errorDetails = 'Could not parse error response';
+        errorDetails = `${e} Could not parse error response`;
       }
 
       console.error(`API Error: ${response.status} ${response.statusText}`);
