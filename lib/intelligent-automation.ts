@@ -62,7 +62,7 @@ export async function registerJobBatchFile(
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': apiToken
+        'Authorization': `Bearer ${apiToken}`
       },
       body: JSON.stringify(payload)
     });
