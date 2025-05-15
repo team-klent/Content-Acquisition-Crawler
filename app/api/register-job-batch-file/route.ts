@@ -75,6 +75,7 @@ export async function POST(request: NextRequest) {
     const response = await registerJobBatchFile(requestData);
 
     return NextResponse.json(response);
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     console.error('Error registering job batch file:', error);
     // Log the full error details for debugging

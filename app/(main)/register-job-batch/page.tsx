@@ -22,12 +22,14 @@ export default function RegisterJobBatchPage() {
     meta_data: { ...defaultMetadata },
   });
 
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   const [response, setResponse] = useState<any>(null);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
 
   // This ensures we always have proper metadata structure
+
   useEffect(() => {
     if (!formData.meta_data || Object.keys(formData.meta_data).length === 0) {
       setFormData((prev) => ({
@@ -35,29 +37,30 @@ export default function RegisterJobBatchPage() {
         meta_data: { ...defaultMetadata },
       }));
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.meta_data]);
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      [name]: value,
-    }));
-  };
+  // const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  //   const { name, value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     [name]: value,
+  //   }));
+  // };
 
-  const handleMetadataChange = (
-    e: React.ChangeEvent<HTMLInputElement>,
-    key: string
-  ) => {
-    const { value } = e.target;
-    setFormData((prev) => ({
-      ...prev,
-      meta_data: {
-        ...prev.meta_data,
-        [key]: value,
-      },
-    }));
-  };
+  // const handleMetadataChange = (
+  //   e: React.ChangeEvent<HTMLInputElement>,
+  //   key: string
+  // ) => {
+  //   const { value } = e.target;
+  //   setFormData((prev) => ({
+  //     ...prev,
+  //     meta_data: {
+  //       ...prev.meta_data,
+  //       [key]: value,
+  //     },
+  //   }));
+  // };
 
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -139,6 +142,7 @@ export default function RegisterJobBatchPage() {
         data = await response.json();
         console.log('API response data:', data);
       } catch (parseError) {
+        console.error('JSON parse error:', parseError);
         const text = await response.text();
         console.error('Received non-JSON response:', text);
         throw new Error(
@@ -164,8 +168,10 @@ export default function RegisterJobBatchPage() {
         // This would be a separate API call depending on how the target system expects the file
       }
       */
-    } catch (err: any) {
-      setError(err.message || 'An error occurred');
+    } catch (err: unknown) {
+      const errorMessage =
+        err instanceof Error ? err.message : 'An error occurred';
+      setError(errorMessage);
       console.error('Error:', err);
     } finally {
       setLoading(false);
@@ -231,7 +237,7 @@ export default function RegisterJobBatchPage() {
                   <div className='mt-4 p-4 bg-blue-50 border border-blue-200 rounded-md'>
                     <h3 className='text-md font-semibold mb-2'>Next Steps</h3>
                     <p className='text-sm'>
-                      You've successfully registered{' '}
+                      You&apos;ve successfully registered{' '}
                       <strong>{formData.file_name}</strong> with the system. To
                       complete the process, you would need to upload the file
                       content to the provided URL.

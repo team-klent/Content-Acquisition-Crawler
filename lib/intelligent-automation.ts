@@ -14,7 +14,7 @@ export interface RegisterJobBatchFileRequest {
 export interface RegisterJobBatchFileResponse {
   file_id: string;
   file_output_upload_url: string;
-  [key: string]: any;
+  [key: string]: string | number | boolean | object | null;
 }
 
 /**
@@ -84,6 +84,7 @@ export async function registerJobBatchFile(
         } else {
           errorDetails = await response.text();
         }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         errorDetails = 'Could not parse error response';
       }
