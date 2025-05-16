@@ -24,7 +24,7 @@ export default function PdfView() {
   const updatedAt = searchParams.get('updatedAt');
 
   useEffect(() => {
-    if (containerRef.current) {
+    if (containerRef.current && path) {
       PDFObject.embed(path, containerRef.current, {
         height: '800px',
         pdfOpenParams: {
