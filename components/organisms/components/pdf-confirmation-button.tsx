@@ -12,6 +12,7 @@ import {
 import { Eye, FileText } from 'lucide-react';
 import { useState } from 'react';
 import { toast } from 'sonner';
+import { useRouter } from 'next/navigation';
 
 const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   const [open, setOpen] = useState(false);
@@ -47,12 +48,30 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
     }
   };
 
+  const router = useRouter();
+
+  const handlePdfViewer = () => {
+    const params = new URLSearchParams(
+      { id: pdf.id,
+        title: pdf.title,
+        fileName: pdf.filename,
+        path: pdf.path,
+        size: (pdf.size ?? 0).toString(),
+        type: pdf.type,
+        createdAt: String(pdf.createdAt),
+        isActive: pdf.isActive ? 'true' : 'false',
+        createdBy: String(pdf.createdBy),
+        updatedAt: String(pdf.updatedAt),
+       });
+    router.push(`/pdf?${params.toString()}`);
+  };
+
   return (
     <div className='flex space-x-2 '>
       <Button
         variant='ghost'
         size='icon'
-        onClick={() => window.open(pdf.path, '_blank')}
+        onClick={handlePdfViewer}
         title='View PDF'
       >
         <Eye className='h-4 w-4' />
