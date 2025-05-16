@@ -49,8 +49,6 @@ export async function registerJobBatchFile(
     'https://test-intelligentautomation.innodata.com';
   const url = `${baseUrl}/api/register-job-batch-file`;
 
-  console.log('payload', payload);
-
   try {
     const requiredFields = [
       'project_code',
@@ -193,15 +191,6 @@ export async function registerAndUploadFile(
         console.error('Error updating file status:', updateError);
       }
     }
-    console.log(
-      'File registration and upload completed successfully',
-      '   registration: ',
-      registrationResponse,
-      '  upload: ',
-      uploadResponse,
-      'statusUpdate',
-      statusUpdateResponse
-    );
 
     return {
       registration: registrationResponse,
