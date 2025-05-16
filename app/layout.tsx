@@ -1,5 +1,6 @@
 import { type Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
+import { Toaster } from 'sonner';
 import { CrawlerStateProvider } from './context/CrawlerStateContext';
 import './globals.css';
 
@@ -15,7 +16,8 @@ const geistMono = Geist_Mono({
 
 export const metadata: Metadata = {
   title: 'Content Acquisition Crawler',
-  description: 'Tool for registering and processing files with Intelligent Automation',
+  description:
+    'Tool for registering and processing files with Intelligent Automation',
 };
 
 export default function RootLayout({
@@ -28,7 +30,10 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
       >
-        <CrawlerStateProvider>{children}</CrawlerStateProvider>
+        <CrawlerStateProvider>
+          {children}
+          <Toaster />
+        </CrawlerStateProvider>
       </body>
     </html>
   );
