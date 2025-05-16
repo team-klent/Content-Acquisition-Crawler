@@ -2,7 +2,7 @@ export interface RegisterJobBatchFileRequest {
   project_code: string;
   workflow_code: string;
   first_task_uid: string;
-  file_unique_identifier: string;
+  file_unique_identifier?: string;
   file_name: string;
   file_path: string;
   meta_data: Record<string, string>;

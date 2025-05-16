@@ -39,7 +39,6 @@ export default function FileRegistrationUploader() {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [formData.meta_data]);
 
-
   const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
@@ -98,7 +97,7 @@ export default function FileRegistrationUploader() {
     try {
       let response;
       let data;
-      
+
       // If we have a selected file, use FormData for multipart upload
       if (selectedFile) {
         // Create FormData object for file upload
@@ -107,20 +106,31 @@ export default function FileRegistrationUploader() {
         formDataToSend.append('project_code', formData.project_code);
         formDataToSend.append('workflow_code', formData.workflow_code);
         formDataToSend.append('first_task_uid', formData.first_task_uid);
-        
+
         if (formData.file_unique_identifier) {
-          formDataToSend.append('file_unique_identifier', formData.file_unique_identifier);
+          formDataToSend.append(
+            'file_unique_identifier',
+            formData.file_unique_identifier
+          );
         }
-        
+
         // Convert meta_data object to JSON string
-        formDataToSend.append('meta_data', JSON.stringify(formData.meta_data || { M1: 'V1', M2: 'V2' }));
-        
+        formDataToSend.append(
+          'meta_data',
+          JSON.stringify(formData.meta_data || { M1: 'V1', M2: 'V2' })
+        );
+
         console.log('Sending file upload with FormData');
-        
-        response = await fetch('/api/register-job-batch-file', {
-          method: 'POST',
-          body: formDataToSend, // FormData automatically sets the correct content-type header
-        });
+
+        response = await fetch(
+          `${
+            process.env.NODE_ENV === 'production' ? '/ca' : ''
+          }/api/register-job-batch-file`,
+          {
+            method: 'POST',
+            body: formDataToSend, // FormData automatically sets the correct content-type header
+          }
+        );
       } else {
         // Use JSON payload for non-file requests
         const payload = {
@@ -136,14 +146,19 @@ export default function FileRegistrationUploader() {
         };
 
         console.log('Sending JSON payload:', payload);
-        
-        response = await fetch('/api/register-job-batch-file', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
+
+        response = await fetch(
+          `${
+            process.env.NODE_ENV === 'production' ? '/ca' : ''
+          }/api/register-job-batch-file`,
+          {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(payload),
+          }
+        );
       }
 
       try {
@@ -166,11 +181,17 @@ export default function FileRegistrationUploader() {
       }
 
       console.log('Response data structure:', JSON.stringify(data, null, 2));
-      console.log('Does file_output_upload_url exist?', !!data.file_output_upload_url);
+      console.log(
+        'Does file_output_upload_url exist?',
+        !!data.file_output_upload_url
+      );
       if (data.registration) {
-        console.log('Does registration.file_output_upload_url exist?', !!data.registration.file_output_upload_url);
+        console.log(
+          'Does registration.file_output_upload_url exist?',
+          !!data.registration.file_output_upload_url
+        );
       }
-      
+
       setResponse(data);
 
       // The response includes file_output_upload_url which could be used to upload the actual file
@@ -194,36 +215,41 @@ export default function FileRegistrationUploader() {
 
   return (
     <div className='justify-self-end border p-6 rounded-sm shadow-md bg-white'>
-        <h2 className='text-xl font-bold mb-6'>Upload Another File</h2>
+      <h2 className='text-xl font-bold mb-6'>Upload Another File</h2>
 
-        {error && (
-          <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>
-            {error}
+      {error && (
+        <div className='bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4'>
+          {error}
+        </div>
+      )}
+
+      <form onSubmit={handleSubmit} className='space-y-6 flex flex-col'>
+        <div className='grid grid-cols-1'>
+          <div className='space-y-2'>
+            <Label htmlFor='file_upload'>File Upload</Label>
+            <Input
+              id='file_upload'
+              type='file'
+              onChange={handleFileChange}
+              className='cursor-pointer'
+            />
+            <p className='text-xs text-gray-500 mt-1'>
+              Select a file to upload. When you submit the form, the file will
+              be uploaded automatically.
+            </p>
+            {selectedFile && (
+              <div className='mt-2 p-2 bg-blue-50 text-blue-700 text-xs rounded border border-blue-200'>
+                Selected file: <strong>{selectedFile.name}</strong> (
+                {(selectedFile.size / 1024).toFixed(1)} KB)
+              </div>
+            )}
           </div>
-        )}
+        </div>
 
-        <form onSubmit={handleSubmit} className='space-y-6 flex flex-col'>
-          <div className='grid grid-cols-1'>
-            <div className='space-y-2'>
-              <Label htmlFor='file_upload'>File Upload</Label>
-              <Input
-                id='file_upload'
-                type='file'
-                onChange={handleFileChange}
-                className='cursor-pointer'
-              />
-              <p className='text-xs text-gray-500 mt-1'>
-                Select a file to upload. When you submit the form, the file will be uploaded automatically.
-              </p>
-              {selectedFile && (
-                <div className='mt-2 p-2 bg-blue-50 text-blue-700 text-xs rounded border border-blue-200'>
-                  Selected file: <strong>{selectedFile.name}</strong> ({(selectedFile.size / 1024).toFixed(1)} KB)
-                </div>
-              )}
-            </div>
-          </div>
-
-          {response && (response.file_output_upload_url || (response.registration && response.registration.file_output_upload_url)) && (
+        {response &&
+          (response.file_output_upload_url ||
+            (response.registration &&
+              response.registration.file_output_upload_url)) && (
             <div className='mt-4 p-4 bg-green-200 border border-green-700 rounded-md'>
               <p className='text-sm bg-green-200'>
                 File successfully registered!!
@@ -231,11 +257,14 @@ export default function FileRegistrationUploader() {
             </div>
           )}
 
-          <Button className='self-end w-fit cursor-pointer' type='submit' disabled={loading}>
-            {loading ? 'Registering...' : 'Register Uploaded File'}
-          </Button>
-        </form>
-
+        <Button
+          className='self-end w-fit cursor-pointer'
+          type='submit'
+          disabled={loading}
+        >
+          {loading ? 'Registering...' : 'Register Uploaded File'}
+        </Button>
+      </form>
     </div>
   );
 }

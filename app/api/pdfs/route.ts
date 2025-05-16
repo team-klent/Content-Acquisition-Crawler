@@ -26,7 +26,6 @@ const POST = async (req: NextRequest) => {
       workflow_code: 'UWF-1',
       first_task_uid: '1eb1599609b8474bbee630925b3603e0',
       file_name: body.filename,
-      file_unique_identifier: body.filename,
       file_path: body.path,
       meta_data: {
         M1: 'V1',

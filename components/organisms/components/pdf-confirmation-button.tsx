@@ -20,15 +20,18 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   const handleRegister = async () => {
     setLoading(true);
     try {
-      const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/pdfs`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          ...pdf,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NODE_ENV === 'production' ? '/ca' : ''}/api/pdfs`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            ...pdf,
+          }),
+        }
+      );
       if (!res.ok) {
         throw new Error('Failed to register PDF');
       }
