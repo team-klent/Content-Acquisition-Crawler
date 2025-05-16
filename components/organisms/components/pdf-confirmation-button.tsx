@@ -21,7 +21,7 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
     setLoading(true);
     try {
       const res = await fetch(
-        `${process.env.NODE_ENV === 'production' ? '/ca' : ''}/api/pdfs`,
+        `${process.env.USE_BASE_PATH === 'true' ? '/ca' : ''}/api/pdfs`,
         {
           method: 'POST',
           headers: {
@@ -37,7 +37,6 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
       }
 
       toast.success('PDF registered successfully');
-
     } catch (error) {
       console.error('Error registering PDF:', error);
       toast.error('Failed to register PDF');

@@ -44,9 +44,7 @@ export interface FileUploadResponse {
 export async function registerJobBatchFile(
   payload: RegisterJobBatchFileRequest
 ): Promise<RegisterJobBatchFileResponse> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_IA_API_URL ||
-    'https://test-intelligentautomation.innodata.com';
+  const baseUrl = process.env.NEXT_PUBLIC_IA_API_URL!;
   const url = `${baseUrl}/api/register-job-batch-file`;
 
   try {
@@ -259,9 +257,7 @@ export async function uploadFileToS3(
 export async function updateFileStatus(
   payload: UpdateFileStatusRequest
 ): Promise<UpdateFileStatusResponse> {
-  const baseUrl =
-    process.env.NEXT_PUBLIC_IA_API_URL ||
-    'https://test-intelligentautomation.innodata.com';
+  const baseUrl = process.env.NEXT_PUBLIC_IA_API_URL!;
   const url = `${baseUrl}/api/update-file-status`;
 
   try {

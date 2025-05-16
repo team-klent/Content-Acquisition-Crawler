@@ -20,9 +20,9 @@ const POST = async (req: NextRequest) => {
     const body = await req.json();
 
     const projectInformation = {
-      project_code: 'TEST-UNIFIED-WF',
-      workflow_code: 'UWF-1',
-      first_task_uid: '1eb1599609b8474bbee630925b3603e0',
+      project_code: process.env.PROJECT_CODE!,
+      workflow_code: process.env.WORKFLOW_CODE!,
+      first_task_uid: process.env.FIRST_TASK_UID!,
       file_name: body.filename,
       file_path: body.path,
       meta_data: {

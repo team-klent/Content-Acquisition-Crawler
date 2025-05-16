@@ -120,7 +120,7 @@ export default function FileRegistrationUploader() {
 
         response = await fetch(
           `${
-            process.env.NODE_ENV === 'production' ? '/ca' : ''
+            process.env.USE_BASE_PATH === 'true' ? '/ca' : ''
           }/api/register-job-batch-file`,
           {
             method: 'POST',
@@ -143,7 +143,7 @@ export default function FileRegistrationUploader() {
 
         response = await fetch(
           `${
-            process.env.NODE_ENV === 'production' ? '/ca' : ''
+            process.env.USE_BASE_PATH === 'true' ? '/ca' : ''
           }/api/register-job-batch-file`,
           {
             method: 'POST',

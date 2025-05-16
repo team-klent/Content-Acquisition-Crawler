@@ -7,6 +7,7 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
+        USE_BASE_PATH: 'false',
       },
     },
   ],
