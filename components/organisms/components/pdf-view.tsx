@@ -20,7 +20,6 @@ export default function PdfView() {
   const size = searchParams.get('size');
   const type = searchParams.get('type');
   const createdAt = searchParams.get('createdAt');
-  const isActive = searchParams.get('isActive');
   const createdBy = searchParams.get('createdBy');
   const updatedAt = searchParams.get('updatedAt');
 
@@ -97,10 +96,6 @@ export default function PdfView() {
                           <td className="px-4 py-2 bg-gray-100 font-medium text-sm">Author</td>
                           <td className="px-4 py-2 text-sm">{createdBy}</td>
                         </tr>
-                        {/* <tr>
-                          <td className="px-4 py-2 bg-gray-100 font-medium text-sm">Active</td>
-                          <td className="px-4 py-2 text-sm">{isActive ? "Yes": "No"}</td>
-                        </tr> */}
                       </tbody>
                     </table>
                   </div>
