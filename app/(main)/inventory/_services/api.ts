@@ -1,11 +1,16 @@
 const getAllCrawlerData = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/crawl`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    cache: 'no-store',
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}${
+      process.env.NODE_ENV === 'production' ? '/ca' : ''
+    }/api/crawl`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store',
+    }
+  );
 
   if (!res.ok) {
     throw new Error('Failed to fetch data');
@@ -15,13 +20,18 @@ const getAllCrawlerData = async () => {
 };
 
 const getAllCrawlerDataByLength = async () => {
-  const res = await fetch(`${process.env.NEXT_PUBLIC_URL}/api/crawl`, {
-    method: 'GET',
-    headers: {
-      'Content-Type': 'application/json',
-    },
-    cache: 'no-store',
-  });
+  const res = await fetch(
+    `${process.env.NEXT_PUBLIC_URL}${
+      process.env.NODE_ENV === 'production' ? '/ca' : ''
+    }/api/crawl`,
+    {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      cache: 'no-store',
+    }
+  );
 
   if (!res.ok) {
     throw new Error('Failed to fetch data');
