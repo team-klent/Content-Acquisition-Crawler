@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { pdfDocuments, PdfDocument } from "@/lib/pdf-data";
-import { PlusIcon, RefreshCw } from "lucide-react";
+import { RefreshCw } from "lucide-react";
 import { PdfTable } from "../components/pdf-table";
 
 export default function ContentAquisitionPage() {
@@ -24,7 +24,10 @@ export default function ContentAquisitionPage() {
       const data = await response.json();
       
       // Convert string dates back to Date objects
-      const pdfDocs = data.pdfs.map((pdf: any) => ({
+      const pdfDocs = data.pdfs.map((pdf: Omit<PdfDocument, 'createdAt' | 'updatedAt'> & {
+        createdAt?: string;
+        updatedAt?: string;
+      }) => ({
         ...pdf,
         createdAt: pdf.createdAt ? new Date(pdf.createdAt) : undefined,
         updatedAt: pdf.updatedAt ? new Date(pdf.updatedAt) : undefined,

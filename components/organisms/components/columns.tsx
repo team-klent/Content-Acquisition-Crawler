@@ -3,14 +3,8 @@
 import { ColumnDef } from "@tanstack/react-table";
 import { PdfDocument } from "@/lib/pdf-data";
 import { Button } from "@/components/ui/button";
-import { ArrowDownToLine, ArrowUpDown, Eye, FileText, Trash2 } from "lucide-react";
+import {  ArrowUpDown, Eye, FileText } from "lucide-react";
 import { Checkbox } from "@/components/ui/checkbox";
-import { 
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger
-} from "@/components/ui/dropdown-menu";
 
 export const columns: ColumnDef<PdfDocument>[] = [
   {
