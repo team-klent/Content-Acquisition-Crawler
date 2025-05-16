@@ -9,12 +9,11 @@ import { CrawlerSource } from './utils';
 const columns: ColumnDef<CrawlerSource>[] = [
   {
     id: 'select',
-    cell: ({ row, table }) => (
+    cell: ({ row }) => (
       <Checkbox
         checked={row.getIsSelected()}
         onCheckedChange={(checked: boolean) => {
           row.toggleSelected(checked);
-          console.log(table.getIsSomeRowsSelected());
         }}
       />
     ),

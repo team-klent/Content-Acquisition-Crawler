@@ -19,8 +19,6 @@ const POST = async (req: NextRequest) => {
   try {
     const body = await req.json();
 
-    console.log('Received request body:', body);
-
     const projectInformation = {
       project_code: 'TEST-UNIFIED-WF',
       workflow_code: 'UWF-1',

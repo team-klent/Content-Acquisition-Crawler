@@ -2,58 +2,56 @@ import {
   registerAndUploadFile,
   RegisterJobBatchFileRequest,
 } from '@/lib/intelligent-automation';
-import { NextRequest, NextResponse } from 'next/server';
 import * as fs from 'fs';
-import * as path from 'path';
 import { writeFile } from 'fs/promises';
-import { v4 as uuidv4 } from 'uuid';
+import { NextRequest, NextResponse } from 'next/server';
 import os from 'os'; // Importing os module to handle temporary file paths --- DONT REMOVED!!!!!
+import * as path from 'path';
+import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
   try {
-    
     const tempDir = path.join(os.tmpdir(), 'content-acquisition-uploads');
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
     }
-    
+
     const contentType = request.headers.get('content-type') || '';
     let requestData: RegisterJobBatchFileRequest;
     let tempFilePath: string | null = null;
-    
+
     if (contentType.includes('multipart/form-data')) {
-      
       const formData = await request.formData();
       const file = formData.get('file') as File | null;
-      
+
       if (!file) {
         return NextResponse.json(
           { error: 'No file uploaded' },
           { status: 400 }
         );
       }
-      
+
       requestData = {
         project_code: formData.get('project_code') as string,
         workflow_code: formData.get('workflow_code') as string,
         first_task_uid: formData.get('first_task_uid') as string,
-        file_unique_identifier: formData.get('file_unique_identifier') as string || '',
+        file_unique_identifier:
+          (formData.get('file_unique_identifier') as string) || '',
         file_name: file.name,
         file_path: '',
         meta_data: JSON.parse((formData.get('meta_data') as string) || '{}'),
       };
-      
+
       const fileId = uuidv4();
       tempFilePath = path.join(tempDir, `${fileId}-${file.name}`);
       const fileBuffer = Buffer.from(await file.arrayBuffer());
       await writeFile(tempFilePath, fileBuffer);
-      
-      console.log('File saved temporarily at:', tempFilePath);
+
       requestData.file_path = tempFilePath;
     } else {
       requestData = await request.json();
     }
-    
+
     const requiredFields = [
       'project_code',
       'workflow_code',
@@ -85,10 +83,6 @@ export async function POST(request: NextRequest) {
       requestData.file_unique_identifier = `file-uid-${
         requestData.file_name
       }-${Date.now()}`;
-      console.log(
-        'Generated file_unique_identifier:',
-        requestData.file_unique_identifier
-      );
     }
 
     if (!requestData.file_path || requestData.file_path.trim() === '') {
@@ -103,7 +97,7 @@ export async function POST(request: NextRequest) {
     }
 
     const filePath = requestData.file_path;
-    
+
     const response = await registerAndUploadFile(requestData, filePath);
 
     return NextResponse.json(response, { status: 200 });

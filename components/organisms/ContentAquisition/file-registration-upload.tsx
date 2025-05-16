@@ -50,8 +50,6 @@ export default function FileRegistrationUploader() {
         file_name: file.name,
         file_unique_identifier: `file-uid-${file.name}-${Date.now()}`,
       }));
-
-      console.log('File selected:', file.name);
     }
   };
 
@@ -120,8 +118,6 @@ export default function FileRegistrationUploader() {
           JSON.stringify(formData.meta_data || { M1: 'V1', M2: 'V2' })
         );
 
-        console.log('Sending file upload with FormData');
-
         response = await fetch(
           `${
             process.env.NODE_ENV === 'production' ? '/ca' : ''
@@ -145,8 +141,6 @@ export default function FileRegistrationUploader() {
           meta_data: formData.meta_data || { M1: 'V1', M2: 'V2' },
         };
 
-        console.log('Sending JSON payload:', payload);
-
         response = await fetch(
           `${
             process.env.NODE_ENV === 'production' ? '/ca' : ''
@@ -163,7 +157,6 @@ export default function FileRegistrationUploader() {
 
       try {
         data = await response.json();
-        console.log('API response data:', data);
       } catch (parseError) {
         console.error('JSON parse error:', parseError);
         const text = await response.text();
@@ -177,18 +170,6 @@ export default function FileRegistrationUploader() {
         console.error('API error response:', data);
         throw new Error(
           data.error || `Failed to register job batch file (${response.status})`
-        );
-      }
-
-      console.log('Response data structure:', JSON.stringify(data, null, 2));
-      console.log(
-        'Does file_output_upload_url exist?',
-        !!data.file_output_upload_url
-      );
-      if (data.registration) {
-        console.log(
-          'Does registration.file_output_upload_url exist?',
-          !!data.registration.file_output_upload_url
         );
       }
 

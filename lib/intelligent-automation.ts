@@ -124,7 +124,6 @@ export async function registerJobBatchFile(
     }
 
     const data = await response.json();
-    console.log('API response received:', data);
     return data;
   } catch (error) {
     console.error('Error in registerJobBatchFile:', error);
@@ -185,8 +184,6 @@ export async function registerAndUploadFile(
           previous_file_status: previousFileStatus,
           file_status: fileStatus,
         });
-
-        console.log('File status update successful:', statusUpdateResponse);
       } catch (updateError) {
         console.error('Error updating file status:', updateError);
       }
@@ -321,7 +318,6 @@ export async function updateFileStatus(
     }
 
     const data = await response.json();
-    console.log('File status update response:', data);
     return data;
   } catch (error) {
     console.error('Error in updateFileStatus:', error);

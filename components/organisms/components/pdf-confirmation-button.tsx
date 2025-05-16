@@ -38,7 +38,6 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
 
       toast.success('PDF registered successfully');
 
-      console.log('PDF registered successfully');
     } catch (error) {
       console.error('Error registering PDF:', error);
       toast.error('Failed to register PDF');
