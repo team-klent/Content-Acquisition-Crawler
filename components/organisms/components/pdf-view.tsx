@@ -12,7 +12,7 @@ export default function PdfView() {
   const containerRef = useRef(null);
   const searchParams = useSearchParams();
   const router = useRouter();
-    
+ 
   const id = searchParams.get('id');
   const title = searchParams.get('title');
   const fileName = searchParams.get('fileName');
