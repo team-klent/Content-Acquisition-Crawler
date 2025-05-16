@@ -3,10 +3,10 @@
 import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { pdfDocuments, PdfDocument } from "@/lib/pdf-data";
-import { PdfTable } from "./_components/pdf-table";
 import { PlusIcon, RefreshCw } from "lucide-react";
+import { PdfTable } from "../components/pdf-table";
 
-export default function PDFDocumentsPage() {
+export default function ContentAquisitionPage() {
   const [documents, setDocuments] = useState<PdfDocument[]>(pdfDocuments);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -38,19 +38,11 @@ export default function PDFDocumentsPage() {
       setLoading(false);
     }
   };
-  
-  // Use the static data on initial load, but you can
-  // uncomment this to fetch from API on component mount
-  /*
-  useEffect(() => {
-    fetchPdfs();
-  }, []);
-  */
 
   return (
     <div className="container mx-auto py-8">
       <div className="flex justify-between items-center mb-6">
-        <h1 className="text-2xl font-bold">Content acquisition</h1>
+        <h1 className="text-2xl font-bold">Content Acquisition</h1>
         <div className="flex gap-2">
           <Button 
             variant="outline"
