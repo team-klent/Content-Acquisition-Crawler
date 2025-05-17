@@ -115,7 +115,7 @@ export default function PdfRegisterButton() {
 
         response = await fetch(
           `${
-            process.env.NODE_ENV === 'production' ? '/ca' : ''
+            process.env.USE_BASE_PATH === 'true' ? '/ca' : ''
           }/api/register-job-batch-file`,
           {
             method: 'POST',
@@ -138,7 +138,7 @@ export default function PdfRegisterButton() {
 
         response = await fetch(
           `${
-            process.env.NODE_ENV === 'production' ? '/ca' : ''
+            process.env.USE_BASE_PATH === 'true' ? '/ca' : ''
           }/api/register-job-batch-file`,
           {
             method: 'POST',
@@ -218,9 +218,13 @@ export default function PdfRegisterButton() {
               disabled={loading}
             >
               <Upload />{' '}
-              {loading
-                ? `Registering ${(<ThreeDotsLoader />)}`
-                : 'Register Uploaded File'}
+              {loading ? (
+                <>
+                  `Registering ` <ThreeDotsLoader />
+                </>
+              ) : (
+                'Register Uploaded File'
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent className='max-w-xs'>
