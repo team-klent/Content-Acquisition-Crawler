@@ -10,6 +10,7 @@ import {
   PopoverTrigger,
 } from '@radix-ui/react-popover';
 import { Eye, FileText } from 'lucide-react';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -46,20 +47,39 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
     }
   };
 
+  const router = useRouter();
+
+  const handlePdfViewer = () => {
+    const params = new URLSearchParams({
+      id: pdf.id,
+      title: pdf.title,
+      fileName: pdf.filename,
+      path: pdf.path,
+      size: (pdf.size ?? 0).toString(),
+      type: pdf.type,
+      createdAt: String(pdf.createdAt),
+      isActive: pdf.isActive ? 'true' : 'false',
+      createdBy: String(pdf.createdBy),
+      updatedAt: String(pdf.updatedAt),
+    });
+    router.push(`/pdf?${params.toString()}`);
+  };
+
   return (
     <div className='flex space-x-2 '>
       <Button
         variant='ghost'
         size='icon'
-        onClick={() => window.open(pdf.path, '_blank')}
+        onClick={handlePdfViewer}
         title='View PDF'
+        className='cursor-pointer'
       >
         <Eye className='h-4 w-4' />
       </Button>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger
           onClick={() => setOpen(!open)}
-          className='cursor-pointer'
+          className='cursor-pointer hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2'
         >
           <FileText className='h-4 w-4' />
         </PopoverTrigger>

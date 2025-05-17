@@ -38,8 +38,8 @@ export const pdfDocuments: PdfDocument[] = [
   {
     id: '3',
     title: 'Technical Specifications',
-    filename: 'sample3.pdf',
-    path: '/pdfs/sample3.pdf',
+    filename: 'random_file.pdf',
+    path: '/pdfs/random_file.pdf',
     size: '2.8 MB',
     type: 'pdf',
     createdAt: new Date('2025-03-10'),

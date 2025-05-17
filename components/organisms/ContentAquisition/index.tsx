@@ -1,14 +1,11 @@
-import React from 'react'
-import ContentAquisitionPage from './content-aquisition'
-import FileRegistrationUploader from './file-registration-upload'
+import ContentAquisitionPage from './content-aquisition';
 
 const index = () => {
   return (
-    <div className="container mx-auto py-8">
-      <ContentAquisitionPage/>
-      <FileRegistrationUploader/>
+    <div className='container mx-auto py-8'>
+      <ContentAquisitionPage />
     </div>
-  )
-}
+  );
+};
 
-export default index
+export default index;
