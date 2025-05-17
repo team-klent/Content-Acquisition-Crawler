@@ -218,9 +218,13 @@ export default function PdfRegisterButton() {
               disabled={loading}
             >
               <Upload />{' '}
-              {loading
-                ? `Registering ${(<ThreeDotsLoader />)}`
-                : 'Register Uploaded File'}
+              {loading ? (
+                <>
+                  `Registering ` <ThreeDotsLoader />
+                </>
+              ) : (
+                'Register Uploaded File'
+              )}
             </Button>
           </TooltipTrigger>
           <TooltipContent className='max-w-xs'>
