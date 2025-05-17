@@ -1,10 +1,7 @@
-import ContentAquisitionPage from '@/components/organisms/ContentAquisition'
-import React from 'react'
+import ContentAquisitionPage from '@/components/organisms/ContentAquisition';
 
-const page = () => {
-  return (
-    <ContentAquisitionPage/>
-  )
-}
+const MainPage = () => {
+  return <ContentAquisitionPage />;
+};
 
-export default page
+export default MainPage;
