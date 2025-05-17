@@ -114,7 +114,7 @@ export default function PdfRegisterButton() {
         );
 
         response = await fetch(
-          `${
+          `${process.env.NEXT_PUBLIC_URL}${
             process.env.USE_BASE_PATH === 'true' ? '/ca' : ''
           }/api/register-job-batch-file`,
           {
@@ -137,7 +137,7 @@ export default function PdfRegisterButton() {
         };
 
         response = await fetch(
-          `${
+          `${process.env.NEXT_PUBLIC_URL}${
             process.env.USE_BASE_PATH === 'true' ? '/ca' : ''
           }/api/register-job-batch-file`,
           {
