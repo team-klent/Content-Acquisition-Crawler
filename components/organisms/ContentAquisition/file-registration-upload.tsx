@@ -113,15 +113,10 @@ export default function PdfRegisterButton() {
           JSON.stringify(formData.meta_data || { M1: 'V1', M2: 'V2' })
         );
 
-        response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL}${
-            process.env.USE_BASE_PATH === 'true' ? '/ca' : ''
-          }/api/register-job-batch-file`,
-          {
-            method: 'POST',
-            body: formDataToSend, // FormData automatically sets the correct content-type header
-          }
-        );
+        response = await fetch(`/api/register-job-batch-file`, {
+          method: 'POST',
+          body: formDataToSend, // FormData automatically sets the correct content-type header
+        });
       } else {
         // Use JSON payload for non-file requests
         const payload = {
@@ -136,18 +131,13 @@ export default function PdfRegisterButton() {
           meta_data: formData.meta_data || { M1: 'V1', M2: 'V2' },
         };
 
-        response = await fetch(
-          `${process.env.NEXT_PUBLIC_URL}${
-            process.env.USE_BASE_PATH === 'true' ? '/ca' : ''
-          }/api/register-job-batch-file`,
-          {
-            method: 'POST',
-            headers: {
-              'Content-Type': 'application/json',
-            },
-            body: JSON.stringify(payload),
-          }
-        );
+        response = await fetch(`/api/register-job-batch-file`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify(payload),
+        });
       }
 
       try {
