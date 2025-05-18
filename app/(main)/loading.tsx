@@ -13,7 +13,7 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { TableSelection } from './inventory/_components/table-selection';
+import { TableSelection } from './previous-inventory/_components/table-selection';
 
 const Loader = async () => {
   return (
