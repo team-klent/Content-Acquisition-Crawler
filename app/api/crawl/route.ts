@@ -1,4 +1,4 @@
-import { CrawlerSource } from '@/app/(main)/inventory/_components/utils';
+import { CrawlerSource } from '@/app/(main)/previous-inventory/_components/utils';
 import { NextResponse } from 'next/server';
 const data: CrawlerSource[] = [
   {
