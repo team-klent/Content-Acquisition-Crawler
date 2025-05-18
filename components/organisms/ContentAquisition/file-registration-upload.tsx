@@ -207,10 +207,10 @@ export default function PdfRegisterButton() {
               onClick={handleClick}
               disabled={loading}
             >
-              <Upload />{' '}
+              <Upload />
               {loading ? (
                 <>
-                  `Registering ` <ThreeDotsLoader />
+                  Registering <ThreeDotsLoader variant='black' />
                 </>
               ) : (
                 'Register Uploaded File'

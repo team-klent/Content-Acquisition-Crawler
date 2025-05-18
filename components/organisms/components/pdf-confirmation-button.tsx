@@ -14,6 +14,21 @@ import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
+const defaultMetadata = {
+  M1: 'V1',
+  M2: 'V2',
+};
+
+const defaultConfiguration = {
+  project_code: process.env.NEXT_PUBLIC_PROJECT_CODE || '',
+  workflow_code: process.env.NEXT_PUBLIC_WORKFLOW_CODE || '',
+  first_task_uid: process.env.NEXT_PUBLIC_FIRST_TASK_UID || '',
+  file_unique_identifier: '',
+  file_name: '', // This will be auto-populated when a file is selected
+  file_path: '-',
+  meta_data: { ...defaultMetadata },
+};
+
 const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -21,6 +36,50 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   const handleRegister = async () => {
     setLoading(true);
     try {
+      const requestData = {
+        ...defaultConfiguration,
+        file_name: pdf.filename,
+        file_unique_identifier: `file-uid-${pdf.filename}-${Date.now()}`,
+        file_path: pdf.path,
+        meta_data: { ...defaultMetadata },
+      };
+
+      // Make sure all required fields are filled
+      const requiredFields = [
+        { field: 'project_code', label: 'Project Code' },
+        { field: 'workflow_code', label: 'Workflow Code' },
+        { field: 'first_task_uid', label: 'Content Acquisition Task UID' },
+      ];
+
+      const missingField = requiredFields.find(
+        ({ field }) =>
+          !requestData[field as keyof typeof requestData] ||
+          (typeof requestData[field as keyof typeof requestData] === 'string' &&
+            (
+              requestData[field as keyof typeof requestData] as string
+            ).trim() === '')
+      );
+
+      if (missingField) {
+        toast.error(
+          `${missingField.label} is required. Please fill it out before proceeding.`
+        );
+        setLoading(false);
+        return;
+      }
+
+      if (!requestData.file_name || requestData.file_name.trim() === '') {
+        toast.error('File name cannot be empty');
+        setLoading(false);
+        return;
+      }
+
+      if (!requestData.file_path || requestData.file_path.trim() === '') {
+        toast.error('File path cannot be empty');
+        setLoading(false);
+        return;
+      }
+
       const res = await fetch(
         `${process.env.USE_BASE_PATH === 'true' ? '/ca' : ''}/api/pdfs`,
         {
@@ -29,10 +88,11 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify({
-            ...pdf,
+            ...requestData,
           }),
         }
       );
+
       if (!res.ok) {
         throw new Error('Failed to register PDF');
       }
@@ -91,8 +151,13 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
               className='cursor-pointer w-fit p-4'
               onClick={handleRegister}
               title='Register file'
+              disabled={loading}
             >
-              {loading ? <ThreeDotsLoader /> : 'Yes, register it.'}
+              {loading ? (
+                <ThreeDotsLoader variant='white' />
+              ) : (
+                'Yes, register it.'
+              )}
             </Button>
             <PopoverClose asChild>
               <Button
