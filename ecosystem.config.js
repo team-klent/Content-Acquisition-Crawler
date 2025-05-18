@@ -7,7 +7,9 @@ module.exports = {
       env: {
         NODE_ENV: 'production',
         PORT: 3000,
-        USE_BASE_PATH: 'false',
+        USE_BASE_PATH: 'true',
+        NEXT_PUBLIC_URL: 'https://unifiedworkflow.innodata.com/app1',
+        FAST_REFRESH: 'false',
       },
     },
   ],
