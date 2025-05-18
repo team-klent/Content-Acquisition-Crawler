@@ -56,7 +56,7 @@ export default function PdfView() {
       <div className='grid grid-cols-4 gap-4'>
         <div ref={containerRef} id='pdf-container' className='col-span-3' />
         <div className='col-span-1'>
-          <Card className='h-full'>
+          <Card>
             <CardHeader>
               <CardTitle className='flex items-center gap-2'>
                 Metadata
