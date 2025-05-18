@@ -19,9 +19,9 @@ export default function PdfRegisterButton() {
   };
 
   const defaultConfiguration = {
-    project_code: 'TEST-UNIFIED-WF',
-    workflow_code: 'UWF-1',
-    first_task_uid: '1eb1599609b8474bbee630925b3603e0',
+    project_code: process.env.NEXT_PUBLIC_PROJECT_CODE || '',
+    workflow_code: process.env.NEXT_PUBLIC_WORKFLOW_CODE || '',
+    first_task_uid: process.env.NEXT_PUBLIC_FIRST_TASK_UID || '',
     file_unique_identifier: '',
     file_name: '', // This will be auto-populated when a file is selected
     file_path: '-',
