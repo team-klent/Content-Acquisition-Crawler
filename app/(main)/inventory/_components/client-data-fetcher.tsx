@@ -1,9 +1,13 @@
 'use client';
 
+import { ChevronLeft, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { useSearchParams } from 'next/navigation';
+import { Card, CardContent, CardHeader, CardTitle, CardDescription } from '@/components/ui/card';
+import { useSearchParams, useRouter } from 'next/navigation';
 import { useEffect, useState } from 'react';
+import { Worker, Viewer } from '@react-pdf-viewer/core';
+import '@react-pdf-viewer/core/lib/styles/index.css';
+
 
 interface FileData {
   id: number;
@@ -25,6 +29,7 @@ export default function ClientDataFetcher() {
   const [fileData, setFileData] = useState<FileData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  const router = useRouter();
   
   useEffect(() => {
     const fetchData = async () => {
@@ -130,62 +135,100 @@ export default function ClientDataFetcher() {
   
 
   return (
-    <div className="container mx-auto py-6">
-      <h1 className="text-2xl font-bold mb-4">{fileData.file_name}</h1>
-      <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <div>
+      <div className='flex items-center mb-4'>
+        <Button
+          variant='outline'
+          size='icon'
+          onClick={() => router.back()}
+          className='cursor-pointer'
+        >
+          <ChevronLeft />
+        </Button>
+        <h2 className='ml-4 text-xl font-semibold'>{fileData.file_name}</h2>
+      </div>
+      <div className="grid grid-cols-4 gap-4">
         {/* PDF Viewer */}
-        <div className="lg:col-span-2">
-            <h1>Dispaly PDF here</h1>
+        <div className='col-span-3 h-[80vh]'>
+          {/* Temporary PDF Viewer Component */}
+          <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.4.120/build/pdf.worker.min.js">
+            <Viewer fileUrl="/pdfs/Get_Started_With_Smallpdf-output.pdf" />;
+          </Worker>
         </div>
-        
         {/* For Metadata Panel  */}
-        <div className="lg:col-span-1">
+        <div className="col-span-1">
           <Card>
             <CardHeader>
-              <CardTitle>File Information</CardTitle>
+              <CardTitle className="flex items-center gap-2">Basic Information</CardTitle>
+              <CardDescription>Details about this document</CardDescription>
             </CardHeader>
-            <CardContent className="space-y-4">
-              <div className="grid grid-cols-1 gap-2">
-                <div className="flex justify-between border-b pb-2">
-                  <span className="font-medium">File Name:</span>
-                  <span>{fileData.file_name}</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="font-medium">Project:</span>
-                  <span>{fileData.project_code} ({fileData.project_name})</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="font-medium">Job:</span>
-                  <span>{fileData.job_name}</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="font-medium">Batch:</span>
-                  <span>{fileData.batch_name}</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="font-medium">Task:</span>
-                  <span>{fileData.task_code} ({fileData.task_name})</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="font-medium">Created:</span>
-                  <span>{new Date(fileData.created_at).toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="font-medium">Updated:</span>
-                  <span>{new Date(fileData.updated_at).toLocaleString()}</span>
-                </div>
-                <div className="flex justify-between border-b pb-2">
-                  <span className="font-medium">File Status:</span>
-                  <span>{fileData.current_file_status}</span>
+            <CardContent className="space-y-4 flex flex-col justify-between">
+              <div className='space-y-6'>
+                <div>
+                  <div className='border rounded-md overflow-hidden'>
+                    <table className='w-full'>
+                      <tbody>
+                        <tr className='border-b'>
+                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                            File Name:
+                          </td>
+                          <td className='px-4 py-2 text-sm'>{fileData.file_name}</td>
+                        </tr>
+                        <tr className='border-b'>
+                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                            Project:
+                          </td>
+                          <td className='px-4 py-2 text-sm'>{fileData.project_code} ({fileData.project_name})</td>
+                        </tr>
+                        <tr className='border-b'>
+                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                            Job:
+                          </td>
+                          <td className='px-4 py-2 text-sm'>{fileData.job_name}</td>
+                        </tr>
+                        <tr className='border-b'>
+                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                            Batch:
+                          </td>
+                          <td className='px-4 py-2 text-sm'>{fileData.batch_name}</td>
+                        </tr>
+                        <tr className='border-b'>
+                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                            Task:
+                          </td>
+                          <td className='px-4 py-2 text-sm'>{fileData.task_name}</td>
+                        </tr>
+                        <tr className='border-b'>
+                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                            Created:
+                          </td>
+                          <td className='px-4 py-2 text-sm'>{new Date(fileData.created_at).toLocaleString()}</td>
+                        </tr>
+                        <tr className='border-b'>
+                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                            Updated:
+                          </td>
+                          <td className='px-4 py-2 text-sm'>{new Date(fileData.updated_at).toLocaleString()}</td>
+                        </tr>
+                        <tr>
+                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                            File Status:
+                          </td>
+                          <td className='px-4 py-2 text-sm'>{fileData.current_file_status}</td>
+                        </tr>
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
               </div>
               
               <div className="mt-4">
                 <Button
-                  className="w-full"
+                  variant='ghost'
+                className='relative cursor-pointer shadow-md ring-1  ring-gray-200 hover:bg-gray-100 w-full'
                   onClick={() => window.open(fileData.download_url, '_blank')}
                 >
-                  Download PDF
+                  <Download /> Download PDF
                 </Button>
               </div>
             </CardContent>
