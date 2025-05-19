@@ -3,7 +3,7 @@ import ClientDataFetcher from './_components/client-data-fetcher';
 
 export default function InventoryPage() {
   return (
-    <div className="container mx-auto">
+    <div className="p-6">
       <ClientDataFetcher />
     </div>
   );
