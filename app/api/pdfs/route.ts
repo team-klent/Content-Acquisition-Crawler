@@ -98,8 +98,6 @@ const POST = async (req: NextRequest) => {
 
     const filePath = requestData.file_path;
 
-    console.log('Request Data:', requestData);
-
     await registerAndUploadFile(requestData, filePath);
 
     return NextResponse.json(requestData, { status: 200 });
