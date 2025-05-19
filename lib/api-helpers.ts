@@ -7,7 +7,14 @@
  * @returns The base path prefix to use
  */
 export function getBasePath(): string {
-  return process.env.NODE_ENV === 'production' ? '/app1' : '';
+  // Check for client-side and server-side environment variables
+  if (typeof window !== 'undefined') {
+    // Client-side
+    return window.location.pathname.startsWith('/app1') ? '/app1' : '';
+  } else {
+    // Server-side
+    return process.env.USE_BASE_PATH === 'true' ? (process.env.BASE_PATH || '/app1') : '';
+  }
 }
 
 /**
