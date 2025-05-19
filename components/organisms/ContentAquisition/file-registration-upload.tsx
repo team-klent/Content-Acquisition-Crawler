@@ -1,5 +1,9 @@
 'use client';
 
+import {
+  registerFileUpload,
+  registerNonFileUpload,
+} from '@/app/(main)/ca/_services/workflow-api';
 import { Button } from '@/components/ui/button';
 import ThreeDotsLoader from '@/components/ui/dots-loader';
 import {
@@ -112,11 +116,7 @@ export default function PdfRegisterButton() {
           'meta_data',
           JSON.stringify(formData.meta_data || { M1: 'V1', M2: 'V2' })
         );
-
-        response = await fetch(`/api/register-job-batch-file`, {
-          method: 'POST',
-          body: formDataToSend, // FormData automatically sets the correct content-type header
-        });
+        response = await registerFileUpload(formDataToSend);
       } else {
         // Use JSON payload for non-file requests
         const payload = {
@@ -130,14 +130,7 @@ export default function PdfRegisterButton() {
           file_path: formData.file_path || '-',
           meta_data: formData.meta_data || { M1: 'V1', M2: 'V2' },
         };
-
-        response = await fetch(`/api/register-job-batch-file`, {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify(payload),
-        });
+        response = await registerNonFileUpload(payload);
       }
 
       try {
