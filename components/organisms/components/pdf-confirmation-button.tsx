@@ -1,5 +1,6 @@
 'use client';
 
+import { registerRowTable } from '@/app/(main)/ca/_services/workflow-api';
 import { Button } from '@/components/ui/button';
 import ThreeDotsLoader from '@/components/ui/dots-loader';
 import { PdfDocument } from '@/lib/pdf-data';
@@ -79,23 +80,9 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
         setLoading(false);
         return;
       }
-
-      const res = await fetch(
-        `${process.env.USE_BASE_PATH === 'true' ? '/ca' : ''}/api/pdfs`,
-        {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({
-            ...requestData,
-          }),
-        }
-      );
-
-      if (!res.ok) {
-        throw new Error('Failed to register PDF');
-      }
+      await registerRowTable({
+        body: requestData,
+      });
 
       toast.success('PDF registered successfully');
     } catch (error) {
