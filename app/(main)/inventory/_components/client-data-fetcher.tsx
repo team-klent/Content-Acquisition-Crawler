@@ -11,6 +11,7 @@ import '@react-pdf-viewer/core/lib/styles/index.css';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import DirectPDFViewer from './direct-pdf-viewer';
+import { getApiUrl } from '@/lib/api-helpers';
 
 interface FileData {
   id: number;
@@ -41,13 +42,12 @@ export default function ClientDataFetcher() {
   
   const getProxiedPdfUrl = (url: string) => {
     try {
-      
-      return `/api/pdf-proxy?url=${encodeURIComponent(url)}`;
+      return `${getApiUrl('/api/pdf-proxy')}?url=${encodeURIComponent(url)}`;
     } catch (e) {
       console.error('Error encoding URL for proxy:', e);
       
       console.warn('Using fallback URL processing method');
-      const base = `/api/pdf-proxy?url=`;
+      const base = `${getApiUrl('/api/pdf-proxy')}?url=`;
       return base + url.replace(/\s/g, '%20');
     }
   };
@@ -69,7 +69,7 @@ export default function ClientDataFetcher() {
           return;
         }
         
-        const apiUrl = `/api/inventory?project_id=${project_id}&job_id=${job_id}&file_id=${file_id}&task_id=${task_id}`;
+        const apiUrl = `${getApiUrl('/api/inventory')}?project_id=${project_id}&job_id=${job_id}&file_id=${file_id}&task_id=${task_id}`;
         
         //Debugging: Log the API request details
         console.log('API Request Info:', {

@@ -1,8 +1,9 @@
+import { getApiUrl } from '@/lib/api-helpers';
+
 const getAllCrawlerData = async () => {
+  const baseUrl = process.env.NEXT_PUBLIC_URL || '';
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}${
-      process.env.NODE_ENV === 'production' ? '/ca' : ''
-    }/api/crawl`,
+    `${baseUrl}${getApiUrl('/api/crawl')}`,
     {
       method: 'GET',
       headers: {
@@ -20,10 +21,9 @@ const getAllCrawlerData = async () => {
 };
 
 const getAllCrawlerDataByLength = async () => {
+  const baseUrl = process.env.NEXT_PUBLIC_URL || '';
   const res = await fetch(
-    `${process.env.NEXT_PUBLIC_URL}${
-      process.env.USE_BASE_PATH === 'true' ? '/ca' : ''
-    }/api/crawl`,
+    `${baseUrl}${getApiUrl('/api/crawl')}`,
     {
       method: 'GET',
       headers: {

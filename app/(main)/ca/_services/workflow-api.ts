@@ -1,6 +1,8 @@
+import { getApiUrl } from '@/lib/api-helpers';
+
 const registerRowTable = async ({ body }) => {
   const res = await fetch(
-    `${process.env.NODE_ENV === 'production' ? '/app1' : ''}/api/pdfs`,
+    getApiUrl('/api/pdfs'),
     {
       method: 'POST',
       headers: {
@@ -21,9 +23,7 @@ const registerRowTable = async ({ body }) => {
 
 const registerFileUpload = async (file) => {
   const res = await fetch(
-    `${
-      process.env.NODE_ENV === 'production' ? '/app1' : ''
-    }/api/register-job-batch-file`,
+    getApiUrl('/api/register-job-batch-file'),
     {
       method: 'POST',
       body: file, // FormData automatically sets the correct content-type header
@@ -39,9 +39,7 @@ const registerFileUpload = async (file) => {
 
 const registerNonFileUpload = async (payload) => {
   const res = await fetch(
-    `${
-      process.env.NODE_ENV === 'production' ? '/app1' : ''
-    }/api/register-job-batch-file`,
+    getApiUrl('/api/register-job-batch-file'),
     {
       method: 'POST',
       headers: {
