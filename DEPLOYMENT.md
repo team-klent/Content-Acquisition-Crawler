@@ -33,8 +33,6 @@ Copy the Nginx configuration file:
 sudo cp /path/to/Content-Acquisition-Crawler/nginx/content-acquisition-crawler.conf /etc/nginx/conf.d/
 ```
 
-Or add the configuration to your existing Nginx site configuration.
-
 3. Test and reload Nginx:
 
 ```bash
@@ -42,11 +40,3 @@ sudo nginx -t
 sudo systemctl reload nginx
 ```
 
-## Troubleshooting
-
-If you still encounter 404 errors:
-
-1. Check the browser console for the full URL of failing requests
-2. Ensure the Next.js server is running: `pm2 status`
-3. Check Next.js logs: `pm2 logs nextjs-app`
-4. Verify Nginx is forwarding requests correctly: `sudo tail -f /var/log/nginx/error.log`
