@@ -79,8 +79,12 @@ export const getTaskOngoingFile = async (params: WorkflowUrlParams): Promise<Wor
   try {
     
     const baseApiUrl = typeof window !== 'undefined' 
-      ? window.process?.env?.NEXT_PUBLIC_IA_API_URL
+      ? window.process?.env?.NEXT_PUBLIC_IA_API_URL || process.env.NEXT_PUBLIC_IA_API_URL
       : process.env.NEXT_PUBLIC_IA_API_URL;
+    
+    if (!baseApiUrl) {
+      throw new Error('Missing NEXT_PUBLIC_IA_API_URL environment variable');
+    }
     
     const apiUrl = `${baseApiUrl}/api/get-task-ongoing-file`;
     
@@ -91,12 +95,17 @@ export const getTaskOngoingFile = async (params: WorkflowUrlParams): Promise<Wor
       file_id: params.file_id || ''
     });
     
-   
+    // Add authorization token
+    const apiToken = typeof window !== 'undefined' 
+      ? window.process?.env?.API_TOKEN || process.env.API_TOKEN
+      : process.env.API_TOKEN;
+    
     const response = await fetch(`${apiUrl}?${queryParams.toString()}`, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiToken}`,
       }
     });
 

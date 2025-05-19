@@ -42,7 +42,10 @@ export default function ClientDataFetcher() {
   
   const getProxiedPdfUrl = (url: string) => {
     try {
-      return `${getApiUrl('/api/pdf-proxy')}?url=${encodeURIComponent(url)}`;
+      // Ensure we have the correct base path for the API url
+      const apiProxyPath = getApiUrl('/api/pdf-proxy');
+      console.log('PDF proxy path:', apiProxyPath);
+      return `${apiProxyPath}?url=${encodeURIComponent(url)}`;
     } catch (e) {
       console.error('Error encoding URL for proxy:', e);
       
@@ -69,13 +72,17 @@ export default function ClientDataFetcher() {
           return;
         }
         
-        const apiUrl = `${getApiUrl('/api/inventory')}?project_id=${project_id}&job_id=${job_id}&file_id=${file_id}&task_id=${task_id}`;
+        // Get the base path and ensure it's correct for the environment
+        const baseApiPath = getApiUrl('/api/inventory');
+        const apiUrl = `${baseApiPath}?project_id=${project_id}&job_id=${job_id}&file_id=${file_id}&task_id=${task_id}`;
         
-        //Debugging: Log the API request details
+        // Debugging: Log the API request details and path construction
         console.log('API Request Info:', {
-          url: apiUrl,
+          basePath: baseApiPath,
+          fullUrl: apiUrl,
           params: { project_id, job_id, file_id, task_id },
-          currentURL: window.location.href
+          currentURL: window.location.href,
+          locationPathname: window.location.pathname
         });
         
         // Check ENV's
