@@ -1,7 +1,5 @@
-import ContentAquisitionPage from '@/components/organisms/ContentAquisition';
+import { redirect } from 'next/navigation';
 
-const MainPage = () => {
-  return <ContentAquisitionPage />;
-};
-
-export default MainPage;
+export default function MainPage() {
+  redirect('/ca');
+}
