@@ -13,6 +13,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
   const [iframeKey, setIframeKey] = useState(Math.random());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [attemptCount, setAttemptCount] = useState(0);
   const [pdfLoadSuccess, setPdfLoadSuccess] = useState(false);
   
@@ -113,11 +114,6 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
         </div>
       )}
       
-      {/* Add a fallback message for debugging */}
-      <div className="text-center text-xs text-gray-500 mb-2">
-        If the PDF doesn't appear below, check the browser console for errors.
-      </div>
-      
       {error && (
         <div className="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center z-10 p-5">
           <div className="bg-red-50 border-l-4 border-red-500 p-4 max-w-lg">
@@ -173,6 +169,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
               setPdfLoadSuccess(true);
             }, 0);
           }}
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           onError={(e) => {
             console.error('PDF iframe load error:', e);
             // The object tag should still work even if the iframe fails

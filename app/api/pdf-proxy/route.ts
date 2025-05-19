@@ -15,7 +15,7 @@ export async function GET(req: NextRequest) {
     
     // Special handling for S3 signed URLs with tokens
     let decodedUrl;
-    let originalUrl = url;
+    const originalUrl = url;
     
     // Specific handling for AWS S3 URLs
     if (url.includes('amazonaws.com')) {
