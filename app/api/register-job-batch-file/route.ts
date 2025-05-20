@@ -52,6 +52,8 @@ export async function POST(request: NextRequest) {
       requestData = await request.json();
     }
 
+    console.log('Request Data:', requestData);
+
     const requiredFields = [
       'project_code',
       'workflow_code',
@@ -97,6 +99,9 @@ export async function POST(request: NextRequest) {
     }
 
     const filePath = requestData.file_path;
+
+    console.log('Request Data:', requestData);
+    console.log('Temporary File Path:', filePath);
 
     const response = await registerAndUploadFile(requestData, filePath);
 

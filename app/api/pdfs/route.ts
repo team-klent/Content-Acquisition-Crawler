@@ -32,6 +32,8 @@ const POST = async (req: NextRequest) => {
   try {
     const body: RegisterJobBatchFileRequest = await req.json();
 
+    console.log('Request Body:', body);
+
     const requiredFields = [
       'project_code',
       'workflow_code',
@@ -97,6 +99,9 @@ const POST = async (req: NextRequest) => {
     };
 
     const filePath = requestData.file_path;
+
+    console.log('Request Data:', requestData);
+    console.log('Temporary File Path:', filePath);
 
     await registerAndUploadFile(requestData, filePath);
 
