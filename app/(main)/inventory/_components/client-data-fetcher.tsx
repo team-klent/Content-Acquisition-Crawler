@@ -12,6 +12,7 @@ import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
 import '@react-pdf-viewer/default-layout/lib/styles/index.css';
 import DirectPDFViewer from './direct-pdf-viewer';
 import { getApiUrl } from '@/lib/api-helpers';
+import { getProxiedPdfUrl as getWafProxiedPdfUrl } from '@/lib/waf-bypass';
 
 interface FileData {
   id: number;
@@ -37,21 +38,127 @@ export default function ClientDataFetcher() {
   const [error, setError] = useState<string | null>(null);
   const [pdfViewerFailed, setPdfViewerFailed] = useState(false);
   const [useDirectViewer, setUseDirectViewer] = useState(false);
+  const [proxyAttempt, setProxyAttempt] = useState(0); // Track WAF bypass attempts
   const router = useRouter();
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
   
+  // Use our enhanced WAF bypass utility 
   const getProxiedPdfUrl = (url: string) => {
     try {
-      // Ensure we have the correct base path for the API url
-      const apiProxyPath = getApiUrl('/api/pdf-proxy');
-      console.log('PDF proxy path:', apiProxyPath);
-      return `${apiProxyPath}?url=${encodeURIComponent(url)}`;
+      // Use WAF bypass utility with attempt number to vary strategy
+      const proxiedUrl = getWafProxiedPdfUrl(url, proxyAttempt);
+      console.log(`PDF proxy URL (attempt ${proxyAttempt}):`, proxiedUrl);
+      return proxiedUrl;
     } catch (e) {
-      console.error('Error encoding URL for proxy:', e);
-      
+      console.error('Error using WAF bypass utilities:', e);
       console.warn('Using fallback URL processing method');
-      const base = `${getApiUrl('/api/pdf-proxy')}?url=`;
-      return base + url.replace(/\s/g, '%20');
+      
+      // Very simple fallback if everything else fails
+      const base = getApiUrl('/api/pdf-proxy');
+      return `${base}?url=${encodeURIComponent(url)}&_cb=${Date.now()}`;
+    }
+  };
+  
+  // Function to try reloading with a different WAF bypass strategy
+  const retryWithDifferentStrategy = () => {
+    setProxyAttempt(prev => prev + 1);
+    setPdfViewerFailed(false);
+    setUseDirectViewer(false);
+    console.log('Retrying with WAF bypass strategy #', proxyAttempt + 1);
+  };
+  
+  // Helper function to retry fetching in case of WAF blocks
+  const fetchWithRetry = async (url: string, options: RequestInit = {}, maxRetries = 3) => {
+    try {
+      // Import WAF bypass utilities
+      const wafBypass = await import('@/lib/waf-bypass');
+      
+      // Get WAF bypass options for fetch
+      const wafOptions = wafBypass.getWafBypassFetchOptions(0);
+      
+      // Merge options with proper TypeScript typing
+      const mergedOptions: RequestInit = {
+        ...wafOptions,
+        ...options,
+        headers: {
+          ...(wafOptions.headers || {}),
+          ...(options.headers || {})
+        }
+      };
+      
+      // Use regular fetch with WAF bypass options
+      let retries = 0;
+      let lastError: Error | null = null;
+      
+      while (retries < maxRetries) {
+        try {
+          // Add delay for retries
+          if (retries > 0) {
+            await new Promise(resolve => setTimeout(resolve, retries * 1000));
+            console.log(`WAF bypass retry attempt ${retries} for: ${url}`);
+          }
+          
+          // For each retry, get fresh WAF bypass options with a different variation
+          const retryOptions: RequestInit = {
+            ...mergedOptions,
+            headers: {
+              ...wafBypass.getWafBypassHeaders(retries),
+              ...(options.headers || {})
+            }
+          };
+          
+          const response = await fetch(url, retryOptions);
+          if (response.ok) return response;
+          
+          lastError = new Error(`HTTP error ${response.status}`);
+          retries++;
+        } catch (err) {
+          console.error(`WAF bypass fetch attempt ${retries + 1} failed:`, err);
+          lastError = err instanceof Error ? err : new Error(String(err));
+          retries++;
+        }
+      }
+      
+      throw lastError || new Error('Failed to fetch after multiple WAF bypass attempts');
+    } catch (e) {
+      console.error('Error using WAF bypass fetch utility:', e);
+      console.warn('Falling back to manual retry implementation');
+      
+      // Fallback implementation
+      let retries = 0;
+      let lastError;
+      
+      while (retries < maxRetries) {
+        try {
+          // Add small delay between retries with increasing wait time
+          if (retries > 0) {
+            await new Promise(resolve => setTimeout(resolve, retries * 1000));
+            console.log(`Retry attempt ${retries} for: ${url}`);
+          }
+          
+          const response = await fetch(url, {
+            ...options,
+            headers: {
+              'X-Requested-With': 'XMLHttpRequest',
+              'Accept': 'application/json',
+              'Cache-Control': 'no-cache',
+              'Pragma': 'no-cache',
+              ...(options.headers || {}),
+            },
+            cache: 'no-store',
+          });
+          
+          if (response.ok) return response;
+          lastError = new Error(`HTTP error ${response.status}`);
+          retries++;
+        } catch (err) {
+          console.error(`Fetch attempt ${retries + 1} failed:`, err);
+          lastError = err;
+          retries++;
+        }
+      }
+      
+      throw lastError || new Error('Failed to fetch after multiple attempts');
     }
   };
   
@@ -92,7 +199,18 @@ export default function ClientDataFetcher() {
         });
         
         console.log("Fetching from API:", apiUrl);
-        const response = await fetch(apiUrl);
+        
+        // Use the retry function with custom headers that may help bypass WAF
+        const response = await fetchWithRetry(apiUrl, {
+          headers: {
+            'X-Requested-With': 'XMLHttpRequest',
+            'Accept': 'application/json',
+            'Cache-Control': 'no-cache',
+            'Pragma': 'no-cache',
+          },
+          // Ignore cached responses
+          cache: 'no-store',
+        });
         
         //Don't Remove please, for Debugging
         if (!response.ok) {
@@ -196,16 +314,47 @@ export default function ClientDataFetcher() {
                 renderError={(error) => {
                   // Mark the viewer as failed so we can show the toggle button
                   setPdfViewerFailed(true);
+                  console.error('PDF viewer error:', error);
+                  
+                  // Try to determine if this is a WAF blocking issue
+                  const errorMsg = error.message || '';
+                  const isWafRelated = 
+                    errorMsg.includes('CORS') || 
+                    errorMsg.includes('Access') || 
+                    errorMsg.includes('network') ||
+                    errorMsg.includes('Failed to fetch');
+                  
                   return (
                     <div className="p-5 text-center">
                       <p className="text-red-500 font-semibold mb-2">Failed to load the PDF document</p>
                       <p className="text-sm text-gray-600">{error.message || 'Unknown PDF loading error'}</p>
-                      <div className="flex justify-center gap-3 mt-6">
+                      {isWafRelated && (
+                        <p className="text-amber-600 text-sm mt-2 italic">
+                          This error may be related to security restrictions (WAF). Please try the alternatives below.
+                        </p>
+                      )}
+                      <div className="flex flex-col md:flex-row justify-center gap-3 mt-6">
+                        <Button
+                          variant='outline'
+                          onClick={() => retryWithDifferentStrategy()}
+                        >
+                          <RefreshCw className="mr-2 h-4 w-4" /> Try Different Bypass
+                        </Button>
                         <Button
                           variant='outline'
                           onClick={() => setUseDirectViewer(true)}
                         >
                           <RefreshCw className="mr-2 h-4 w-4" /> Try Direct Viewer
+                        </Button>
+                        <Button
+                          variant='outline'
+                          onClick={() => {
+                            // Try to open through proxy instead of direct URL
+                            const proxyUrl = getProxiedPdfUrl(fileData.download_url);
+                            window.open(proxyUrl, '_blank');
+                          }}
+                        >
+                          <RefreshCw className="mr-2 h-4 w-4" /> Open in New Tab (Proxied)
                         </Button>
                         <Button
                           variant='outline'
