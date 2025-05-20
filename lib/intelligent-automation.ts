@@ -88,6 +88,9 @@ export async function registerJobBatchFile(
       body: JSON.stringify(payload),
     });
 
+    console.log('Response:', response);
+    console.log('Response Headers:', response.headers);
+
     if (!response.ok) {
       const contentType = response.headers.get('content-type');
       let errorDetails = '';
@@ -157,6 +160,8 @@ export async function registerAndUploadFile(
       registrationPayload
     );
 
+    console.log('Registration Response:', registrationResponse);
+
     // Validate the response before stepping to the next stage
     if (typeof registrationResponse.file_output_path !== 'string') {
       throw new Error('file_output_path is not a valid string');
@@ -209,6 +214,9 @@ export async function uploadFileToS3(
   uploadUrl: string
 ): Promise<FileUploadResponse> {
   try {
+    console.log('File Path:', filePath);
+    console.log('Upload URL:', uploadUrl);
+
     // Import fs module for file operations
     const fs = await import('fs');
 
