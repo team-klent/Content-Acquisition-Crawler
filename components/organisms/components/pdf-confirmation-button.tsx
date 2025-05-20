@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from '@radix-ui/react-popover';
 import { Eye, FileText } from 'lucide-react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -95,7 +95,6 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   };
 
   const router = useRouter();
-  const pathname = usePathname();
 
   const handlePdfViewer = () => {
     const params = new URLSearchParams({
@@ -110,7 +109,7 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
       createdBy: String(pdf.createdBy),
       updatedAt: String(pdf.updatedAt),
     });
-    router.push(`${pathname}/pdf?${params.toString()}`);
+    router.push(`/pdf?${params.toString()}`);
   };
 
   return (
