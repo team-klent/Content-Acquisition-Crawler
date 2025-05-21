@@ -87,8 +87,8 @@ export async function registerJobBatchFile(
       },
       body: JSON.stringify(payload),
     });
-    console.info("Response from registerJobBatchFile")
-    console.info(response)
+    console.dir("Response from registerJobBatchFile")
+    console.dir(response)
     if (!response.ok) {
       const contentType = response.headers.get('content-type');
       let errorDetails = '';
@@ -226,8 +226,8 @@ export async function uploadFileToS3(
       method: 'PUT',
       body: fileContent,
     });
-    console.info("Response from uploadFileToS3")
-    console.info(response)
+    console.dir("Response from uploadFileToS3")
+    console.dir(response)
     if (!response.ok) {
       throw new Error(
         `Failed to upload file: ${response.status} ${response.statusText}`
@@ -291,8 +291,8 @@ export async function updateFileStatus(
       },
       body: JSON.stringify(payload),
     });
-    console.info("Response from updateFileStatus")
-    console.info(response)
+    console.dir("Response from updateFileStatus")
+    console.dir(response)
     if (!response.ok) {
       const contentType = response.headers.get('content-type');
       let errorDetails = '';
