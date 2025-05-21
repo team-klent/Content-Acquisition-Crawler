@@ -20,17 +20,14 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
  
   const getProxiedPdfUrl = (url: string) => {
     try {
-      // Add randomization and cache-busting to bypass WAF pattern detection
       const timestamp = Date.now();
       const randomId = Math.floor(Math.random() * 1000000);
       
-      // Create varied query params that will help bypass WAF
       const queryParams = new URLSearchParams();
       queryParams.append('url', url);
       queryParams.append('_r', randomId.toString(36));
       queryParams.append('_t', timestamp.toString());
       
-      // Randomize query parameter order to avoid pattern detection
       const extraParams = [
         ['_mode', 'direct'],
         ['_xhr', 'true'],
@@ -39,7 +36,6 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
         ['_accept', 'application/pdf']
       ];
       
-      // Shuffle the extra params and add them
       extraParams
         .sort(() => Math.random() - 0.5)
         .forEach(([key, value]) => queryParams.append(key, value));
@@ -48,7 +44,6 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
     } catch (e) {
       console.error('Error encoding URL for proxy:', e);
       
-      // Fallback method if encoding fails completely
       const base = `/api/pdf-proxy?url=`;
       return base + encodeURIComponent(url);
     }
@@ -66,11 +61,9 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
   const proxiedUrl = getProxiedPdfUrl(pdfUrl);
   console.log('DirectPDFViewer using URL:', proxiedUrl);
 
-  // Create a fallback component that uses object tag instead of iframe
-  // Add a ref for the object element
+  
   const objectRef = useRef<HTMLObjectElement>(null);
   
-  // Create effect to handle object load events with WAF bypass strategies
   useEffect(() => {
     const handleObjectLoad = () => {
       console.log('PDF object loaded');
@@ -96,12 +89,10 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
       objectElement.addEventListener('load', handleObjectLoad);
       objectElement.addEventListener('error', handleObjectError);
       
-      // Auto-hide loading after a timeout to ensure PDF has a chance to load
-      // Use a longer timeout for initial load to give more time to bypass WAF
       const timeoutId = setTimeout(() => {
         setIsLoading(false);
         
-        // If we still don't have success after timeout, check if PDF actually loaded
+        
         if (!pdfLoadSuccess && attemptCount < 2) {
           console.log(`Timeout reached, trying different approach (attempt: ${attemptCount + 1})`);
           setIframeKey(Math.random()); // Force reload with new URL parameters

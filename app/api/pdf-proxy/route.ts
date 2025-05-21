@@ -25,17 +25,15 @@ export async function GET(req: NextRequest) {
        
         decodedUrl = decodeURIComponent(url);
         
-        // If it contains X-Amz-Signature, we need to be extra careful
+       
         if (url.includes('X-Amz-Signature=')) {
           console.log('URL contains X-Amz-Signature token, preserving exact signature format');
           
-          // Most common cause of errors is the token being malformed during processing
-          // First, preserve the exact token format from the original URL
+          
           const origSigMatch = url.match(/X-Amz-Signature=([^&]+)/);
           const decodedSigMatch = decodedUrl.match(/X-Amz-Signature=([^&]+)/);
           
           if (origSigMatch && decodedSigMatch && origSigMatch[1] !== decodedSigMatch[1]) {
-            // Replace the decoded signature with the original one
             decodedUrl = decodedUrl.replace(
               `X-Amz-Signature=${decodedSigMatch[1]}`, 
               `X-Amz-Signature=${origSigMatch[1]}`
@@ -43,12 +41,9 @@ export async function GET(req: NextRequest) {
             console.log('Fixed signature mismatch in URL');
           }
           
-          // Also check X-Amz-Security-Token if present (common source of issues)
           if (url.includes('X-Amz-Security-Token=')) {
             console.log('URL contains Security Token, preserving exact format');
             
-            // Security tokens are often very long and can get mangled in processing
-            // Use the original token from the URL rather than the decoded one
             const origTokenMatch = url.match(/X-Amz-Security-Token=([^&]+)/);
             const decodedTokenMatch = decodedUrl.match(/X-Amz-Security-Token=([^&]+)/);
             
@@ -62,7 +57,6 @@ export async function GET(req: NextRequest) {
             }
           }
           
-          // For InvalidToken errors, sometimes it's best to use the original URL
           if (decodedUrl.includes('IQoJb3JpZ') && url.includes('IQoJb3JpZ')) {
             console.log('Detected JWT-style security token, using original URL format');
             // Use original URL to avoid any token mangling
@@ -197,12 +191,9 @@ export async function GET(req: NextRequest) {
       console.warn('Could not extract filename from URL or headers:', e);
     }
     
-    // Check for WAF bypass mode in the request
     const bypassMode = req.nextUrl.searchParams.get('_mode') || 'standard';
     const bypassHeaders: Record<string, string> = {};
     
-    // Add randomized non-standard headers based on the bypass mode
-    // This helps defeat pattern-based WAF blocking
     if (bypassMode === 'direct' || bypassMode === 'stream') {
       bypassHeaders['X-Stream-Type'] = 'document';
       bypassHeaders['X-Document-Type'] = 'pdf';
