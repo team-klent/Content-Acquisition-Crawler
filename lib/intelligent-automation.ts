@@ -87,7 +87,7 @@ export async function registerJobBatchFile(
       },
       body: JSON.stringify(payload),
     });
-    console.dir("Response from registerJobBatchFile")
+    console.dir(`${new Date().toISOString()} - Response from registerJobBatchFile`)
     console.dir(response)
     if (!response.ok) {
       const contentType = response.headers.get('content-type');
@@ -226,7 +226,7 @@ export async function uploadFileToS3(
       method: 'PUT',
       body: fileContent,
     });
-    console.dir("Response from uploadFileToS3")
+    console.dir(`${new Date().toISOString()} - Response from uploadFileToS3`)
     console.dir(response)
     if (!response.ok) {
       throw new Error(
@@ -291,7 +291,7 @@ export async function updateFileStatus(
       },
       body: JSON.stringify(payload),
     });
-    console.dir("Response from updateFileStatus")
+    console.dir(`${new Date().toISOString()} - Response from updateFileStatus`)
     console.dir(response)
     if (!response.ok) {
       const contentType = response.headers.get('content-type');
