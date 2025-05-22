@@ -88,7 +88,7 @@ export async function registerJobBatchFile(
       body: JSON.stringify(payload),
     });
     console.dir(`${new Date().toISOString()} - Response from registerJobBatchFile`)
-    console.dir(response)
+    console.dir(response.body)
     if (!response.ok) {
       const contentType = response.headers.get('content-type');
       let errorDetails = '';
