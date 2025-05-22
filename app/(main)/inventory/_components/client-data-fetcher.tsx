@@ -255,61 +255,59 @@ export default function ClientDataFetcher() {
               <CardDescription>Details about this document</CardDescription>
             </CardHeader>
             <CardContent className="space-y-4 flex flex-col justify-between">
-              <div className='space-y-6'>
-                <div className='border rounded-md overflow-hidden'>
-                  <table className='w-full'>
-                    <tbody>
-                      <tr className='border-b'>
-                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                          File Name:
-                        </td>
-                        <td className='px-4 py-2 text-sm'>{fileData.file_name}</td>
-                      </tr>
-                      <tr className='border-b'>
-                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                          Project:
-                        </td>
-                        <td className='px-4 py-2 text-sm'>{fileData.project_code} {fileData.project_name && `(${fileData.project_name})`}</td>
-                      </tr>
-                      <tr className='border-b'>
-                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                          Job:
-                        </td>
-                        <td className='px-4 py-2 text-sm'>{fileData.job_name}</td>
-                      </tr>
-                      <tr className='border-b'>
-                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                          Batch:
-                        </td>
-                        <td className='px-4 py-2 text-sm'>{fileData.batch_name}</td>
-                      </tr>
-                      <tr className='border-b'>
-                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                          Task:
-                        </td>
-                        <td className='px-4 py-2 text-sm'>{fileData.task_name}</td>
-                      </tr>
-                      <tr className='border-b'>
-                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                          Created:
-                        </td>
-                        <td className='px-4 py-2 text-sm'>{new Date(fileData.created_at).toLocaleString()}</td>
-                      </tr>
-                      <tr className='border-b'>
-                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                          Updated:
-                        </td>
-                        <td className='px-4 py-2 text-sm'>{new Date(fileData.updated_at).toLocaleString()}</td>
-                      </tr>
-                      <tr>
-                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                          File Status:
-                        </td>
-                        <td className='px-4 py-2 text-sm'>{fileData.current_file_status || 'Unknown'}</td>
-                      </tr>
-                    </tbody>
-                  </table>
-                </div>
+              <div className='border rounded-md overflow-hidden'>
+                <table className='table-fixed w-full'>
+                  <tbody>
+                    <tr className='border-b w-full'>
+                      <td className='px-4 py-2 bg-gray-100 font-medium text-sm w-1/4'>
+                        File Name:
+                      </td>
+                      <td className='px-4 py-2 text-sm wrap-break-word wrap-break-word w-3/4'>{fileData.file_name}</td>
+                    </tr>
+                    <tr className='border-b'>
+                      <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                        Project:
+                      </td>
+                      <td className='px-4 py-2 text-sm wrap-break-word'>{fileData.project_code} {fileData.project_name && `(${fileData.project_name})`}</td>
+                    </tr>
+                    <tr className='border-b'>
+                      <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                        Job:
+                      </td>
+                      <td className='px-4 py-2 text-sm wrap-break-word'>{fileData.job_name}</td>
+                    </tr>
+                    <tr className='border-b'>
+                      <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                        Batch:
+                      </td>
+                      <td className='px-4 py-2 text-sm wrap-break-word'>{fileData.batch_name}</td>
+                    </tr>
+                    <tr className='border-b'>
+                      <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                        Task:
+                      </td>
+                      <td className='px-4 py-2 text-sm wrap-break-word'>{fileData.task_name}</td>
+                    </tr>
+                    <tr className='border-b'>
+                      <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                        Created:
+                      </td>
+                      <td className='px-4 py-2 text-sm wrap-break-word'>{new Date(fileData.created_at).toLocaleString()}</td>
+                    </tr>
+                    <tr className='border-b'>
+                      <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                        Updated:
+                      </td>
+                      <td className='px-4 py-2 text-sm wrap-break-word'>{new Date(fileData.updated_at).toLocaleString()}</td>
+                    </tr>
+                    <tr>
+                      <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                        File Status:
+                      </td>
+                      <td className='px-4 py-2 text-sm wrap-break-word'>{fileData.current_file_status || 'Unknown'}</td>
+                    </tr>
+                  </tbody>
+                </table>
               </div>
             </CardContent>
           </Card>
