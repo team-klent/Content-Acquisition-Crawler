@@ -197,7 +197,7 @@ export default function ClientDataFetcher() {
                   // Mark the viewer as failed so we can show the toggle button
                   setPdfViewerFailed(true);
                   return (
-                    <div className="p-5 text-center">
+                    <div className="p-5 text-center break-words whitespace-normal">
                       <p className="text-red-500 font-semibold mb-2">Failed to load the PDF document</p>
                       <p className="text-sm text-gray-600">{error.message || 'Unknown PDF loading error'}</p>
                       <div className="flex justify-center gap-3 mt-6">
@@ -256,72 +256,60 @@ export default function ClientDataFetcher() {
             </CardHeader>
             <CardContent className="space-y-4 flex flex-col justify-between">
               <div className='space-y-6'>
-                <div>
-                  <div className='border rounded-md overflow-hidden'>
-                    <table className='w-full'>
-                      <tbody>
-                        <tr className='border-b'>
-                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                            File Name:
-                          </td>
-                          <td className='px-4 py-2 text-sm'>{fileData.file_name}</td>
-                        </tr>
-                        <tr className='border-b'>
-                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                            Project:
-                          </td>
-                          <td className='px-4 py-2 text-sm'>{fileData.project_code} {fileData.project_name && `(${fileData.project_name})`}</td>
-                        </tr>
-                        <tr className='border-b'>
-                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                            Job:
-                          </td>
-                          <td className='px-4 py-2 text-sm'>{fileData.job_name}</td>
-                        </tr>
-                        <tr className='border-b'>
-                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                            Batch:
-                          </td>
-                          <td className='px-4 py-2 text-sm'>{fileData.batch_name}</td>
-                        </tr>
-                        <tr className='border-b'>
-                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                            Task:
-                          </td>
-                          <td className='px-4 py-2 text-sm'>{fileData.task_name}</td>
-                        </tr>
-                        <tr className='border-b'>
-                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                            Created:
-                          </td>
-                          <td className='px-4 py-2 text-sm'>{new Date(fileData.created_at).toLocaleString()}</td>
-                        </tr>
-                        <tr className='border-b'>
-                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                            Updated:
-                          </td>
-                          <td className='px-4 py-2 text-sm'>{new Date(fileData.updated_at).toLocaleString()}</td>
-                        </tr>
-                        <tr>
-                          <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
-                            File Status:
-                          </td>
-                          <td className='px-4 py-2 text-sm'>{fileData.current_file_status || 'Unknown'}</td>
-                        </tr>
-                      </tbody>
-                    </table>
-                  </div>
+                <div className='border rounded-md overflow-hidden'>
+                  <table className='w-full'>
+                    <tbody>
+                      <tr className='border-b'>
+                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          File Name:
+                        </td>
+                        <td className='px-4 py-2 text-sm'>{fileData.file_name}</td>
+                      </tr>
+                      <tr className='border-b'>
+                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          Project:
+                        </td>
+                        <td className='px-4 py-2 text-sm'>{fileData.project_code} {fileData.project_name && `(${fileData.project_name})`}</td>
+                      </tr>
+                      <tr className='border-b'>
+                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          Job:
+                        </td>
+                        <td className='px-4 py-2 text-sm'>{fileData.job_name}</td>
+                      </tr>
+                      <tr className='border-b'>
+                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          Batch:
+                        </td>
+                        <td className='px-4 py-2 text-sm'>{fileData.batch_name}</td>
+                      </tr>
+                      <tr className='border-b'>
+                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          Task:
+                        </td>
+                        <td className='px-4 py-2 text-sm'>{fileData.task_name}</td>
+                      </tr>
+                      <tr className='border-b'>
+                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          Created:
+                        </td>
+                        <td className='px-4 py-2 text-sm'>{new Date(fileData.created_at).toLocaleString()}</td>
+                      </tr>
+                      <tr className='border-b'>
+                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          Updated:
+                        </td>
+                        <td className='px-4 py-2 text-sm'>{new Date(fileData.updated_at).toLocaleString()}</td>
+                      </tr>
+                      <tr>
+                        <td className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          File Status:
+                        </td>
+                        <td className='px-4 py-2 text-sm'>{fileData.current_file_status || 'Unknown'}</td>
+                      </tr>
+                    </tbody>
+                  </table>
                 </div>
-              </div>
-              
-              <div className="mt-4">
-                <Button
-                  variant='ghost'
-                  className='relative cursor-pointer shadow-md ring-1 ring-gray-200 hover:bg-gray-100 w-full'
-                  onClick={() => window.open(fileData.download_url, '_blank')}
-                >
-                  <Download className="mr-2" /> Download PDF
-                </Button>
               </div>
             </CardContent>
           </Card>
