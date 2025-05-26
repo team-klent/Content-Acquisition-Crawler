@@ -18,14 +18,20 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 interface FileData {
-  id: number;
+  id: number | string;
   file_name: string;
   file_path: string;
   created_at: string;
   updated_at: string;
-  project_name?: string;
   current_file_status?: string;
-  [key: string]: any;
+
+  // Optional fields for the metadata table
+  project_code?: string;
+  project_name?: string;
+  job_name?: string;
+  batch_name?: string;
+  task_name?: string;
+  download_url?: string;
 }
 
 export default function ContentAcquisitionPDFViewer({
