@@ -229,7 +229,7 @@ export async function uploadFileToS3(
       body: fileContent,
     });
     console.dir(`${new Date().toISOString()} - Response from uploadFileToS3`)
-    console.dir(url)
+    console.dir(uploadUrl)
     console.dir(response)
     if (!response.ok) {
       throw new Error(
