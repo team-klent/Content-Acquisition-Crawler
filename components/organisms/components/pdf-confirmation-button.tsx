@@ -95,19 +95,14 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   };
 
   const router = useRouter();
-
   const handlePdfViewer = () => {
     const params = new URLSearchParams({
-      id: pdf.id,
-      title: pdf.title,
-      fileName: pdf.filename,
-      path: pdf.path,
-      size: (pdf.size ?? 0).toString(),
-      type: pdf.type,
-      createdAt: String(pdf.createdAt),
-      isActive: pdf.isActive ? 'true' : 'false',
-      createdBy: String(pdf.createdBy),
-      updatedAt: String(pdf.updatedAt),
+      id: String(pdf.id),
+      file_name: pdf.filename,
+      file_path: pdf.path,
+      created_at: String(pdf.createdAt),
+      updated_at: String(pdf.updatedAt),
+      current_file_status: pdf.isActive ? 'active' : 'inactive',
     });
     router.push(`/pdf?${params.toString()}`);
   };
