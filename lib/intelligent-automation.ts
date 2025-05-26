@@ -77,17 +77,18 @@ export async function registerJobBatchFile(
         payload.file_name
       }-${Date.now()}`;
     }
-
+    const token = process.env.API_TOKEN!;
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.API_TOKEN!}`,
+        Authorization: `Bearer ${token}`,
       },
       body: JSON.stringify(payload),
     });
     console.dir(`${new Date().toISOString()} - Response from registerJobBatchFile`)
+    console.log('token used : ', token)
     console.dir(url)
     console.dir(response.body)
     if (!response.ok) {
@@ -228,6 +229,7 @@ export async function uploadFileToS3(
       body: fileContent,
     });
     console.dir(`${new Date().toISOString()} - Response from uploadFileToS3`)
+    console.dir(url)
     console.dir(response)
     if (!response.ok) {
       throw new Error(
@@ -293,6 +295,7 @@ export async function updateFileStatus(
       body: JSON.stringify(payload),
     });
     console.dir(`${new Date().toISOString()} - Response from updateFileStatus`)
+    console.dir(url)
     console.dir(response)
     if (!response.ok) {
       const contentType = response.headers.get('content-type');
