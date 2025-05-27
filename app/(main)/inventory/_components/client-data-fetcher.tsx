@@ -242,7 +242,8 @@ export default function ClientDataFetcher() {
         // This helps bypass S3 authentication issues
         
       } catch (err) {
-        setError(err instanceof Error ? err.message : 'Unknown error occurred');
+        //setError(err instanceof Error ? err.message : 'Unknown error occurred');
+        setError('Fucking Error')
         console.error('Error fetching file data:', err);
       } finally {
         setLoading(false);
