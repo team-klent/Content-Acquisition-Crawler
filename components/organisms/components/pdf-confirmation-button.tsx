@@ -11,7 +11,7 @@ import {
   PopoverTrigger,
 } from '@radix-ui/react-popover';
 import { Eye, FileText } from 'lucide-react';
-import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { useState } from 'react';
 import { toast } from 'sonner';
 
@@ -94,34 +94,36 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
     }
   };
 
-  const router = useRouter();
+  const params = new URLSearchParams({
+    id: pdf.id,
+    title: pdf.title,
+    fileName: pdf.filename,
+    path: pdf.path,
+    size: (pdf.size ?? 0).toString(),
+    type: pdf.type,
+    createdAt: String(pdf.createdAt),
+    isActive: pdf.isActive ? 'true' : 'false',
+    createdBy: String(pdf.createdBy),
+    updatedAt: String(pdf.updatedAt),
+  });
 
-  const handlePdfViewer = () => {
-    const params = new URLSearchParams({
-      id: pdf.id,
-      title: pdf.title,
-      fileName: pdf.filename,
-      path: pdf.path,
-      size: (pdf.size ?? 0).toString(),
-      type: pdf.type,
-      createdAt: String(pdf.createdAt),
-      isActive: pdf.isActive ? 'true' : 'false',
-      createdBy: String(pdf.createdBy),
-      updatedAt: String(pdf.updatedAt),
-    });
-    router.push(`/pdf?${params.toString()}`);
-  };
+  const isLocalhost =
+    typeof window !== 'undefined' && window.location.hostname === 'localhost';
+
+  const basePath = isLocalhost
+    ? ''
+    : process.env.NEXT_PUBLIC_PRODUCTION_BASEPATH;
 
   return (
     <div className='flex space-x-2 '>
-      <Button
-        variant='ghost'
-        size='icon'
-        onClick={handlePdfViewer}
-        title='View PDF'
-        className='cursor-pointer'
-      >
-        <Eye className='h-4 w-4' />
+      <Button asChild>
+        <Link
+          href={`${basePath}/pdf?${params.toString()}`}
+          className='cursor-pointer bg-white shadow-none hover:bg-accent hover:opacity-80'
+          title='View PDF'
+        >
+          <Eye className='h-4 w-4 stroke-black hover:bg-none' />
+        </Link>
       </Button>
       <Popover open={open} onOpenChange={setOpen}>
         <PopoverTrigger

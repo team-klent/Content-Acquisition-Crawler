@@ -13,6 +13,8 @@ module.exports = {
         FAST_REFRESH: 'false',
         API_TOKEN: process.env.API_TOKEN || '',
         NEXT_PUBLIC_IA_API_URL: process.env.NEXT_PUBLIC_IA_API_URL || '',
+        NEXT_PUBLIC_PRODUCTION_BASEPATH:
+          'https://unifiedworkflow.innodata.com/app1',
       },
     },
   ],
