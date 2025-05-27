@@ -26,6 +26,6 @@ echo "🛑 Stopping existing PM2 process..."
 pm2 stop 0
 
 echo "🚀 Starting app with PM2..."
-pm2 start npm --name "app1" -- start
+pm2 start npm --name "Content-Aqcuisition-Crawler" -- start
 
 echo "✅ Deployment complete."

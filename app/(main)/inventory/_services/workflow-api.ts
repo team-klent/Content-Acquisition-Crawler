@@ -75,7 +75,7 @@ interface WorkflowTaskResponse {
 }
 
 
-export const getTaskOngoingFile = async (params: WorkflowUrlParams): Promise<WorkflowTaskResponse> => {
+export const getTaskOngoingFiles = async (params: WorkflowUrlParams): Promise<WorkflowTaskResponse> => {
   try {
     
     const baseApiUrl = typeof window !== 'undefined' 
@@ -100,6 +100,10 @@ export const getTaskOngoingFile = async (params: WorkflowUrlParams): Promise<Wor
       ? window.process?.env?.API_TOKEN || process.env.API_TOKEN
       : process.env.API_TOKEN;
     
+
+
+    console.log('apiToken:', apiToken);
+
     const response = await fetch(`${apiUrl}?${queryParams.toString()}`, {
       method: 'GET',
       headers: {

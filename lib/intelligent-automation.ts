@@ -78,12 +78,14 @@ export async function registerJobBatchFile(
       }-${Date.now()}`;
     }
 
+    console.log("API Token:", process.env.API_TOKEN);
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.API_TOKEN!}`,
+        Authorization: `Bearer ${process.env.API_TOKEN}`,
       },
       body: JSON.stringify(payload),
     });

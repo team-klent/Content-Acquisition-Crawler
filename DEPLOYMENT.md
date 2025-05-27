@@ -2,7 +2,7 @@
 
 ## Environment Variables
 
-Make sure to set these environment variables in your production environment:
+The application uses a `.env.production` file for environment variables in production. This file should already be properly configured with settings like:
 
 ```
 NODE_ENV=production
@@ -22,7 +22,7 @@ NEXT_PUBLIC_IA_API_URL=your_intelligent_automation_api_url_here
 cd /path/to/Content-Acquisition-Crawler
 npm install
 npm run build
-pm2 start ecosystem.config.js
+pm2 start npm --name "nextjs-app" -- start
 ```
 
 2. Nginx Configuration:
