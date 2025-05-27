@@ -33,6 +33,10 @@ export async function GET(request: NextRequest) {
     
     const fullUrl = `${url}?${queryParams.toString()}`;
     
+    const token = process.env.API_TOKEN;
+
+    console.log(token)
+    
     const response = await fetch(fullUrl, {
       method: 'GET',
       headers: {
