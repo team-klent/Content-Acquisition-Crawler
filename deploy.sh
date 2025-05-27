@@ -1,27 +1,31 @@
 #!/bin/bash
-# Deploy script for Content Acquisition Crawler
 
-echo "Deploying Content Acquisition Crawler..."
+# Script to update and restart Next.js app using PM2
 
-# Install dependencies
-echo "Installing dependencies..."
+# Optional: define app directory
+APP_DIR="/home/ubuntu/apps/Content-Aqcuisition-Crawler"
+
+# Navigate to app directory
+cd "$APP_DIR" || {
+  echo "❌ Failed to change directory to $APP_DIR"
+  exit 1
+}
+
+echo "📥 Pulling latest changes from Git..."
+git pull
+
+echo "🛠 Building the app..."
 npm install
-
-# Build the application
-echo "Building application..."
 npm run build
 
-# Start or restart the application with PM2
-if pm2 list | grep -q "nextjs-app"; then
-  echo "Restarting application with PM2..."
-  pm2 restart nextjs-app
-else
-  echo "Starting application with PM2..."
-  pm2 start ecosystem.config.js
-fi
+echo "Flushing old PM2 logs..."
+pm2 flush
 
-echo "Deployment complete!"
-echo "Check application status with: pm2 status"
-echo ""
-echo "If this is your first deployment, don't forget to configure Nginx!"
-echo "See DEPLOYMENT.md for more details."
+
+echo "🛑 Stopping existing PM2 process..."
+pm2 stop 0
+
+echo "🚀 Starting app with PM2..."
+pm2 start npm --name "app1" -- start
+
+echo "✅ Deployment complete."
