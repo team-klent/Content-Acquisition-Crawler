@@ -22,7 +22,7 @@ NEXT_PUBLIC_IA_API_URL=your_intelligent_automation_api_url_here
 cd /path/to/Content-Acquisition-Crawler
 npm install
 npm run build
-pm2 start npm --name "nextjs-app" -- start
+pm2 start npm --name "content-acquisition-crawler" -- start
 ```
 
 2. Nginx Configuration:

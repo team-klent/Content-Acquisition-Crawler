@@ -18,8 +18,15 @@ echo "🛠 Building the app..."
 npm install
 npm run build
 
-echo "Flushing old PM2 logs..."
-pm2 flush
+# Start or restart the application with PM2
+if pm2 list | grep -q "content-acquisition-crawler"; then
+  echo "Restarting application with PM2..."
+  pm2 restart content-acquisition-crawler
+else
+  echo "Starting application with PM2..."
+  # Using ecosystem config file for proper environment variables including PORT
+  pm2 start ecosystem.config.js --env production
+fi
 
 
 echo "🛑 Stopping existing PM2 process..."
