@@ -12,12 +12,13 @@ echo "Building application..."
 npm run build
 
 # Start or restart the application with PM2
-if pm2 list | grep -q "nextjs-app"; then
+if pm2 list | grep -q "content-acquisition-crawler"; then
   echo "Restarting application with PM2..."
-  pm2 restart nextjs-app
+  pm2 restart content-acquisition-crawler
 else
   echo "Starting application with PM2..."
-  pm2 start npm --name "nextjs-app" -- start
+  # Using ecosystem config file for proper environment variables including PORT
+  pm2 start ecosystem.config.js --env production
 fi
 
 echo "Deployment complete!"
