@@ -7,7 +7,7 @@ module.exports = {
       env_development: {
         NODE_ENV: "development",
         PORT: 3000,
-        USE_BASE_PATH: "false",
+        USE_BASE_PATH: false,
         FAST_REFRESH: true
       },
       env_production: {
@@ -20,7 +20,7 @@ module.exports = {
       },
       watch: false,
       instances: 1,
-      exec_mode: "fork",
+      exec_mode: "fork", // Using fork mode instead of cluster
       autorestart: true,
       exp_backoff_restart_delay: 100
     }
