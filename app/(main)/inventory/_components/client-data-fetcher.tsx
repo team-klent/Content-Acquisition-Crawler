@@ -77,7 +77,7 @@ export default function ClientDataFetcher() {
         const apiUrl = `${baseApiPath}?project_id=${project_id}&job_id=${job_id}&file_id=${file_id}&task_id=${task_id}`;
         
         // Debugging: Log the API request details and path construction
-        console.log('API Request Info:', {
+        console.log('TEST API Request Info:', {
           basePath: baseApiPath,
           fullUrl: apiUrl,
           params: { project_id, job_id, file_id, task_id },
@@ -92,6 +92,10 @@ export default function ClientDataFetcher() {
         });
         
         console.log("Fetching from API:", apiUrl);
+
+        // const apiTest = 'https://unifiedworkflow.innodata.com/api/inventory?project_id=1&job_id=1&file_id=33&task_id=2'
+        // const response = await fetch(apiTest);
+
         const response = await fetch(apiUrl);
         
         //Don't Remove please, for Debugging
@@ -111,6 +115,7 @@ export default function ClientDataFetcher() {
         }
         
         const data = await response.json();
+        console.log('API Response Data:', data);
         
         // Check for API-level errors
         if (!data.status || data.error) {

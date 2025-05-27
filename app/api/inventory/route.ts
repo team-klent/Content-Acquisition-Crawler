@@ -30,7 +30,7 @@ export async function GET(request: NextRequest) {
       job_id: job_id,
       file_id: file_id
     });
-    
+
     const fullUrl = `${url}?${queryParams.toString()}`;
     
     const response = await fetch(fullUrl, {
@@ -54,6 +54,9 @@ export async function GET(request: NextRequest) {
     }
     
     const data = await response.json();
+
+
+    console.log("Data received from external API:", data);
     
     if (!data) {
       console.error('Empty response from external API');
@@ -79,11 +82,11 @@ export async function GET(request: NextRequest) {
       }, { status: 500 });
     }
     
-    // Return the successful response
-    return NextResponse.json(data);
     return NextResponse.json(data);
   } catch (error) {
-    console.error('Error in inventory API route:', error);
+    
+    console.error('Error in inventory API route:', error instanceof Error ? error.message : 'Unknown error');
+    
     return NextResponse.json(
       { error: 'Internal server error' }, 
       { status: 500 }

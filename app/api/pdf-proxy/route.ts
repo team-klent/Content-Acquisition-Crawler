@@ -19,7 +19,7 @@ export async function GET(req: NextRequest) {
     
     // Specific handling for AWS S3 URLs
     if (url.includes('amazonaws.com')) {
-      console.log('Detected S3 URL, using special handling for signed URLs...');
+      // console.log('Detected S3 URL, using special handling for signed URLs...');
       
       try {
        
@@ -27,7 +27,7 @@ export async function GET(req: NextRequest) {
         
         // If it contains X-Amz-Signature, we need to be extra careful
         if (url.includes('X-Amz-Signature=')) {
-          console.log('URL contains X-Amz-Signature token, preserving exact signature format');
+          // console.log('URL contains X-Amz-Signature token, preserving exact signature format');
           
           // Most common cause of errors is the token being malformed during processing
           // First, preserve the exact token format from the original URL
@@ -40,12 +40,12 @@ export async function GET(req: NextRequest) {
               `X-Amz-Signature=${decodedSigMatch[1]}`, 
               `X-Amz-Signature=${origSigMatch[1]}`
             );
-            console.log('Fixed signature mismatch in URL');
+            // console.log('Fixed signature mismatch in URL');
           }
           
           // Also check X-Amz-Security-Token if present (common source of issues)
           if (url.includes('X-Amz-Security-Token=')) {
-            console.log('URL contains Security Token, preserving exact format');
+            // console.log('URL contains Security Token, preserving exact format');
             
             // Security tokens are often very long and can get mangled in processing
             // Use the original token from the URL rather than the decoded one
@@ -58,13 +58,13 @@ export async function GET(req: NextRequest) {
                 `X-Amz-Security-Token=${decodedTokenMatch[1]}`, 
                 `X-Amz-Security-Token=${origTokenMatch[1]}`
               );
-              console.log('Fixed security token mismatch in URL');
+              // console.log('Fixed security token mismatch in URL');
             }
           }
           
           // For InvalidToken errors, sometimes it's best to use the original URL
           if (decodedUrl.includes('IQoJb3JpZ') && url.includes('IQoJb3JpZ')) {
-            console.log('Detected JWT-style security token, using original URL format');
+            // console.log('Detected JWT-style security token, using original URL format'); 
             // Use original URL to avoid any token mangling
             decodedUrl = url;
           }
@@ -81,7 +81,7 @@ export async function GET(req: NextRequest) {
     
     // Log only part of the URL for security (redact sensitive parts)
     const urlForLogging = decodedUrl.split('?')[0];
-    console.log(`Proxying PDF request for: ${urlForLogging}`);
+    // console.log(`Proxying PDF request for: ${urlForLogging}`);
     
     // For AWS S3 signed URLs, we need special handling
     let response;
@@ -159,7 +159,7 @@ export async function GET(req: NextRequest) {
     
     // Check the content type of the response
     const contentType = response.headers.get('content-type');
-    console.log(`PDF proxy received content-type: ${contentType}`);
+    // console.log(`PDF proxy received content-type: ${contentType}`);
     
     // Extract filename for content disposition header
     let filename = 'document.pdf';
@@ -201,16 +201,16 @@ export async function GET(req: NextRequest) {
     });
     
   } catch (error) {
-    console.error(`PDF proxy error:`, error);
+    // console.error(`PDF proxy error:`, error);
     
     // Extract error information
     const errorMessage = error instanceof Error ? error.message : 'Failed to proxy PDF file';
       
     // Log additional debug information
-    console.error('PDF proxy debug info:', {
-      errorType: error instanceof Error ? error.constructor.name : typeof error,
-      errorStack: error instanceof Error ? error.stack : null,
-    });
+    // console.error('PDF proxy debug info:', {
+    //   errorType: error instanceof Error ? error.constructor.name : typeof error,
+    //   errorStack: error instanceof Error ? error.stack : null,
+    // });
     
     return NextResponse.json(
       { 

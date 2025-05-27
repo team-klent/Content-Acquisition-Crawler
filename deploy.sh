@@ -17,7 +17,7 @@ if pm2 list | grep -q "nextjs-app"; then
   pm2 restart nextjs-app
 else
   echo "Starting application with PM2..."
-  pm2 start ecosystem.config.js
+  pm2 start npm --name "nextjs-app" -- start
 fi
 
 echo "Deployment complete!"
