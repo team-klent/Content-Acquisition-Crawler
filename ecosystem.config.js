@@ -6,6 +6,8 @@ module.exports = {
       args: 'start',
       exec_mode: 'fork',
       port: 3000, 
+      log: './logs/content-acquisition-crawler.log',
+      log_date_format: 'YYYY-MM-DD HH:mm:ss',
       env: {
         NODE_ENV: 'development',
         PORT: 3000,
