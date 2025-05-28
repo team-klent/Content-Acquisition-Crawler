@@ -109,11 +109,13 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
       createdBy: String(pdf.createdBy),
       updatedAt: String(pdf.updatedAt),
     });
-    
-    // Handle basePath for client-side routing
-    const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-    const basePath = isLocalhost ? '' : '/app1';
-    router.push(`${basePath}/pdf?${params.toString()}`);
+
+    // Handle basePath for client-side routing -- removed for now for temporary fix in vercel
+    // const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
+    // const basePath = isLocalhost ? '' : '/app1';
+    // router.push(`${basePath}/pdf?${params.toString()}`);
+
+    router.push(`/pdf?${params.toString()}`);
   };
 
   return (
