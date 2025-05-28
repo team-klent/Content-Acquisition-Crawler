@@ -119,7 +119,7 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
     <div className='flex space-x-2 '>
       <Button asChild>
         <Link
-          href={`/app1/pdf?${params.toString()}`}
+          href={`/pdf?${params.toString()}`}
           className='cursor-pointer bg-white shadow-none hover:bg-accent hover:opacity-80'
           title='View PDF'
         >

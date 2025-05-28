@@ -9,7 +9,7 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { ChevronLeft } from 'lucide-react';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { usePathname, useRouter, useSearchParams } from 'next/navigation';
 import PDFObject from 'pdfobject';
 import { useEffect, useRef } from 'react';
 
@@ -28,9 +28,12 @@ export default function PdfView() {
   const createdBy = searchParams.get('createdBy');
   const updatedAt = searchParams.get('updatedAt');
 
+  
+  const editedPath =`/app1${path}`
+
   useEffect(() => {
     if (containerRef.current && path) {
-      PDFObject.embed(path, containerRef.current, {
+      PDFObject.embed(editedPath, containerRef.current, {
         height: '800px',
         pdfOpenParams: {
           view: 'FitV',
