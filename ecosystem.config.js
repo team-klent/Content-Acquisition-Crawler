@@ -1,4 +1,6 @@
-module.exports = {
+require('dotenv').config({ path: './.env' });
+const apiToken = process.env.API_TOKEN  || '';
+const config = {
   apps: [
     {
       name: 'content-acquisition-crawler',
@@ -15,8 +17,8 @@ module.exports = {
         BASE_PATH: '/app1',
         NEXT_PUBLIC_URL: 'https://unifiedworkflow.innodata.com/app1',
         FAST_REFRESH: 'false',
-        API_TOKEN: process.env.API_TOKEN || '',
-        NEXT_PUBLIC_IA_API_URL: process.env.NEXT_PUBLIC_IA_API_URL || '',
+        API_TOKEN: apiToken,
+        NEXT_PUBLIC_IA_API_URL: process.env.NEXT_PUBLIC_IA_API_URL,
         NEXT_PUBLIC_PRODUCTION_BASEPATH:
           'https://unifiedworkflow.innodata.com/app1',
       },
@@ -27,11 +29,12 @@ module.exports = {
         BASE_PATH: '/app1',
         NEXT_PUBLIC_URL: 'https://unifiedworkflow.innodata.com/app1',
         FAST_REFRESH: 'false',
-        API_TOKEN: process.env.API_TOKEN || '',
-        NEXT_PUBLIC_IA_API_URL: process.env.NEXT_PUBLIC_IA_API_URL || '',
+        API_TOKEN: apiToken,
+        NEXT_PUBLIC_IA_API_URL: process.env.NEXT_PUBLIC_IA_API_URL,
         NEXT_PUBLIC_PRODUCTION_BASEPATH:
           'https://unifiedworkflow.innodata.com/app1',
       },
     },
   ],
-};
+}
+module.exports = config;
