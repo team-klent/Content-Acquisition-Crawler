@@ -12,6 +12,7 @@ git pull
 echo "🔧 Configuring Nginx..."
 sudo cp /nginx/content-acquisition-crawler.conf /etc/nginx/conf.d/content-acquisition-crawler.conf
 sudo systemctl reload nginx
+echo "🔧 Nginx reloaded"
 
 echo "🛠 Building the app..."
 npm install
@@ -21,19 +22,9 @@ echo "Building application..."
 npm run build
 
 # Start or restart the application with PM2
-if pm2 list | grep -q "content-acquisition-crawler"; then
-  echo "Restarting application with PM2..."
-  pm2 restart content-acquisition-crawler
-else
-  echo "Starting application with PM2..."
-  # Using ecosystem config file for proper environment variables including PORT
-  pm2 start ecosystem.config.js --env production
-fi
 
-
-
-echo "🛑 Stopping existing PM2 process..."
-pm2 stop 0
+echo "🛑 Deleting existing PM2 process..."
+pm2 delete all
 
 echo "🚀 Starting app with PM2..."
 pm2 start npm --name "content-acquisition-crawler" -- start ecosystem.config.js --env production
