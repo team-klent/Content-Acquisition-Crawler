@@ -1,7 +1,7 @@
 module.exports = {
   apps: [
     {
-      name: 'nextjs-app',
+      name: 'content-acquisition-crawler',
       script: 'npm',
       args: 'start',
       exec_mode: 'fork',
