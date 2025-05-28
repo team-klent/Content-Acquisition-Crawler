@@ -25,7 +25,7 @@ const defaultConfiguration = {
   workflow_code: process.env.NEXT_PUBLIC_WORKFLOW_CODE || '',
   first_task_uid: process.env.NEXT_PUBLIC_FIRST_TASK_UID || '',
   file_unique_identifier: '',
-  file_name: '', // This will be auto-populated when a file is selected
+  file_name: '',
   file_path: '-',
   meta_data: { ...defaultMetadata },
 };
@@ -33,14 +33,7 @@ const defaultConfiguration = {
 const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [basePath, setBasePath] = useState(process.env.NEXT_PUBLIC_PRODUCTION_BASEPATH || '');
   
-  useEffect(() => {
-    // Check if we're on localhost only after component mounts (client-side)
-    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
-      setBasePath('');
-    }
-  }, []);
 
   const handleRegister = async () => {
     setLoading(true);
