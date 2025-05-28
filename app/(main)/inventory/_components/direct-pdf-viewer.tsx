@@ -19,33 +19,16 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
   
  
   const getProxiedPdfUrl = (url: string) => {
+    
+   
     try {
-      const timestamp = Date.now();
-      const randomId = Math.floor(Math.random() * 1000000);
-      
-      const queryParams = new URLSearchParams();
-      queryParams.append('url', url);
-      queryParams.append('_r', randomId.toString(36));
-      queryParams.append('_t', timestamp.toString());
-      
-      const extraParams = [
-        ['_mode', 'direct'],
-        ['_xhr', 'true'],
-        ['_fmt', 'embed'],
-        ['_agent', 'iframe'],
-        ['_accept', 'application/pdf']
-      ];
-      
-      extraParams
-        .sort(() => Math.random() - 0.5)
-        .forEach(([key, value]) => queryParams.append(key, value));
-      
-      return `/api/pdf-proxy?${queryParams.toString()}`;
+      return `/api/pdf-proxy?url=${encodeURIComponent(url)}`;
     } catch (e) {
       console.error('Error encoding URL for proxy:', e);
       
+      // Fallback method if encoding fails completely
       const base = `/api/pdf-proxy?url=`;
-      return base + encodeURIComponent(url);
+      return base + url.replace(/\s/g, '%20');
     }
   };
   
@@ -61,9 +44,11 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
   const proxiedUrl = getProxiedPdfUrl(pdfUrl);
   console.log('DirectPDFViewer using URL:', proxiedUrl);
 
-  
+  // Create a fallback component that uses object tag instead of iframe
+  // Add a ref for the object element
   const objectRef = useRef<HTMLObjectElement>(null);
   
+  // Create effect to handle object load events
   useEffect(() => {
     const handleObjectLoad = () => {
       console.log('PDF object loaded');
@@ -74,14 +59,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
     };
     
     const handleObjectError = () => {
-      console.error('PDF object load error - likely WAF blocked');
-      setAttemptCount(prev => prev + 1);
-      
-      // If we fail, try a different approach by regenerating the URL with different params
-      if (attemptCount < 2) {
-        console.log(`Retry attempt ${attemptCount + 1} with different parameters`);
-        setIframeKey(Math.random()); // Force reload with new random params
-      }
+      console.error('PDF object load error');
     };
     
     const objectElement = objectRef.current;
@@ -89,16 +67,10 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
       objectElement.addEventListener('load', handleObjectLoad);
       objectElement.addEventListener('error', handleObjectError);
       
+      // Auto-hide loading after a timeout to ensure PDF has a chance to load
       const timeoutId = setTimeout(() => {
         setIsLoading(false);
-        
-        
-        if (!pdfLoadSuccess && attemptCount < 2) {
-          console.log(`Timeout reached, trying different approach (attempt: ${attemptCount + 1})`);
-          setIframeKey(Math.random()); // Force reload with new URL parameters
-          setAttemptCount(prev => prev + 1);
-        }
-      }, attemptCount === 0 ? 5000 : 2500); // Longer initial timeout, shorter for retries
+      }, 2500);
       
       return () => {
         objectElement.removeEventListener('load', handleObjectLoad);
@@ -106,7 +78,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
         clearTimeout(timeoutId);
       };
     }
-  }, [proxiedUrl, attemptCount, pdfLoadSuccess]);
+  }, [proxiedUrl]);
 
   const renderPdfWithObjectTag = () => {
     return (
