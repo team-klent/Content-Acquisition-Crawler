@@ -12,7 +12,7 @@ import {
 } from '@radix-ui/react-popover';
 import { Eye, FileText } from 'lucide-react';
 import Link from 'next/link';
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 const defaultMetadata = {
@@ -33,6 +33,14 @@ const defaultConfiguration = {
 const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const [basePath, setBasePath] = useState(process.env.NEXT_PUBLIC_PRODUCTION_BASEPATH || '');
+  
+  useEffect(() => {
+    // Check if we're on localhost only after component mounts (client-side)
+    if (typeof window !== 'undefined' && window.location.hostname === 'localhost') {
+      setBasePath('');
+    }
+  }, []);
 
   const handleRegister = async () => {
     setLoading(true);
@@ -106,13 +114,6 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
     createdBy: String(pdf.createdBy),
     updatedAt: String(pdf.updatedAt),
   });
-
-  const isLocalhost =
-    typeof window !== 'undefined' && window.location.hostname === 'localhost';
-
-  const basePath = isLocalhost
-    ? ''
-    : process.env.NEXT_PUBLIC_PRODUCTION_BASEPATH;
 
   return (
     <div className='flex space-x-2 '>
