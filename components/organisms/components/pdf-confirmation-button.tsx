@@ -33,7 +33,7 @@ const defaultConfiguration = {
 const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
-  const [basePath, setBasePath] = useState(process.env.NEXT_PUBLIC_PRODUCTION_BASEPATH || '');
+  const [basePath, setBasePath] = useState(process.env.NEXT_PUBLIC_PRODUCTION_BASEPATH || '/app1');
   
   useEffect(() => {
     // Check if we're on localhost only after component mounts (client-side)
