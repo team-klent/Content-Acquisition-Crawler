@@ -13,14 +13,12 @@ import {
   TableRow,
 } from '@/components/ui/table';
 import { ChevronLeft, ChevronRight } from 'lucide-react';
-import { TableSelection } from './previous-inventory/_components/table-selection';
 
 const Loader = async () => {
   return (
     <div className='container mx-auto py-4'>
       <div className='container mx-auto bg-white border rounded-md'>
         <div className='bg-white border rounded-md '>
-          <TableSelection />
           <Table>
             <TableHeader>
               <TableRow>
