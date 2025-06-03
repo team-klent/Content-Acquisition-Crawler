@@ -1,19 +1,25 @@
 'use client';
 
+import TableCard from '@/components/shared/table-card';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 import { pdfDocuments } from '@/lib/pdf-data';
 import { PdfTable } from '../components/pdf-table';
 import PdfRegisterButton from './file-registration-upload';
 
 export default function ContentAquisitionPage() {
   return (
-    <div className='container mx-auto py-8'>
-      <div className='flex justify-between items-center mb-6'>
-        <h1 className='text-2xl font-bold'>Content Acquisition</h1>
-        <div className='flex gap-2'>
-          <PdfRegisterButton />
+    <>
+      <TableCard>
+        <div className='flex px-5 mb-5 justify-between items-center '>
+          <h1 className='text-xl  font-normal font-league'>
+            Content Acquisition
+          </h1>
+          <div className='flex gap-2'>
+            <PdfRegisterButton />
+          </div>
         </div>
-      </div>
-      {/* 
+        {/* 
       {error && (
         <div
           className='bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4'
@@ -24,9 +30,30 @@ export default function ContentAquisitionPage() {
         </div>
       )} */}
 
-      <div className='bg-white rounded-lg shadow p-4'>
         <PdfTable documents={pdfDocuments} />
-      </div>
-    </div>
+        <div className='flex px-5 pt-3 justify-between items-center '>
+          <p className='text-normal font-light'>
+            Showing {pdfDocuments.length} of {pdfDocuments.length} entries
+          </p>
+          <div className='flex items-center gap-1'>
+            <Button variant='ghost' className='cursor-pointer' disabled>
+              Previous
+            </Button>
+            <Button variant='ghost' className='cursor-pointer' disabled>
+              Next
+            </Button>
+            <p className='pl-6  text-gray-500 text-sm'>Show:</p>
+            <Input
+              type='number'
+              defaultValue={10}
+              className='w-16'
+              min={1}
+              max={100}
+              disabled
+            />
+          </div>
+        </div>
+      </TableCard>
+    </>
   );
 }

@@ -36,7 +36,7 @@ export const columns: ColumnDef<PdfDocument>[] = [
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='uppercase'
+          className='  text-black font-league font-[400] text-sm tracking-wide cursor-pointer'
         >
           Title
           <ArrowUpDown className='ml-2 h-4 w-4' />
@@ -57,7 +57,7 @@ export const columns: ColumnDef<PdfDocument>[] = [
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='uppercase'
+          className='  text-black font-league font-[400] text-sm tracking-wide cursor-pointer'
         >
           Filename
           <ArrowUpDown className='ml-2 h-4 w-4' />
@@ -73,7 +73,7 @@ export const columns: ColumnDef<PdfDocument>[] = [
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='uppercase'
+          className='  text-black font-league font-[400] text-sm tracking-wide cursor-pointer'
         >
           Type
           <ArrowUpDown className='ml-2 h-4 w-4' />
@@ -91,7 +91,7 @@ export const columns: ColumnDef<PdfDocument>[] = [
         <Button
           variant='ghost'
           onClick={() => column.toggleSorting(column.getIsSorted() === 'asc')}
-          className='uppercase'
+          className='  text-black font-league font-[400] text-sm tracking-wide cursor-pointer'
         >
           Date Added
           <ArrowUpDown className='ml-2 h-4 w-4' />

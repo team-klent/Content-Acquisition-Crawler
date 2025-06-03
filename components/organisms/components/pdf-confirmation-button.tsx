@@ -10,7 +10,7 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from '@radix-ui/react-popover';
-import { Eye, FileText } from 'lucide-react';
+import { Eye, FileUp } from 'lucide-react';
 import { useRouter } from 'next/navigation';
 import { useState } from 'react';
 import { toast } from 'sonner';
@@ -134,7 +134,7 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
           onClick={() => setOpen(!open)}
           className='cursor-pointer hover:bg-accent hover:text-accent-foreground h-9 px-4 py-2'
         >
-          <FileText className='h-4 w-4' />
+          <FileUp className='h-4 w-4' />
         </PopoverTrigger>
         <PopoverContent className=' p-4 w-fit border-2 *:border-gray-300 bg-white flex flex-col items-center gap-2 rounded-md '>
           <p>Do you want to register this file ?</p>
