@@ -28,6 +28,10 @@ export default function PdfView() {
   const createdBy = searchParams.get('createdBy');
   const updatedAt = searchParams.get('updatedAt');
 
+  // Make adjustment for the path for to be embed for this pdf
+  // Example in ec2 path should be like this: /app1/path
+  // Outside of ec2 path should be like this: /path
+
   useEffect(() => {
     if (containerRef.current && path) {
       PDFObject.embed(path, containerRef.current, {
