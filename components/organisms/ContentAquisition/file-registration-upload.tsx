@@ -32,6 +32,27 @@ export default function PdfRegisterButton() {
     meta_data: { ...defaultMetadata },
   };
 
+  // Sample test for chel
+
+  //  const defaultConfiguration = {
+  //   project_code: 'TEMPLATE',
+  //   workflow_code: 'TEMPLATE',
+  //   first_task_uid: 'f06f8323a59c44019a5a491dda939a9f',
+  //   file_unique_identifier: '',
+  //   file_name: '', // This will be auto-populated when a file is selected
+  //   file_path: '-',
+  //   workflow_id: 2,
+  //   project_id: 2,
+  //   meta_data: { ...defaultMetadata },
+  // };
+  // project_id=2
+  // project_code=TEMPLATE
+  // workflow_id=2
+  // workflow_code=TEMPLATE
+  // task_id=9
+  // task_uid=f06f8323a59c44019a5a491dda939a9f
+  // user_id=
+
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
