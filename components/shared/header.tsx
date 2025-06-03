@@ -10,6 +10,7 @@ const Header = ({ children }: Readonly<{ children?: React.ReactNode }>) => {
         width={176}
         height={40}
       />
+      {children}
     </div>
   );
 };
