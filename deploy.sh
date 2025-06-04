@@ -23,6 +23,6 @@ echo "🛑 Deleting existing PM2 process..."
 pm2 delete all
 pm2 flush
 echo "🚀 Starting app with PM2..."
-PORT=3000 pm2 start npm --name "content-acquisition-crawler" -- start ecosystem.config.js --env production
+PORT=3000 pm2 start npm --name "content-acquisition-crawler" -- start ecosystem.config.js --env production --update-env
 
 echo "✅ Deployment complete."
