@@ -13,7 +13,8 @@ import {
   TooltipTrigger,
 } from '@/components/ui/tooltip';
 import { Upload } from 'lucide-react';
-import { ChangeEvent, useRef, useState } from 'react';
+import { useSearchParams } from 'next/navigation';
+import { ChangeEvent, useRef, useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 export default function PdfRegisterButton() {
@@ -21,37 +22,40 @@ export default function PdfRegisterButton() {
     M1: 'V1',
     M2: 'V2',
   };
+  
+  const searchParams = useSearchParams();
+  
+  // Extract parameters from URL
+  const project_id = searchParams.get('project_id') || '';
+  const project_code = searchParams.get('project_code') || '';
+  const workflow_id = searchParams.get('workflow_id') || '';
+  const workflow_code = searchParams.get('workflow_code') || '';
+  const task_id = searchParams.get('task_id') || '';
+  const task_uid = searchParams.get('task_uid') || '';
+  const user_id = searchParams.get('user_id') || '';
+  
+  // Enhanced debugging - log all query parameters
+  useEffect(() => {
+    searchParams.forEach((value, key) => {
+      console.log(`${key}: ${value}`);
+    });
+    
+  }, [searchParams]);
 
   const defaultConfiguration = {
-    project_code: process.env.NEXT_PUBLIC_PROJECT_CODE || '',
-    workflow_code: process.env.NEXT_PUBLIC_WORKFLOW_CODE || '',
-    first_task_uid: process.env.NEXT_PUBLIC_FIRST_TASK_UID || '',
+    project_code: project_code,
+    workflow_code: workflow_code,
+    first_task_uid: task_uid,
     file_unique_identifier: '',
-    file_name: '', // This will be auto-populated when a file is selected
+    file_name: '', 
     file_path: '-',
+    project_id: project_id || '',
+    workflow_id: workflow_id || '',
     meta_data: { ...defaultMetadata },
   };
 
-  // Sample test for chel
-
-  //  const defaultConfiguration = {
-  //   project_code: 'TEMPLATE',
-  //   workflow_code: 'TEMPLATE',
-  //   first_task_uid: 'f06f8323a59c44019a5a491dda939a9f',
-  //   file_unique_identifier: '',
-  //   file_name: '', // This will be auto-populated when a file is selected
-  //   file_path: '-',
-  //   workflow_id: 2,
-  //   project_id: 2,
-  //   meta_data: { ...defaultMetadata },
-  // };
-  // project_id=2
-  // project_code=TEMPLATE
-  // workflow_id=2
-  // workflow_code=TEMPLATE
-  // task_id=9
-  // task_uid=f06f8323a59c44019a5a491dda939a9f
-  // user_id=
+  useEffect(() => {
+  }, [defaultConfiguration]);
 
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -82,27 +86,6 @@ export default function PdfRegisterButton() {
       return;
     }
 
-    // Make sure all required fields are filled
-    const requiredFields = [
-      { field: 'project_code', label: 'Project Code' },
-      { field: 'workflow_code', label: 'Workflow Code' },
-      { field: 'first_task_uid', label: 'Content Acquisition Task UID' },
-    ];
-
-    const missingField = requiredFields.find(
-      ({ field }) =>
-        !formData[field as keyof typeof formData] ||
-        (typeof formData[field as keyof typeof formData] === 'string' &&
-          (formData[field as keyof typeof formData] as string).trim() === '')
-    );
-
-    if (missingField) {
-      toast.error(
-        `${missingField.label} is required. Please fill it out before proceeding.`
-      );
-      setLoading(false);
-      return;
-    }
 
     if (fileInputRef.current?.files && fileInputRef.current.files.length > 0) {
       toast.info(
@@ -110,13 +93,11 @@ export default function PdfRegisterButton() {
           fileInputRef.current.files[0].size / 1024
         ).toFixed(1)} KB)`
       );
-    }
-
-    try {
+    }      try {
       let response;
       let data;
-
-      // If we have a selected file, use FormData for multipart upload
+      
+     
       if (file) {
         // Create FormData object for file upload
         const formDataToSend = new FormData();
@@ -124,6 +105,15 @@ export default function PdfRegisterButton() {
         formDataToSend.append('project_code', formData.project_code);
         formDataToSend.append('workflow_code', formData.workflow_code);
         formDataToSend.append('first_task_uid', formData.first_task_uid);
+        
+        // Add project_id and workflow_id if available
+        if (formData.project_id) {
+          formDataToSend.append('project_id', formData.project_id);
+        }
+        
+        if (formData.workflow_id) {
+          formDataToSend.append('workflow_id', formData.workflow_id);
+        }
 
         if (formData.file_unique_identifier) {
           formDataToSend.append(
@@ -131,15 +121,22 @@ export default function PdfRegisterButton() {
             formData.file_unique_identifier
           );
         }
-
-        // Convert meta_data object to JSON string
         formDataToSend.append(
           'meta_data',
           JSON.stringify(formData.meta_data || { M1: 'V1', M2: 'V2' })
         );
+        
+  
+        if (project_id) {
+          formDataToSend.set('project_id', project_id);
+        }
+        
+        if (workflow_id) {
+          formDataToSend.set('workflow_id', workflow_id);
+        }
+        
         response = await registerFileUpload(formDataToSend);
       } else {
-        // Use JSON payload for non-file requests
         const payload = {
           project_code: formData.project_code,
           workflow_code: formData.workflow_code,
@@ -149,6 +146,8 @@ export default function PdfRegisterButton() {
             formData.file_unique_identifier ||
             `file-uid-${formData.file_name}-${Date.now()}`,
           file_path: formData.file_path || '-',
+          project_id: formData.project_id || '',
+          workflow_id: formData.workflow_id || '',
           meta_data: formData.meta_data || { M1: 'V1', M2: 'V2' },
         };
         response = await registerNonFileUpload(payload);

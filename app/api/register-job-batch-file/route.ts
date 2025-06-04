@@ -31,6 +31,10 @@ export async function POST(request: NextRequest) {
         );
       }
 
+      const rawProjectId = formData.get('project_id');
+      const rawWorkflowId = formData.get('workflow_id');
+  
+      
       requestData = {
         project_code: formData.get('project_code') as string,
         workflow_code: formData.get('workflow_code') as string,
@@ -39,6 +43,8 @@ export async function POST(request: NextRequest) {
           (formData.get('file_unique_identifier') as string) || '',
         file_name: file.name,
         file_path: '',
+        project_id: rawProjectId ? String(rawProjectId) : '',
+        workflow_id: rawWorkflowId ? String(rawWorkflowId) : '',
         meta_data: JSON.parse((formData.get('meta_data') as string) || '{}'),
       };
 
@@ -99,9 +105,6 @@ export async function POST(request: NextRequest) {
     }
 
     const filePath = requestData.file_path;
-
-    console.log('Request Data:', requestData);
-    console.log('Temporary File Path:', filePath);
 
     const response = await registerAndUploadFile(requestData, filePath);
 

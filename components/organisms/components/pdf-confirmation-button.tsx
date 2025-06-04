@@ -11,8 +11,8 @@ import {
   PopoverTrigger,
 } from '@radix-ui/react-popover';
 import { Eye, FileText } from 'lucide-react';
-import { useRouter } from 'next/navigation';
-import { useState } from 'react';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
 
 const defaultMetadata = {
@@ -20,23 +20,66 @@ const defaultMetadata = {
   M2: 'V2',
 };
 
-const defaultConfiguration = {
-  project_code: process.env.NEXT_PUBLIC_PROJECT_CODE || '',
-  workflow_code: process.env.NEXT_PUBLIC_WORKFLOW_CODE || '',
-  first_task_uid: process.env.NEXT_PUBLIC_FIRST_TASK_UID || '',
-  file_unique_identifier: '',
-  file_name: '', // This will be auto-populated when a file is selected
-  file_path: '-',
-  meta_data: { ...defaultMetadata },
-};
-
 const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   const [open, setOpen] = useState(false);
   const [loading, setLoading] = useState(false);
+  const searchParams = useSearchParams();
+
+  // Extract parameters from URL
+  const project_id = searchParams.get('project_id') || '';
+  const project_code = searchParams.get('project_code') || '';
+  const workflow_id = searchParams.get('workflow_id') || '';
+  const workflow_code = searchParams.get('workflow_code') || '';
+  const task_id = searchParams.get('task_id') || '';
+  const task_uid = searchParams.get('task_uid') || '';
+  const user_id = searchParams.get('user_id') || '';
+
+  // Debug logging for URL parameters
+  useEffect(() => {
+    console.log('URL Parameters in PdfConfirmationButton:', {
+      project_id,
+      project_code,
+      workflow_id,
+      workflow_code,
+      task_id,
+      task_uid,
+      user_id,
+    });
+  }, [
+    project_id,
+    project_code,
+    workflow_id,
+    workflow_code,
+    task_id,
+    task_uid,
+    user_id,
+  ]);
+
+  // Create configuration based on URL parameters with fallback to environment variables
+  const defaultConfiguration = {
+    project_code: project_code,
+    workflow_code: workflow_code,
+    first_task_uid: task_uid,
+    file_unique_identifier: '',
+    file_name: '', // This will be auto-populated when a file is selected
+    file_path: '-',
+    project_id: project_id || '',
+    workflow_id: workflow_id || '',
+    meta_data: { ...defaultMetadata },
+  };
 
   const handleRegister = async () => {
     setLoading(true);
     try {
+      // Log URL parameters and configuration before registering
+      console.log('Using URL parameters:', {
+        project_id,
+        project_code,
+        workflow_id,
+        workflow_code,
+        task_uid
+      });
+      
       const requestData = {
         ...defaultConfiguration,
         file_name: pdf.filename,
@@ -44,6 +87,8 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
         file_path: pdf.path,
         meta_data: { ...defaultMetadata },
       };
+      
+      console.log('Final request data:', requestData);
 
       // Make sure all required fields are filled
       const requiredFields = [

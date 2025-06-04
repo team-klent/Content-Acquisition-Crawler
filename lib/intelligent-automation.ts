@@ -5,6 +5,8 @@ export interface RegisterJobBatchFileRequest {
   file_unique_identifier?: string;
   file_name: string;
   file_path: string;
+  project_id?: string;
+  workflow_id?: string;
   meta_data: Record<string, string>;
 }
 
@@ -54,19 +56,7 @@ export async function registerJobBatchFile(
       'first_task_uid',
       'file_name',
     ];
-    const missingFields = requiredFields.filter(
-      (field) =>
-        !payload[field as keyof RegisterJobBatchFileRequest] ||
-        (typeof payload[field as keyof RegisterJobBatchFileRequest] ===
-          'string' &&
-          (
-            payload[field as keyof RegisterJobBatchFileRequest] as string
-          ).trim() === '')
-    );
-
-    if (missingFields.length > 0) {
-      throw new Error(`Missing required fields: ${missingFields.join(', ')}`);
-    }
+   
 
     if (!payload.file_path) {
       payload.file_path = '-';
@@ -78,8 +68,13 @@ export async function registerJobBatchFile(
       }-${Date.now()}`;
     }
 
-    console.log("API Token:", process.env.API_TOKEN);
-
+    const enhancedPayload = {
+      ...payload,
+      project_id: payload.project_id || '',
+      workflow_id: payload.workflow_id || ''
+    };
+    
+  
     const response = await fetch(url, {
       method: 'POST',
       headers: {
@@ -87,12 +82,10 @@ export async function registerJobBatchFile(
         'Content-Type': 'application/json',
         Authorization: `Bearer ${process.env.API_TOKEN}`,
       },
-      body: JSON.stringify(payload),
+      body: JSON.stringify(enhancedPayload),
     });
-
-    console.log('Response:', response);
-    console.log('Response Headers:', response.headers);
-
+    
+ 
     if (!response.ok) {
       const contentType = response.headers.get('content-type');
       let errorDetails = '';
