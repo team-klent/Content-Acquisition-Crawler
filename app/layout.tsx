@@ -1,16 +1,8 @@
+import Header from '@/components/shared/header';
 import { type Metadata } from 'next';
-import { Geist, Geist_Mono } from 'next/font/google';
 import { Toaster } from 'sonner';
-
-const geistSans = Geist({
-  variable: '--font-geist-sans',
-  subsets: ['latin'],
-});
-
-const geistMono = Geist_Mono({
-  variable: '--font-geist-mono',
-  subsets: ['latin'],
-});
+import { leagueSpartan } from './fonts';
+import './globals.css';
 
 export const metadata: Metadata = {
   title: 'Content Acquisition ',
@@ -25,9 +17,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang='en'>
-      <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-      >
+      <body className={`${leagueSpartan.className}  antialiased `}>
+        <Header />
+
         {children}
         <Toaster />
       </body>

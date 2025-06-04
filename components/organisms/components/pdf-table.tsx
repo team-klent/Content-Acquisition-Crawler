@@ -10,7 +10,7 @@ interface PdfTableProps {
 
 export function PdfTable({ documents }: PdfTableProps) {
   return (
-    <div className='space-y-4'>
+    <div>
       <CustomTable
         data={documents}
         columns={columns}
