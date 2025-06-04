@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { pdfDocuments } from '@/lib/pdf-data';
 import { PdfTable } from '../components/pdf-table';
 import PdfRegisterButton from './file-registration-upload';
-import { version } from '../../../package.json';
 export default function ContentAquisitionPage() {
   return (
     <>
@@ -31,7 +30,29 @@ export default function ContentAquisitionPage() {
       )} */}
 
         <PdfTable documents={pdfDocuments} />
-        {version && <p className='text-xs'>Version: {version}</p>}
+        <div className='flex px-5 pt-3 justify-between items-center '>
+          <p className='text-normal font-light'>
+            Showing {pdfDocuments.length} of {pdfDocuments.length} entries
+          </p>
+          <div className='flex items-center gap-1'>
+            <Button variant='ghost' className='cursor-pointer' disabled>
+              Previous
+            </Button>
+            <Button variant='ghost' className='cursor-pointer' disabled>
+              Next
+            </Button>
+            <p className='pl-6  text-gray-500 text-sm'>Show:</p>
+            <Input
+              type='number'
+              defaultValue={10}
+              className='w-16'
+              min={1}
+              max={100}
+              disabled
+            />
+          </div>
+        </div>
+        {/* {version && <p className='text-xs'>Version: {version}</p>} */}
       </TableCard>
     </>
   );

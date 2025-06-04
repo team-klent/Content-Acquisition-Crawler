@@ -7,14 +7,8 @@ import {
   CardHeader,
   CardTitle,
 } from '@/components/ui/card';
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableRow
-} from '@/components/ui/table';
-import { ChevronLeft } from 'lucide-react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
+import { useRouter, useSearchParams } from 'next/navigation';
 import PDFObject from 'pdfobject';
 import { useEffect, useRef } from 'react';
 
@@ -33,8 +27,7 @@ export default function PdfView() {
   const createdBy = searchParams.get('createdBy');
   const updatedAt = searchParams.get('updatedAt');
 
-  
-  const editedPath =`/app1${path}`
+  const editedPath = `/app1${path}`;
 
   useEffect(() => {
     if (containerRef.current && path) {
