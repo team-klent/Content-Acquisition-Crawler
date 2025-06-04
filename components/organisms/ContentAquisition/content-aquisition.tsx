@@ -3,7 +3,7 @@
 import { pdfDocuments } from '@/lib/pdf-data';
 import { PdfTable } from '../components/pdf-table';
 import PdfRegisterButton from './file-registration-upload';
-
+import { version } from '../../../package.json';
 export default function ContentAquisitionPage() {
   return (
     <div className='container mx-auto py-8'>
@@ -26,6 +26,7 @@ export default function ContentAquisitionPage() {
 
       <div className='bg-white rounded-lg shadow p-4'>
         <PdfTable documents={pdfDocuments} />
+        {version && <p className='text-xs'>Version: {version}</p>}
       </div>
     </div>
   );
