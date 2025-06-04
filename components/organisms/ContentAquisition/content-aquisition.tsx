@@ -6,7 +6,6 @@ import { Input } from '@/components/ui/input';
 import { pdfDocuments } from '@/lib/pdf-data';
 import { PdfTable } from '../components/pdf-table';
 import PdfRegisterButton from './file-registration-upload';
-
 export default function ContentAquisitionPage() {
   return (
     <>
@@ -53,6 +52,7 @@ export default function ContentAquisitionPage() {
             />
           </div>
         </div>
+        {/* {version && <p className='text-xs'>Version: {version}</p>} */}
       </TableCard>
     </>
   );

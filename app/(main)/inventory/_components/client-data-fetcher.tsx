@@ -96,8 +96,8 @@ export default function ClientDataFetcher() {
             process.env.NEXT_PUBLIC_IA_API_URL || 'not set',
           NODE_ENV: process.env.NODE_ENV,
         });
-
-        console.log('Fetching from API:', apiUrl);
+        
+        console.log("Fetching from API:", apiUrl);
 
         // const apiTest = 'https://unifiedworkflow.innodata.com/api/inventory?project_id=1&job_id=1&file_id=33&task_id=2'
         // const response = await fetch(apiTest);
@@ -128,7 +128,7 @@ export default function ClientDataFetcher() {
 
         const data = await response.json();
         console.log('API Response Data:', data);
-
+        
         // Check for API-level errors
         if (!data.status || data.error) {
           throw new Error(data.error || 'Unknown API error');

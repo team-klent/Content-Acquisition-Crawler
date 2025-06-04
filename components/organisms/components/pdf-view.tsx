@@ -27,13 +27,11 @@ export default function PdfView() {
   const createdBy = searchParams.get('createdBy');
   const updatedAt = searchParams.get('updatedAt');
 
-  // Make adjustment for the path for to be embed for this pdf
-  // Example in ec2 path should be like this: /app1/path
-  // Outside of ec2 path should be like this: /path
+  const editedPath = `/app1${path}`;
 
   useEffect(() => {
     if (containerRef.current && path) {
-      PDFObject.embed(path, containerRef.current, {
+      PDFObject.embed(editedPath, containerRef.current, {
         height: '800px',
         pdfOpenParams: {
           view: 'FitV',
@@ -63,7 +61,7 @@ export default function PdfView() {
                 <div>
                   <h3 className='font-medium mb-3'>Basic Information</h3>
                   <div className='border rounded-md overflow-hidden'>
-                    <table className='w-full overflow-hidden '>
+                    <Table className='w-full overflow-hidden'>
                       <TableBody>
                         <TableRow className='border-b'>
                           <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
@@ -114,7 +112,7 @@ export default function PdfView() {
                           </TableCell>
                         </TableRow>
                       </TableBody>
-                    </table>
+                    </Table>
                   </div>
                 </div>
 
