@@ -52,14 +52,9 @@ export async function GET(request: NextRequest) {
         { status: response.status }
       );
     }
-    
-    const data = await response.json();
+     const data = await response.json();
 
-
-    console.log("Data received from external API:", data);
-    
     if (!data) {
-      console.error('Empty response from external API');
       return NextResponse.json({ 
         status: false, 
         error: "Empty response from workflow API." 
@@ -67,7 +62,6 @@ export async function GET(request: NextRequest) {
     }
     
     if (data.status === false) {
-      console.error('API reported failure:', data.error);
       return NextResponse.json({ 
         status: false, 
         error: data.error || "Unknown error from workflow API" 
@@ -75,7 +69,6 @@ export async function GET(request: NextRequest) {
     }
     
     if (!data.file) {
-      console.error('File data missing from API response:', data);
       return NextResponse.json({ 
         status: false, 
         error: "Invalid response from workflow API. File data not found." 
@@ -83,10 +76,7 @@ export async function GET(request: NextRequest) {
     }
     
     return NextResponse.json(data);
-  } catch (error) {
-    
-    console.error('Error in inventory API route:', error instanceof Error ? error.message : 'Unknown error');
-    
+  } catch (_error) {
     return NextResponse.json(
       { error: 'Internal server error' }, 
       { status: 500 }

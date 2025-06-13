@@ -12,16 +12,15 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from '@/components/ui/tooltip';
+import { DEFAULT_METADATA, FILE_CONSTANTS } from '@/lib/constants';
+import { generateFileUniqueId } from '@/lib/utils';
 import { Upload } from 'lucide-react';
 import { useSearchParams } from 'next/navigation';
-import { ChangeEvent, useRef, useState, useEffect } from 'react';
+import { ChangeEvent, useRef, useState, useMemo } from 'react';
 import { toast } from 'sonner';
  
 export default function PdfRegisterButton() {
-  const defaultMetadata = {
-    M1: 'V1',
-    M2: 'V2',
-  };
+  const defaultMetadata = useMemo(() => DEFAULT_METADATA, []);
   
   const searchParams = useSearchParams();
   
@@ -30,32 +29,21 @@ export default function PdfRegisterButton() {
   const project_code = searchParams.get('project_code') || '';
   const workflow_id = searchParams.get('workflow_id') || '';
   const workflow_code = searchParams.get('workflow_code') || '';
-  const task_id = searchParams.get('task_id') || '';
   const task_uid = searchParams.get('task_uid') || '';
-  const user_id = searchParams.get('user_id') || '';
   
-  // Enhanced debugging - log all query parameters
-  useEffect(() => {
-    searchParams.forEach((value, key) => {
-      console.log(`${key}: ${value}`);
-    });
-    
-  }, [searchParams]);
+
  
-  const defaultConfiguration = {
+  const defaultConfiguration = useMemo(() => ({
     project_code: project_code,
     workflow_code: workflow_code,
     first_task_uid: task_uid,
     file_unique_identifier: '',
     file_name: '',
-    file_path: '-',
+    file_path: FILE_CONSTANTS.DEFAULT_FILE_PATH,
     project_id: project_id || '',
     workflow_id: workflow_id || '',
     meta_data: { ...defaultMetadata },
-  };
- 
-  useEffect(() => {
-  }, [defaultConfiguration]);
+  }), [project_code, workflow_code, task_uid, project_id, workflow_id, defaultMetadata]);
  
   const [loading, setLoading] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -67,33 +55,10 @@ export default function PdfRegisterButton() {
     const formData = {
       ...defaultConfiguration,
       file_name: file.name,
-      file_unique_identifier: `file-uid-${file.name}-${Date.now()}`,
-    };
- 
-    setLoading(true);
- 
-    // Make sure we have a file name, either from file selection or manual entry
-    if (!formData.file_name && !file) {
-      toast.error('Please select a file or enter a file name');
-      setLoading(false);
-      return;
-    }
- 
-    // Check if filename is empty
-    if (!formData.file_name || formData.file_name.trim() === '') {
-      toast.error('File name cannot be empty');
-      setLoading(false);
-      return;
-    }
- 
- 
-    if (fileInputRef.current?.files && fileInputRef.current.files.length > 0) {
-      toast.info(
-        `Selected file: ${fileInputRef.current.files[0].name} (${(
-          fileInputRef.current.files[0].size / 1024
-        ).toFixed(1)} KB)`
-      );
-    }      try {
+      file_unique_identifier: generateFileUniqueId(file.name),
+    };    setLoading(true);
+
+    try {
       let response;
       let data;
       
@@ -105,16 +70,9 @@ export default function PdfRegisterButton() {
         formDataToSend.append('project_code', formData.project_code);
         formDataToSend.append('workflow_code', formData.workflow_code);
         formDataToSend.append('first_task_uid', formData.first_task_uid);
-        
-        // Add project_id and workflow_id if available
-        if (formData.project_id) {
-          formDataToSend.append('project_id', formData.project_id);
-        }
-        
-        if (formData.workflow_id) {
-          formDataToSend.append('workflow_id', formData.workflow_id);
-        }
- 
+        formDataToSend.append('project_id', formData.project_id);
+        formDataToSend.append('workflow_id', formData.workflow_id);
+
         if (formData.file_unique_identifier) {
           formDataToSend.append(
             'file_unique_identifier',
@@ -123,17 +81,8 @@ export default function PdfRegisterButton() {
         }
         formDataToSend.append(
           'meta_data',
-          JSON.stringify(formData.meta_data || { M1: 'V1', M2: 'V2' })
+          JSON.stringify(formData.meta_data || DEFAULT_METADATA)
         );
-        
-  
-        if (project_id) {
-          formDataToSend.set('project_id', project_id);
-        }
-        
-        if (workflow_id) {
-          formDataToSend.set('workflow_id', workflow_id);
-        }
         
         response = await registerFileUpload(formDataToSend);
       } else {
@@ -144,42 +93,29 @@ export default function PdfRegisterButton() {
           file_name: formData.file_name,
           file_unique_identifier:
             formData.file_unique_identifier ||
-            `file-uid-${formData.file_name}-${Date.now()}`,
-          file_path: formData.file_path || '-',
+            generateFileUniqueId(formData.file_name),
+          file_path: formData.file_path || FILE_CONSTANTS.DEFAULT_FILE_PATH,
           project_id: formData.project_id || '',
           workflow_id: formData.workflow_id || '',
-          meta_data: formData.meta_data || { M1: 'V1', M2: 'V2' },
+          meta_data: formData.meta_data || DEFAULT_METADATA,
         };
         response = await registerNonFileUpload(payload);
       }
  
       try {
         data = await response.json();
-      } catch (parseError) {
-        console.error('JSON parse error:', parseError);
+      } catch {
         const text = await response.text();
-        console.error('Received non-JSON response:', text);
         throw new Error(
           `Non-JSON response received: ${text.substring(0, 100)}...`
         );
       }
  
       if (!response.ok) {
-        console.error('API error response:', data);
         throw new Error(
           data.error || `Failed to register job batch file (${response.status})`
         );
       }
- 
-      // The response includes file_output_upload_url which could be used to upload the actual file
-      // This implementation would depend on the actual requirements of the second step
-      // If needed, we could implement the file upload to the URL here
-      /*
-      if (selectedFile && data.file_output_upload_url) {
-        // Upload the file content to the provided URL
-        // This would be a separate API call depending on how the target system expects the file
-      }
-      */
  
       if (
         data &&
@@ -191,7 +127,6 @@ export default function PdfRegisterButton() {
     } catch (err: unknown) {
       const errorMessage =
         err instanceof Error ? err.message : 'An error occurred';
-      console.error('Error:', err);
       toast.error(`Failed to register job batch file: ${errorMessage}`);
     } finally {
       setLoading(false);
@@ -240,4 +175,4 @@ export default function PdfRegisterButton() {
       </TooltipProvider>
     </div>
   );
-}
+} 

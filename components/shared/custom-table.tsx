@@ -84,16 +84,6 @@ export function CustomTable<TData>({ data, columns }: CustomTableProps<TData>) {
                   <TableRow
                     key={row.id}
                     data-state={row.getIsSelected() && 'selected'}
-                    // onClick={() => {
-                    //   row.toggleSelected(!row.getIsSelected());
-                    //   if (setSelection) {
-                    //     if (!row.getIsSelected()) {
-                    //       setSelection(row.original);
-                    //     } else {
-                    //       setSelection(null);
-                    //     }
-                    //   }
-                    // }}
                   >
                     {row.getVisibleCells().map((cell) => {
                       return (

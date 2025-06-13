@@ -1,3 +1,6 @@
+import { FILE_CONSTANTS } from './constants';
+import { generateFileUniqueId } from './utils';
+
 export interface RegisterJobBatchFileRequest {
   project_code: string;
   workflow_code: string;
@@ -48,24 +51,13 @@ export async function registerJobBatchFile(
 ): Promise<RegisterJobBatchFileResponse> {
   const baseUrl = process.env.NEXT_PUBLIC_IA_API_URL!;
   const url = `${baseUrl}/api/register-job-batch-file`;
- 
   try {
-    const requiredFields = [
-      'project_code',
-      'workflow_code',
-      'first_task_uid',
-      'file_name',
-    ];
-   
- 
     if (!payload.file_path) {
-      payload.file_path = '-';
+      payload.file_path = FILE_CONSTANTS.DEFAULT_FILE_PATH;
     }
  
     if (!payload.file_unique_identifier) {
-      payload.file_unique_identifier = `file-uid-${
-        payload.file_name
-      }-${Date.now()}`;
+      payload.file_unique_identifier = generateFileUniqueId(payload.file_name);
     }
  
     const enhancedPayload = {
@@ -102,9 +94,6 @@ export async function registerJobBatchFile(
         errorDetails = 'Could not parse error response';
       }
  
-      console.error(`API Error: ${response.status} ${response.statusText}`);
-      console.error(`Error details: ${errorDetails}`);
- 
       throw new Error(
         `Failed to register job batch file: ${response.status} ${response.statusText} - ${errorDetails}`
       );
@@ -113,7 +102,6 @@ export async function registerJobBatchFile(
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       const text = await response.text();
-      console.error('Expected JSON but received:', text);
       throw new Error(
         `Expected JSON response but received: ${text.substring(0, 100)}...`
       );
@@ -122,7 +110,6 @@ export async function registerJobBatchFile(
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error in registerJobBatchFile:', error);
     throw error;
   }
 }
@@ -155,8 +142,6 @@ export async function registerAndUploadFile(
       registrationPayload
     );
  
-    console.log('Registration Response:', registrationResponse);
- 
     // Validate the response before stepping to the next stage
     if (typeof registrationResponse.file_output_path !== 'string') {
       throw new Error('file_output_path is not a valid string');
@@ -182,8 +167,8 @@ export async function registerAndUploadFile(
           previous_file_status: previousFileStatus,
           file_status: fileStatus,
         });
-      } catch (updateError) {
-        console.error('Error updating file status:', updateError);
+      } catch {
+        // Status update failed, but we'll continue since registration and upload succeeded
       }
     }
  
@@ -193,7 +178,6 @@ export async function registerAndUploadFile(
       statusUpdate: statusUpdateResponse,
     };
   } catch (error) {
-    console.error('Error in registerAndUploadFile:', error);
     throw error;
   }
 }
@@ -209,9 +193,6 @@ export async function uploadFileToS3(
   uploadUrl: string
 ): Promise<FileUploadResponse> {
   try {
-    console.log('File Path:', filePath);
-    console.log('Upload URL:', uploadUrl);
- 
     // Import fs module for file operations
     const fs = await import('fs');
  
@@ -240,7 +221,6 @@ export async function uploadFileToS3(
       message: 'File uploaded successfully',
     };
   } catch (error) {
-    console.error('Error in uploadFileToS3:', error);
     return {
       success: false,
       message:
@@ -308,9 +288,6 @@ export async function updateFileStatus(
         errorDetails = `${e} Could not parse error response`;
       }
  
-      console.error(`API Error: ${response.status} ${response.statusText}`);
-      console.error(`Error details: ${errorDetails}`);
- 
       throw new Error(
         `Failed to update file status: ${response.status} ${response.statusText} - ${errorDetails}`
       );
@@ -319,7 +296,6 @@ export async function updateFileStatus(
     const data = await response.json();
     return data;
   } catch (error) {
-    console.error('Error in updateFileStatus:', error);
     throw error;
   }
 }

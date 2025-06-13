@@ -3,6 +3,7 @@ import {
   RegisterJobBatchFileRequest,
 } from '@/lib/intelligent-automation';
 import { scanPdfDirectory } from '@/lib/pdf-scanner';
+import { DEFAULT_METADATA } from '@/lib/constants';
 import * as fs from 'fs';
 import { NextRequest, NextResponse } from 'next/server';
 import * as path from 'path';
@@ -19,8 +20,7 @@ async function GET() {
   try {
     const pdfDocuments = await scanPdfDirectory();
     return NextResponse.json({ pdfs: pdfDocuments });
-  } catch (error) {
-    console.error('Error fetching PDFs:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to retrieve PDF documents' },
       { status: 500 }
@@ -31,8 +31,6 @@ async function GET() {
 const POST = async (req: NextRequest) => {
   try {
     const body: RegisterJobBatchFileRequest = await req.json();
-
-    console.log('Request Body:', body);
 
     const requiredFields = [
       'project_code',
@@ -69,17 +67,7 @@ const POST = async (req: NextRequest) => {
     }
 
     if (!body.meta_data) {
-      body.meta_data = {
-        M1: 'V1',
-        M2: 'V2',
-      };
-    }
-
-    if (!body.file_path || body.file_path.trim() === '') {
-      return NextResponse.json(
-        { error: 'File path is required' },
-        { status: 400 }
-      );
+      body.meta_data = DEFAULT_METADATA;
     }
 
     const fullPath = resolvePublicPdfPath(body.file_path);
@@ -91,23 +79,17 @@ const POST = async (req: NextRequest) => {
         },
         { status: 404 }
       );
-    }
-
-    const requestData: RegisterJobBatchFileRequest = {
+    }    const requestData: RegisterJobBatchFileRequest = {
       ...body,
       file_path: fullPath,
     };
 
     const filePath = requestData.file_path;
 
-    console.log('Request Data:', requestData);
-    console.log('Temporary File Path:', filePath);
-
     await registerAndUploadFile(requestData, filePath);
 
     return NextResponse.json(requestData, { status: 200 });
-  } catch (error) {
-    console.error('Error fetching PDFs:', error);
+  } catch {
     return NextResponse.json(
       { error: 'Failed to retrieve PDF documents' },
       { status: 500 }

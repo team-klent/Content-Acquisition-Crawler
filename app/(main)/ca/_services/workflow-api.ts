@@ -15,7 +15,7 @@ const registerRowTable = async ({ body }) => {
   );
 
   if (!res.ok) {
-    throw new Error('Failed to fetch roles');
+    throw new Error('Failed to register file via table row');
   }
 
   return 'File registered successfully';
@@ -31,7 +31,7 @@ const registerFileUpload = async (file) => {
   );
 
   if (!res.ok) {
-    throw new Error('Failed to fetch roles');
+    throw new Error('Failed to upload file');
   }
 
   return res;

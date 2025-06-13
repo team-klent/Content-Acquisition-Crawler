@@ -102,7 +102,7 @@ export const getTaskOngoingFiles = async (params: WorkflowUrlParams): Promise<Wo
     
 
 
-    console.log('apiToken:', apiToken);
+    // API token is expected to be set via environment variables
 
     const response = await fetch(`${apiUrl}?${queryParams.toString()}`, {
       method: 'GET',
@@ -119,7 +119,6 @@ export const getTaskOngoingFiles = async (params: WorkflowUrlParams): Promise<Wo
 
     return await response.json();
   } catch (error) {
-    console.error('Error fetching task file:', error);
     throw error;
   }
 };
@@ -138,8 +137,7 @@ export const extractUrlParams = (url: string): WorkflowUrlParams => {
       task_id: params.get('task_id') || undefined,
       user_id: params.get('user_id') || undefined,
     };
-  } catch (error) {
-    console.error('Error parsing URL:', error);
+  } catch {
     return {};
   }
 };

@@ -14,9 +14,6 @@ export function PdfTable({ documents }: PdfTableProps) {
       <CustomTable
         data={documents}
         columns={columns}
-        // setSelection={() => {
-        //   // Selection handling can be implemented here when needed
-        // }}
       />
     </div>
   );

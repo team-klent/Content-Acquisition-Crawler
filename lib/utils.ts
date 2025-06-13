@@ -1,17 +1,14 @@
 import { type ClassValue, clsx } from 'clsx';
 import { twMerge } from 'tailwind-merge';
+import { FILE_CONSTANTS } from './constants';
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 
-export function formatDate(dateString: string): string {
-  const date = new Date(dateString);
-  return new Intl.DateTimeFormat('en-US', {
-    year: 'numeric',
-    month: 'short',
-    day: 'numeric',
-    hour: '2-digit',
-    minute: '2-digit',
-  }).format(date);
+/**
+ * Generate a unique file identifier with consistent format
+ */
+export function generateFileUniqueId(fileName: string): string {
+  return `${FILE_CONSTANTS.UNIQUE_ID_PREFIX}${fileName}-${Date.now()}`;
 }

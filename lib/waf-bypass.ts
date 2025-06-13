@@ -10,16 +10,8 @@ const USER_AGENTS = [
   'Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/113.0.0.0 Mobile Safari/537.36',
 ];
 
-
-const REQUEST_MODES = ['standard', 'web', 'cors', 'stream', 'xhr', 'direct'];
-
-
 export function getRandomUserAgent(): string {
   return USER_AGENTS[Math.floor(Math.random() * USER_AGENTS.length)];
-}
-
-export function getRandomRequestMode(): string {
-  return REQUEST_MODES[Math.floor(Math.random() * REQUEST_MODES.length)];
 }
 
 
@@ -81,7 +73,8 @@ export function getProxiedPdfUrl(originalUrl: string, attempt = 0): string {
       params.append('_r', randomId.toString(36));
     }
     
-    const requestMode = REQUEST_MODES[attempt % REQUEST_MODES.length];
+    const requestModes = ['standard', 'web', 'cors', 'stream', 'xhr', 'direct'];
+    const requestMode = requestModes[attempt % requestModes.length];
     params.append('_mode', requestMode);
     
 
@@ -123,9 +116,7 @@ export function getProxiedPdfUrl(originalUrl: string, attempt = 0): string {
     ).join('&');
     
     return `${apiProxyPath}?${queryString}`;
-  } catch (e) {
-    console.error('Error creating proxied PDF URL:', e);
-    
+  } catch (_e) {
     // Fallback to simple encoding if anything fails
     const base = getApiUrl('/api/pdf-proxy');
     return `${base}?url=${encodeURIComponent(originalUrl)}&_cb=${Date.now()}`;
@@ -145,57 +136,4 @@ export function getWafBypassFetchOptions(attempt = 0): RequestInit {
     // Randomize mode based on attempt
     mode: attempt % 2 === 0 ? 'cors' : undefined,
   };
-}
-
-export async function fetchWithWafBypass<T>(
-  url: string, 
-  options: RequestInit = {}, 
-  maxRetries = 3,
-  responseType: 'json' | 'text' | 'blob' | 'arrayBuffer' = 'json'
-): Promise<T> {
-  let retries = 0;
-  let lastError;
-  
-  while (retries < maxRetries) {
-    try {
-     
-      if (retries > 0) {
-        await new Promise(resolve => setTimeout(resolve, retries * 1000));
-        console.log(`Retry attempt ${retries} for: ${url}`);
-      }
-      
-      const fetchOptions: RequestInit = {
-        ...options,
-        headers: {
-          ...getWafBypassHeaders(retries),
-          ...(options.headers || {}),
-        },
-        // No caching
-        cache: 'no-store',
-      };
-      
-      const response = await fetch(url, fetchOptions);
-      
-      if (!response.ok) {
-        throw new Error(`HTTP error ${response.status}`);
-      }
-      
-      switch (responseType) {
-        case 'json':
-          return await response.json() as T;
-        case 'text':
-          return await response.text() as unknown as T;
-        case 'blob':
-          return await response.blob() as unknown as T;
-        case 'arrayBuffer':
-          return await response.arrayBuffer() as unknown as T;
-      }
-    } catch (err) {
-      console.error(`Fetch attempt ${retries + 1} failed:`, err);
-      lastError = err;
-      retries++;
-    }
-  }
-  
-  throw lastError;
 }

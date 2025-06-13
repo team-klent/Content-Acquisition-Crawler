@@ -72,12 +72,3 @@ export const pdfDocuments: PdfDocument[] = [
     updatedAt: new Date('2025-03-01'),
   },
 ];
-// Helper function to get a PDF document by ID
-export function getPdfById(id: string): PdfDocument | undefined {
-  return pdfDocuments.find((pdf) => pdf.id === id);
-}
-
-// Helper function to get all PDF documents
-export function getAllPdfs(): PdfDocument[] {
-  return pdfDocuments;
-}

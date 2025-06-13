@@ -15,7 +15,6 @@ export async function scanPdfDirectory(
   try {
     // Check if directory exists
     if (!fs.existsSync(directoryPath)) {
-      console.error(`Directory does not exist: ${directoryPath}`);
       return [];
     }
     
@@ -62,15 +61,9 @@ export async function scanPdfDirectory(
     });
     
     return pdfDocuments;
-  } catch (error) {
-    console.error('Error scanning PDF directory:', error);
+  } catch {
     return [];
   }
 }
 
-/**
- * This function could be used in a server API route to refresh the PDF list
- */
-export async function refreshPdfList(): Promise<PdfDocument[]> {
-  return await scanPdfDirectory();
-}
+

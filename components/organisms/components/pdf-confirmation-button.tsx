@@ -4,21 +4,19 @@ import { registerRowTable } from '@/app/(main)/ca/_services/workflow-api';
 import { Button } from '@/components/ui/button';
 import ThreeDotsLoader from '@/components/ui/dots-loader';
 import { PdfDocument } from '@/lib/pdf-data';
+import { DEFAULT_METADATA, FILE_CONSTANTS } from '@/lib/constants';
+import { generateFileUniqueId } from '@/lib/utils';
 import {
   Popover,
   PopoverClose,
   PopoverContent,
   PopoverTrigger,
 } from '@radix-ui/react-popover';
-import { Eye, FileText, FileUp } from 'lucide-react';
+import { Eye, FileUp } from 'lucide-react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useState, useEffect } from 'react';
 import { toast } from 'sonner';
  
-const defaultMetadata = {
-  M1: 'V1',
-  M2: 'V2',
-};
  
 const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
   const [open, setOpen] = useState(false);
@@ -36,15 +34,7 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
  
   // Debug logging for URL parameters
   useEffect(() => {
-    console.log('URL Parameters in PdfConfirmationButton:', {
-      project_id,
-      project_code,
-      workflow_id,
-      workflow_code,
-      task_id,
-      task_uid,
-      user_id,
-    });
+    // URL parameters logging removed for production
   }, [
     project_id,
     project_code,
@@ -62,33 +52,22 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
     first_task_uid: task_uid || process.env.NEXT_PUBLIC_FIRST_TASK_UID || '',
     file_unique_identifier: '',
     file_name: '', // This will be auto-populated when a file is selected
-    file_path: '-',
+    file_path: FILE_CONSTANTS.DEFAULT_FILE_PATH,
     project_id: project_id || '',
     workflow_id: workflow_id || '',
-    meta_data: { ...defaultMetadata },
+    meta_data: { ...DEFAULT_METADATA },
   };
  
   const handleRegister = async () => {
     setLoading(true);
     try {
-      // Log URL parameters and configuration before registering
-      console.log('Using URL parameters:', {
-        project_id,
-        project_code,
-        workflow_id,
-        workflow_code,
-        task_uid
-      });
-      
       const requestData = {
         ...defaultConfiguration,
         file_name: pdf.filename,
-        file_unique_identifier: `file-uid-${pdf.filename}-${Date.now()}`,
+        file_unique_identifier: generateFileUniqueId(pdf.filename),
         file_path: pdf.path,
-        meta_data: { ...defaultMetadata },
+        meta_data: { ...DEFAULT_METADATA },
       };
-      
-      console.log('Final request data:', requestData);
  
       // Make sure all required fields are filled
       const requiredFields = [
@@ -130,8 +109,7 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
       });
  
       toast.success('PDF registered successfully');
-    } catch (error) {
-      console.error('Error registering PDF:', error);
+    } catch {
       toast.error('Failed to register PDF');
     } finally {
       setLoading(false);
@@ -154,11 +132,6 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
       createdBy: String(pdf.createdBy),
       updatedAt: String(pdf.updatedAt),
     });
- 
-    // Handle basePath for client-side routing -- removed for now for temporary fix in vercel
-    // const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-    // const basePath = isLocalhost ? '' : '/app1';
-    // router.push(`${basePath}/pdf?${params.toString()}`);
  
     router.push(`/pdf?${params.toString()}`);
   };

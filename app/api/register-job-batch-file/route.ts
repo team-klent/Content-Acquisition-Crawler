@@ -2,6 +2,8 @@ import {
   registerAndUploadFile,
   RegisterJobBatchFileRequest,
 } from '@/lib/intelligent-automation';
+import { DEFAULT_METADATA, FILE_CONSTANTS } from '@/lib/constants';
+import { generateFileUniqueId } from '@/lib/utils';
 import * as fs from 'fs';
 import { writeFile } from 'fs/promises';
 import { NextRequest, NextResponse } from 'next/server';
@@ -57,9 +59,7 @@ export async function POST(request: NextRequest) {
     } else {
       requestData = await request.json();
     }
- 
-    console.log('Request Data:', requestData);
- 
+
     const requiredFields = [
       'project_code',
       'workflow_code',
@@ -88,20 +88,15 @@ export async function POST(request: NextRequest) {
       !requestData.file_unique_identifier ||
       requestData.file_unique_identifier.trim() === ''
     ) {
-      requestData.file_unique_identifier = `file-uid-${
-        requestData.file_name
-      }-${Date.now()}`;
+      requestData.file_unique_identifier = generateFileUniqueId(requestData.file_name);
     }
  
     if (!requestData.file_path || requestData.file_path.trim() === '') {
-      requestData.file_path = '-';
+      requestData.file_path = FILE_CONSTANTS.DEFAULT_FILE_PATH;
     }
  
     if (!requestData.meta_data) {
-      requestData.meta_data = {
-        M1: 'V1',
-        M2: 'V2',
-      };
+      requestData.meta_data = DEFAULT_METADATA;
     }
  
     const filePath = requestData.file_path;
@@ -109,16 +104,7 @@ export async function POST(request: NextRequest) {
     const response = await registerAndUploadFile(requestData, filePath);
  
     return NextResponse.json(response, { status: 200 });
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error('Error registering job batch file:', error);
-    // Log the full error details for debugging
-    console.error('Error details:', {
-      message: error.message,
-      stack: error.stack,
-      cause: error.cause,
-    });
- 
     return NextResponse.json(
       { error: error.message || 'Failed to register job batch file' },
       { status: error.status || 500 }

@@ -1,8 +1,10 @@
 'use client';
 
-import React, { useEffect, useState, useRef } from 'react';
+import { useEffect, useState, useRef } from 'react';
 import { Button } from '@/components/ui/button';
 import { Download, CheckCircle } from 'lucide-react';
+import { getProxiedPdfUrl } from '@/lib/waf-bypass';
+import { UI_CONSTANTS, ERROR_UI_CLASSES } from '@/lib/constants';
 
 interface DirectPDFViewerProps {
   pdfUrl: string;
@@ -13,36 +15,17 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
   const [iframeKey, setIframeKey] = useState(Math.random());
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
-  const [attemptCount, setAttemptCount] = useState(0);
   const [pdfLoadSuccess, setPdfLoadSuccess] = useState(false);
-  
- 
-  const getProxiedPdfUrl = (url: string) => {
-    
-   
-    try {
-      return `/api/pdf-proxy?url=${encodeURIComponent(url)}`;
-    } catch (e) {
-      console.error('Error encoding URL for proxy:', e);
-      
-      // Fallback method if encoding fails completely
-      const base = `/api/pdf-proxy?url=`;
-      return base + url.replace(/\s/g, '%20');
-    }
-  };
   
   // Reset loading state when URL changes
   useEffect(() => {
     setIsLoading(true);
     setError(null);
     setIframeKey(Math.random()); // Force iframe reload
-    setAttemptCount(0); // Reset attempt counter
   }, [pdfUrl]);
   
   // Get the proxied URL
   const proxiedUrl = getProxiedPdfUrl(pdfUrl);
-  console.log('DirectPDFViewer using URL:', proxiedUrl);
 
   // Create a fallback component that uses object tag instead of iframe
   // Add a ref for the object element
@@ -51,7 +34,6 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
   // Create effect to handle object load events
   useEffect(() => {
     const handleObjectLoad = () => {
-      console.log('PDF object loaded');
       setTimeout(() => {
         setIsLoading(false);
         setPdfLoadSuccess(true);
@@ -59,7 +41,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
     };
     
     const handleObjectError = () => {
-      console.error('PDF object load error');
+      // Handle object error silently
     };
     
     const objectElement = objectRef.current;
@@ -70,7 +52,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
       // Auto-hide loading after a timeout to ensure PDF has a chance to load
       const timeoutId = setTimeout(() => {
         setIsLoading(false);
-      }, 2500);
+      }, UI_CONSTANTS.LOADING_TIMEOUT);
       
       return () => {
         objectElement.removeEventListener('load', handleObjectLoad);
@@ -87,7 +69,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
         data={proxiedUrl}
         type="application/pdf"
         width="100%"
-        height="600px"
+        height={UI_CONSTANTS.PDF_VIEWER_MIN_HEIGHT}
         className="border-2 border-gray-200"
       >
         <p>Your browser does not support PDF embedding. <a href={proxiedUrl} target="_blank" rel="noreferrer">Click here to download the PDF</a></p>
@@ -96,7 +78,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
   };
 
   return (
-    <div className="h-full flex flex-col relative" style={{ minHeight: '600px' }}>
+    <div className="h-full flex flex-col relative" style={{ minHeight: UI_CONSTANTS.PDF_VIEWER_MIN_HEIGHT }}>
       {isLoading && (
         <div className="absolute inset-0 bg-white bg-opacity-80 flex items-center justify-center z-10">
           <div className="flex flex-col items-center">
@@ -108,18 +90,18 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
       
       {/* Success indicator */}
       {pdfLoadSuccess && !isLoading && !error && (
-        <div className="absolute top-2 right-2 bg-green-100 text-green-800 px-3 py-1 rounded-full flex items-center z-10 shadow-sm">
+        <div className={ERROR_UI_CLASSES.SUCCESS_INDICATOR}>
           <CheckCircle className="w-4 h-4 mr-1" />
           <span className="text-xs font-medium">PDF Loaded Successfully</span>
         </div>
       )}
       
       {error && (
-        <div className="absolute inset-0 bg-white bg-opacity-95 flex items-center justify-center z-10 p-5">
-          <div className="bg-red-50 border-l-4 border-red-500 p-4 max-w-lg">
+        <div className={ERROR_UI_CLASSES.OVERLAY}>
+          <div className={ERROR_UI_CLASSES.CONTAINER.replace('mb-4', 'max-w-lg')}>
             <div className="flex flex-col">
-              <h3 className="text-lg font-medium text-red-800 mb-2">Failed to load PDF</h3>
-              <p className="text-sm text-red-700 mb-4">{error}</p>
+              <h3 className={ERROR_UI_CLASSES.TITLE}>Failed to load PDF</h3>
+              <p className={ERROR_UI_CLASSES.MESSAGE.replace('mb-2', 'mb-4')}>{error}</p>
               <p className="text-sm text-gray-600 mb-4">You can try the following options:</p>
               <div className="flex flex-col space-y-2 sm:flex-row sm:space-y-0 sm:space-x-2">
                 <Button
@@ -144,7 +126,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
         </div>
       )}
       
-      <div className="pdf-container" style={{ height: 'calc(100% - 20px)', minHeight: '600px' }}>
+      <div className="pdf-container" style={{ height: 'calc(100% - 20px)', minHeight: UI_CONSTANTS.PDF_VIEWER_MIN_HEIGHT }}>
         <div className="h-full">
           {renderPdfWithObjectTag()}
         </div>
@@ -153,25 +135,21 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
           key={iframeKey}
           style={{ 
             height: '100%', 
-            minHeight: '600px', 
+            minHeight: UI_CONSTANTS.PDF_VIEWER_MIN_HEIGHT, 
             display: 'none',  
             backgroundColor: '#f0f0f0' 
           }}
           className="w-full border-2 border-gray-200"
           src={proxiedUrl}
           title={`PDF Viewer - ${filename}`}
-          onLoad={(e) => {
-            // Log successful iframe load for debugging
-            console.log('PDF iframe loaded', { url: proxiedUrl });
+          onLoad={(_e) => {
             // Using setTimeout to avoid state updates during render
             setTimeout(() => {
               setIsLoading(false);
               setPdfLoadSuccess(true);
             }, 0);
           }}
-          // eslint-disable-next-line @typescript-eslint/no-unused-vars
-          onError={(e) => {
-            console.error('PDF iframe load error:', e);
+          onError={(_e) => {
             // The object tag should still work even if the iframe fails
             // Using setTimeout to avoid state updates during render
             setTimeout(() => {

@@ -30,7 +30,6 @@ export async function POST(request: NextRequest) {
     
     return NextResponse.json(response);
   } catch (error) {
-    console.error('Error in update-file-status API route:', error);
     return NextResponse.json(
       { error: error instanceof Error ? error.message : 'Unknown error occurred' },
       { status: 500 }

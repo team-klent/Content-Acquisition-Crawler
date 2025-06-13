@@ -10,6 +10,8 @@ import {
 } from '@/components/ui/card';
 import { TableBody, TableCell, TableRow } from '@/components/ui/table';
 import { getApiUrl } from '@/lib/api-helpers';
+import { TABLE_CELL_CLASSES, UI_CONSTANTS, ERROR_UI_CLASSES } from '@/lib/constants';
+import { getProxiedPdfUrl } from '@/lib/waf-bypass';
 import { SpecialZoomLevel, Viewer, Worker } from '@react-pdf-viewer/core';
 import '@react-pdf-viewer/core/lib/styles/index.css';
 import { defaultLayoutPlugin } from '@react-pdf-viewer/default-layout';
@@ -45,21 +47,6 @@ export default function ClientDataFetcher() {
   const [useDirectViewer, setUseDirectViewer] = useState(false);
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
-  const getProxiedPdfUrl = (url: string) => {
-    try {
-      // Ensure we have the correct base path for the API url
-      const apiProxyPath = getApiUrl('/api/pdf-proxy');
-      console.log('PDF proxy path:', apiProxyPath);
-      return `${apiProxyPath}?url=${encodeURIComponent(url)}`;
-    } catch (e) {
-      console.error('Error encoding URL for proxy:', e);
-
-      console.warn('Using fallback URL processing method');
-      const base = `${getApiUrl('/api/pdf-proxy')}?url=`;
-      return base + url.replace(/\s/g, '%20');
-    }
-  };
-
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -81,33 +68,10 @@ export default function ClientDataFetcher() {
         const baseApiPath = getApiUrl('/api/inventory');
         const apiUrl = `${baseApiPath}?project_id=${project_id}&job_id=${job_id}&file_id=${file_id}&task_id=${task_id}`;
 
-        // Debugging: Log the API request details and path construction
-        console.log('TEST API Request Info:', {
-          basePath: baseApiPath,
-          fullUrl: apiUrl,
-          params: { project_id, job_id, file_id, task_id },
-          currentURL: window.location.href,
-          locationPathname: window.location.pathname,
-        });
-
-        // Check ENV's
-        console.log('Environment:', {
-          NEXT_PUBLIC_IA_API_URL:
-            process.env.NEXT_PUBLIC_IA_API_URL || 'not set',
-          NODE_ENV: process.env.NODE_ENV,
-        });
-        
-        console.log("Fetching from API:", apiUrl);
-
-        // const apiTest = 'https://unifiedworkflow.innodata.com/api/inventory?project_id=1&job_id=1&file_id=33&task_id=2'
-        // const response = await fetch(apiTest);
-
         const response = await fetch(apiUrl);
 
-        //Don't Remove please, for Debugging
         if (!response.ok) {
           const errorText = await response.text().catch(() => '');
-          console.error(`API Error ${response.status}:`, errorText);
 
           if (response.status === 404) {
             throw new Error(
@@ -127,7 +91,6 @@ export default function ClientDataFetcher() {
         }
 
         const data = await response.json();
-        console.log('API Response Data:', data);
         
         // Check for API-level errors
         if (!data.status || data.error) {
@@ -141,7 +104,6 @@ export default function ClientDataFetcher() {
         // This helps bypass S3 authentication issues
       } catch (err) {
         setError(err instanceof Error ? err.message : 'Unknown error occurred');
-        console.error('Error fetching file data:', err);
       } finally {
         setLoading(false);
       }
@@ -160,12 +122,12 @@ export default function ClientDataFetcher() {
 
   if (error) {
     return (
-      <div className='bg-red-50 border-l-4 border-red-500 p-4 mb-4'>
+      <div className={ERROR_UI_CLASSES.CONTAINER}>
         <div className='flex flex-col'>
-          <h3 className='text-lg font-medium text-red-800 mb-2'>
+          <h3 className={ERROR_UI_CLASSES.TITLE}>
             Error Loading File
           </h3>
-          <p className='text-sm text-red-700 mb-2'>{error}</p>
+          <p className={ERROR_UI_CLASSES.MESSAGE}>{error}</p>
         </div>
       </div>
     );
@@ -188,7 +150,7 @@ export default function ClientDataFetcher() {
         {/* PDF Viewer */}
         <div
           className='col-span-3 h-[80vh] relative '
-          style={{ minHeight: '600px' }}
+          style={{ minHeight: UI_CONSTANTS.PDF_VIEWER_MIN_HEIGHT }}
         >
           {useDirectViewer ? (
             // Use the direct iframe viewer as a fallback
@@ -281,68 +243,68 @@ export default function ClientDataFetcher() {
                     <table className='w-full overflow-hidden'>
                       <TableBody>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             File Name:
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2'>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {fileData.file_name}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Project:
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2'>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {fileData.project_code}{' '}
                             {fileData.project_name &&
                               `(${fileData.project_name})`}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Job:
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2'>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {fileData.job_name}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Batch:
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2'>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {fileData.batch_name}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Task:
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2'>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {fileData.task_name}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Created:
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2'>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {new Date(fileData.created_at).toLocaleString()}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Updated:
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2'>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {new Date(fileData.updated_at).toLocaleString()}
                           </TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             File Status:
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2'>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {fileData.current_file_status || 'Unknown'}
                           </TableCell>
                         </TableRow>

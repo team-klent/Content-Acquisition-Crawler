@@ -18,16 +18,6 @@ export default function ContentAquisitionPage() {
             <PdfRegisterButton />
           </div>
         </div>
-        {/* 
-      {error && (
-        <div
-          className='bg-red-100 border-l-4 border-red-500 text-red-700 p-4 mb-4'
-          role='alert'
-        >
-          <p className='font-bold'>Error</p>
-          <p>{error}</p>
-        </div>
-      )} */}
 
         <PdfTable documents={pdfDocuments} />
         <div className='flex px-5 pt-3 justify-between items-center '>
@@ -52,7 +42,6 @@ export default function ContentAquisitionPage() {
             />
           </div>
         </div>
-        {/* {version && <p className='text-xs'>Version: {version}</p>} */}
       </TableCard>
     </>
   );

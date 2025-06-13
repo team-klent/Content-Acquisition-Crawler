@@ -8,14 +8,14 @@ import {
   CardTitle,
 } from '@/components/ui/card';
 import { Table, TableBody, TableCell, TableRow } from '@/components/ui/table';
-import { useRouter, useSearchParams } from 'next/navigation';
+import { TABLE_CELL_CLASSES } from '@/lib/constants';
+import { useSearchParams } from 'next/navigation';
 import PDFObject from 'pdfobject';
 import { useEffect, useRef } from 'react';
 
 export default function PdfView() {
   const containerRef = useRef(null);
   const searchParams = useSearchParams();
-  const router = useRouter();
 
   const id = searchParams.get('id');
   const title = searchParams.get('title');
@@ -39,7 +39,7 @@ export default function PdfView() {
         },
       });
     }
-  }, [path]);
+  }, [path, editedPath]);
 
   return (
     <div>
@@ -64,50 +64,50 @@ export default function PdfView() {
                     <Table className='w-full overflow-hidden'>
                       <TableBody>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             ID
                           </TableCell>
-                          <TableCell className='px-4  py-2 text-sm '>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT_NO_BREAK}>
                             {id}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Title
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2 '>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {title}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             File Name
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2 '>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {fileName}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Path
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-9 '>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {path}
                           </TableCell>
                         </TableRow>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Size
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2 '>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {size}
                           </TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Type
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2 '>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {type}
                           </TableCell>
                         </TableRow>
@@ -122,10 +122,10 @@ export default function PdfView() {
                     <Table className='w-full'>
                       <TableBody>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Author
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2 '>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {createdBy}
                           </TableCell>
                         </TableRow>
@@ -140,18 +140,18 @@ export default function PdfView() {
                     <Table className='w-full'>
                       <TableBody>
                         <TableRow className='border-b'>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Upload Date
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2 '>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {createdAt}
                           </TableCell>
                         </TableRow>
                         <TableRow>
-                          <TableCell className='px-4 py-2 bg-gray-100 font-medium text-sm'>
+                          <TableCell className={TABLE_CELL_CLASSES.HEADER}>
                             Last Modified
                           </TableCell>
-                          <TableCell className='px-4 py-2 text-sm break-all pr-2 '>
+                          <TableCell className={TABLE_CELL_CLASSES.CONTENT}>
                             {updatedAt}
                           </TableCell>
                         </TableRow>
