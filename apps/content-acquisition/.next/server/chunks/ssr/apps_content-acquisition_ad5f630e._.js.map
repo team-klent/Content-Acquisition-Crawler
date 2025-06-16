@@ -1,7 +1,0 @@
-{
-  "version": 3,
-  "sources": [],
-  "sections": [
-    {"offset": {"line": 6, "column": 0}, "map": {"version":3,"sources":[],"names":[],"mappings":"","debugId":null}},
-    {"offset": {"line": 36, "column": 0}, "map": {"version":3,"sources":["file:///Users/aritchellecal/Documents/personal/Content-Acquisition-Crawler/apps/content-acquisition/app/%28main%29/page.tsx"],"sourcesContent":["import { redirect } from 'next/navigation';\n\nexport default function MainPage() {\n  redirect('/ca');\n}\n"],"names":[],"mappings":";;;AAAA;AAAA;;AAEe,SAAS;IACtB,CAAA,GAAA,qLAAA,CAAA,WAAQ,AAAD,EAAE;AACX","debugId":null}}]
-}
