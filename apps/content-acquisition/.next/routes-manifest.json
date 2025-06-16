@@ -40,12 +40,6 @@
       "namedRegex": "^/favicon\\.ico(?:/)?$"
     },
     {
-      "page": "/inventory",
-      "regex": "^/inventory(?:/)?$",
-      "routeKeys": {},
-      "namedRegex": "^/inventory(?:/)?$"
-    },
-    {
       "page": "/pdf",
       "regex": "^/pdf(?:/)?$",
       "routeKeys": {},

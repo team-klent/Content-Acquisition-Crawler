@@ -6,7 +6,8 @@ This is a [Turborepo](https://turbo.build/repo) monorepo containing the Content 
 
 ```
 ├── apps/
-│   └── content-acquisition/    # Main Next.js application
+│   ├── content-acquisition/    # Main Next.js application for content acquisition
+│   └── inventory/              # Inventory management application
 ├── packages/
 │   ├── shared/                 # Shared components and utilities
 │   ├── ui/                     # UI component library  
@@ -38,7 +39,8 @@ pnpm run dev
 ```
 
 This will start:
-- Next.js development server for the main app (usually on port 3001)
+- Next.js development server for the content acquisition app (usually on port 3001)
+- Next.js development server for the inventory app (usually on port 3002)
 - TypeScript watch mode for all packages
 
 ### Building
@@ -59,6 +61,7 @@ pnpm run build
 ### Apps
 
 - **content-acquisition**: Main Next.js application for content acquisition and PDF processing
+- **inventory**: Inventory management application for workflow file tracking
 
 ### Packages
 

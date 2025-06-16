@@ -1,13 +1,11 @@
 {
   "/_not-found/page": "/_not-found",
-  "/api/pdfs/route": "/api/pdfs",
-  "/api/inventory/route": "/api/inventory",
+  "/api/pdf-proxy/route": "/api/pdf-proxy",
+  "/favicon.ico/route": "/favicon.ico",
   "/api/update-file-status/route": "/api/update-file-status",
   "/api/register-job-batch-file/route": "/api/register-job-batch-file",
-  "/favicon.ico/route": "/favicon.ico",
-  "/api/pdf-proxy/route": "/api/pdf-proxy",
+  "/api/pdfs/route": "/api/pdfs",
   "/pdf/page": "/pdf",
-  "/(main)/inventory/page": "/inventory",
   "/(main)/ca/page": "/ca",
   "/(main)/page": "/"
 }
