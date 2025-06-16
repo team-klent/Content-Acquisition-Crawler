@@ -1,0 +1,6 @@
+{
+  "version": 3,
+  "sources": [],
+  "sections": [
+    {"offset": {"line": 7, "column": 0}, "map": {"version":3,"sources":["file:///Users/aritchellecal/Documents/personal/Content-Acquisition-Crawler/apps/content-acquisition/app/%28main%29/layout.tsx"],"sourcesContent":["export default function MainPageLayout({\n  children,\n}: Readonly<{\n  children: React.ReactNode;\n}>) {\n  return (\n    <>\n      <main className='max-w-full'>{children} </main>\n    </>\n  );\n}\n"],"names":[],"mappings":";;;;;AAAe,SAAS,eAAe,EACrC,QAAQ,EAGR;IACA,qBACE;kBACE,cAAA,8OAAC;YAAK,WAAU;;gBAAc;gBAAS;;;;;;;;AAG7C","debugId":null}}]
+}

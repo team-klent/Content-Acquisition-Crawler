@@ -1,0 +1,13 @@
+{
+  "/api/pdf-proxy/route": "/api/pdf-proxy",
+  "/api/pdfs/route": "/api/pdfs",
+  "/api/inventory/route": "/api/inventory",
+  "/api/register-job-batch-file/route": "/api/register-job-batch-file",
+  "/api/update-file-status/route": "/api/update-file-status",
+  "/favicon.ico/route": "/favicon.ico",
+  "/_not-found/page": "/_not-found",
+  "/pdf/page": "/pdf",
+  "/(main)/ca/page": "/ca",
+  "/(main)/inventory/page": "/inventory",
+  "/(main)/page": "/"
+}
