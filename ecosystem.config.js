@@ -12,7 +12,7 @@ const config = {
       port: 3000,
       log: './logs/content-acquisition.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
-      env: {
+      env_development: {
         NODE_ENV: 'development',
         PORT: 3000,
         USE_BASE_PATH: 'false',
@@ -47,7 +47,7 @@ const config = {
       port: 4000,
       log: './logs/qualification.log',
       log_date_format: 'YYYY-MM-DD HH:mm:ss',
-      env: {
+      env_development: {
         NODE_ENV: 'development',
         PORT: 4000,
         USE_BASE_PATH: 'false',

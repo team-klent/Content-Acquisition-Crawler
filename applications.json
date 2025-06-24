@@ -1,0 +1,14 @@
+{
+    "services": [
+        {
+            "name": "content",
+            "directory": "apps/content-acquisition", 
+            "port": 3000 
+        },
+        {
+            "name": "inventory",
+            "directory": "apps/inventory",
+            "port": 4000
+        }
+    ]
+}

@@ -118,3 +118,52 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+# Deploying your new service for the firs time
+### Before deploying your service for the first time make sure you have prepared these items in order for your application to be deployed seamlessly together with the other services.
+
+- [Dockerfile](https://docs.docker.com/reference/dockerfile/) - Making sure docker file follows the sample of the [`Dockerfile.sample`](/Dockerfile.sample) if your service needs a little more complex configuration make sure to let the others know.
+
+- [ecosystem.config.js](https://pm2.keymetrics.io/docs/usage/application-declaration/) - Since we will be using [pm2](https://pm2.keymetrics.io/) to deploy your application inside the server.
+
+- Service entry inside [applications.json](/applications.json), add the service's information inside the array
+```bash
+{
+    "services": [
+        {
+            "name": "content",
+            "directory": "apps/content-acquisition", 
+            "port": 3000 
+        },
+        {
+            "name": "inventory",
+            "directory": "apps/inventory",
+            "port": 4000
+        }
+        {
+            "name": "service-name", //name of your service
+            "directory" : "apps/your-service's root folder",
+            "port": 5000, //Ask the project owner or some one who works on the server for a free specific port that your applicatin can run and be listened on. 
+        }
+    ]
+}
+```
+
+ ### With that the directory should be like this
+ ```
+├── apps/
+│   ├── content-acquisition/         # Service 1
+│   ├── inventory/                   # Service 2
+|   └── your-service/                # ROOT DIRECTORY OF THE SERVICE
+|       ├── Dockerfile               # Name should be Dockerfile (match the case)
+|       └── ecosystem.config.js      # pm2 configuration for your file
+|     
+├── application.json                 # Entry of your service
+├── Dockerfile.sample                # Sample Dockerfile that you can use as base referece
+├── packages/
+│   ├── shared/                 
+│   ├── ui/                     
+│   └── utils/                  
+└── turbo.json                  
+```
+_Make sure to let the others know about the new service_
