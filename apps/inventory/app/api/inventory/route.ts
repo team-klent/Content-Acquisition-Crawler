@@ -20,7 +20,9 @@ export async function GET(request: NextRequest) {
     }
     
    
-    const baseApiUrl = process.env.NEXT_PUBLIC_IA_API_URL;
+    // Hardcoded API configuration for debugging
+    const baseApiUrl = 'https://unifiedworkflow.innodata.com';
+    const apiToken = '1|X5QySPSNPZMpsiZ05zB0qiMDJo1I0Fnb2KbXEzVCaaa38279';
     const url = `${baseApiUrl}/api/get-task-ongoing-file`;
     
 
@@ -33,17 +35,22 @@ export async function GET(request: NextRequest) {
 
     const fullUrl = `${url}?${queryParams.toString()}`;
     
+    console.log('Making API call to:', fullUrl);
+    
     const response = await fetch(fullUrl, {
       method: 'GET',
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.API_TOKEN}`
+        'Authorization': `Bearer ${apiToken}`
       }
     });
     
+    console.log('API Response status:', response.status);
+    
     if (!response.ok) {
       const errorText = await response.text();
+      console.log('API Error response:', errorText);
       return NextResponse.json(
         { 
           status: false, 
@@ -53,6 +60,8 @@ export async function GET(request: NextRequest) {
       );
     }
      const data = await response.json();
+     
+    console.log('API Response data:', JSON.stringify(data, null, 2));
 
     if (!data) {
       return NextResponse.json({ 

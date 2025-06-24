@@ -54,72 +54,16 @@ export function getWafBypassHeaders(variation = 0): Record<string, string> {
   return baseHeaders;
 }
 
-export function getProxiedPdfUrl(originalUrl: string, attempt = 0): string {
+export function getProxiedPdfUrl(originalUrl: string): string {
   try {
-  
     const apiProxyPath = getApiUrl('/api/pdf-proxy');
-    
-    const timestamp = Date.now();
-    const randomId = Math.floor(Math.random() * 1000000);
-    
     const params = new URLSearchParams();
-    
     params.append('url', originalUrl);
-    
-    if (attempt % 2 === 0) {
-      params.append('_cb', `${timestamp}_${randomId}`);
-    } else {
-      params.append('_t', timestamp.toString());
-      params.append('_r', randomId.toString(36));
-    }
-    
-    const requestModes = ['standard', 'web', 'cors', 'stream', 'xhr', 'direct'];
-    const requestMode = requestModes[attempt % requestModes.length];
-    params.append('_mode', requestMode);
-    
-
-    switch (attempt % 4) {
-      case 0:
-        params.append('_xhr', 'true');
-        params.append('_accept', 'application/pdf');
-        break;
-      case 1:
-        params.append('_agent', 'webapp');
-        params.append('_format', 'blob');
-        break;
-      case 2:
-        params.append('_nav', 'direct');
-        params.append('_stream', 'true');
-        break;
-      case 3:
-        params.append('_fmt', 'raw');
-        params.append('_inline', 'true');
-        break;
-    }
-    
-    // Add Origin information to help with WAF bypass
-    if (typeof window !== 'undefined') {
-      params.append('_origin', window.location.hostname);
-    }
-    
-    // Randomize parameter order to avoid pattern detection
-    // Convert params to array, shuffle, and reconstruct
-    const paramPairs = Array.from(params.entries());
-    for (let i = paramPairs.length - 1; i > 0; i--) {
-      const j = Math.floor(Math.random() * (i + 1));
-      [paramPairs[i], paramPairs[j]] = [paramPairs[j], paramPairs[i]];
-    }
-    
-    // return the URL
-    const queryString = paramPairs.map(([key, value]) => 
-      `${encodeURIComponent(key)}=${encodeURIComponent(value)}`
-    ).join('&');
-    
-    return `${apiProxyPath}?${queryString}`;
+    return `${apiProxyPath}?${params.toString()}`;
   } catch (_e) {
-    // Fallback to simple encoding if anything fails
+    // Fallback for environments where URLSearchParams might not be available
     const base = getApiUrl('/api/pdf-proxy');
-    return `${base}?url=${encodeURIComponent(originalUrl)}&_cb=${Date.now()}`;
+    return `${base}?url=${encodeURIComponent(originalUrl)}`;
   }
 }
 

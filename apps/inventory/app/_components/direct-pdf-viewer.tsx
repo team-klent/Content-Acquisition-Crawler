@@ -17,6 +17,7 @@ export default function DirectPDFViewer({ pdfUrl, filename }: DirectPDFViewerPro
   const [error, setError] = useState<string | null>(null);
   const [pdfLoadSuccess, setPdfLoadSuccess] = useState(false);
   
+  console.log("Pdf URL:", pdfUrl);
   // Reset loading state when URL changes
   useEffect(() => {
     setIsLoading(true);
