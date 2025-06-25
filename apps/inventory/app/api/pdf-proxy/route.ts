@@ -25,37 +25,30 @@ export async function GET(req: NextRequest) {
         { status: 400 }
       );
     }
-    
     // Special handling for S3 signed URLs with tokens
     let decodedUrl;
     const originalUrl = url;
     
-    // Specific handling for AWS S3 URLs
     if (url.includes('amazonaws.com')) {
       try {
        
         decodedUrl = decodeURIComponent(url);
         
-        // If it contains X-Amz-Signature, we need to be extra careful
         if (url.includes('X-Amz-Signature=')) {
           
-          // Most common cause of errors is the token being malformed during processing
-          // First, preserve the exact token format from the original URL
           const origSigMatch = url.match(/X-Amz-Signature=([^&]+)/);
           const decodedSigMatch = decodedUrl.match(/X-Amz-Signature=([^&]+)/);
           
           if (origSigMatch && decodedSigMatch && origSigMatch[1] !== decodedSigMatch[1]) {
-            // Replace the decoded signature with the original one
+
             decodedUrl = decodedUrl.replace(
               `X-Amz-Signature=${decodedSigMatch[1]}`, 
               `X-Amz-Signature=${origSigMatch[1]}`
             );
           }
           
-          // Also check X-Amz-Security-Token if present (common source of issues)
           if (url.includes('X-Amz-Security-Token=')) {
             
-            // Security tokens are often very long and can get mangled in processing
             // Use the original token from the URL rather than the decoded one
             const origTokenMatch = url.match(/X-Amz-Security-Token=([^&]+)/);
             const decodedTokenMatch = decodedUrl.match(/X-Amz-Security-Token=([^&]+)/);
@@ -69,9 +62,8 @@ export async function GET(req: NextRequest) {
             }
           }
           
-          // For InvalidToken errors, sometimes it's best to use the original URL
+          // If the code is invalid, lets try to use the original URK
           if (decodedUrl.includes('IQoJb3JpZ') && url.includes('IQoJb3JpZ')) {
-            // Use original URL to avoid any token mangling
             decodedUrl = url;
           }
         }
@@ -80,16 +72,14 @@ export async function GET(req: NextRequest) {
         decodedUrl = url;
       }
     } else {
-      // For non-S3 URLs, standard decoding is fine
+      // Just a fall back incase the URL is not an S3
       decodedUrl = decodeURIComponent(url);
     }
     
-    // Log only part of the URL for security (redact sensitive parts)
     const urlForLogging = decodedUrl.split('?')[0];
     
-    // For AWS S3 signed URLs, we need special handling
     let response;
-    
+
     try {
       // Check processing time to prevent hanging
       if (Date.now() - startTime > MAX_PROCESSING_TIME) {
@@ -99,12 +89,12 @@ export async function GET(req: NextRequest) {
       // Create a fetch request with minimal options to avoid signature issues
       response = await fetch(decodedUrl, {
         method: 'GET',
-        headers: {}, 
-        credentials: 'omit', 
-        cache: 'no-store', 
-        redirect: 'follow', 
-        signal: AbortSignal.timeout(25000), // 25 second timeout for fetch
+        headers: {}, // No additional headers to avoid signature issues
+        credentials: 'omit', // Don't send cookies or credentials
+        cache: 'no-store', // Don't cache signed URLs
+        signal: AbortSignal.timeout(15000), // 15 seconds timeout for the initial request
       });
+
     } catch (fetchError) {
       // Check processing time before retry
       if (Date.now() - startTime > MAX_PROCESSING_TIME) {

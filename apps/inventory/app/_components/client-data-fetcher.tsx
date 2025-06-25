@@ -45,6 +45,8 @@ export default function ClientDataFetcher() {
   const [error, setError] = useState<string | null>(null);
   const [pdfViewerFailed, setPdfViewerFailed] = useState(false);
   const [useDirectViewer, setUseDirectViewer] = useState(false);
+  const [pdfRetryAttempt, setPdfRetryAttempt] = useState(0);
+  const maxPdfRetries = 3;
   const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   useEffect(() => {
@@ -65,8 +67,11 @@ export default function ClientDataFetcher() {
         }
 
         // Get the base path and ensure it's correct for the environment
+
         const baseApiPath = getApiUrl('/api/inventory');
         const apiUrl = `${baseApiPath}?project_id=${project_id}&job_id=${job_id}&file_id=${file_id}&task_id=${task_id}`;
+
+  
 
         const response = await fetch(apiUrl);
 
@@ -162,13 +167,14 @@ export default function ClientDataFetcher() {
             // Use the React PDF viewer as primary option
             <Worker workerUrl='https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js'>
               <Viewer
+                key={pdfRetryAttempt}
                 fileUrl={getProxiedPdfUrl(fileData.download_url)}
                 defaultScale={SpecialZoomLevel.PageFit}
                 withCredentials={false}
                 plugins={[defaultLayoutPluginInstance]}
                 renderError={(error) => {
                   // Mark the viewer as failed so we can show the toggle button
-                  setPdfViewerFailed(true);
+                  if (!pdfViewerFailed) setPdfViewerFailed(true);
                   return (
                     <div className='p-5 text-center'>
                       <p className='text-red-500 font-semibold mb-2'>
@@ -180,18 +186,26 @@ export default function ClientDataFetcher() {
                       <div className='flex justify-center gap-3 mt-6'>
                         <Button
                           variant='outline'
-                          onClick={() => setUseDirectViewer(true)}
+                          onClick={() => {
+                            if (pdfRetryAttempt < maxPdfRetries) {
+                              setPdfRetryAttempt((prev) => prev + 1);
+                              setPdfViewerFailed(false);
+                            } else {
+                              setUseDirectViewer(true);
+                            }
+                          }}
+                          disabled={pdfRetryAttempt >= maxPdfRetries}
                         >
-                          <RefreshCw className='mr-2 h-4 w-4' /> Try Direct
-                          Viewer
+                          <RefreshCw className='mr-2 h-4 w-4' />
+                          {pdfRetryAttempt >= maxPdfRetries
+                            ? 'Max Retries'
+                            : `Retry (${pdfRetryAttempt + 1}/${maxPdfRetries})`}
                         </Button>
                         <Button
                           variant='outline'
-                          onClick={() =>
-                            window.open(fileData.download_url, '_blank')
-                          }
+                          onClick={() => setUseDirectViewer(true)}
                         >
-                          <Download className='mr-2 h-4 w-4' /> Download PDF
+                          Switch to Fallback Viewer
                         </Button>
                       </div>
                     </div>

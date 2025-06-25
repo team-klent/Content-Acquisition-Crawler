@@ -9,6 +9,7 @@ git pull
 
 echo "🔧 Configuring Nginx..."
 sudo cp nginx/content-acquisition-crawler.conf /etc/nginx/conf.d/content-acquisition-crawler.conf
+sudo cp nginx/inventory.conf /etc/nginx/conf.d/inventory.conf
 
 sudo systemctl reload nginx
 echo "🔧 Nginx reloaded"
