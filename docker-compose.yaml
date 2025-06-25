@@ -1,0 +1,15 @@
+version: '3'
+
+services:
+  content-acquisition:
+    build:
+      context: ./apps/content-acquisition
+      dockerfile: Dockerfile
+    ports:
+      - "3000:3000"
+  qualification:
+    build:
+      context: ./apps/inventory
+      dockerfile: Dockerfile
+    ports:
+      - "4000:4000"
