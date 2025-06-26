@@ -3,7 +3,7 @@ const apiToken = process.env.API_TOKEN || '';
 const config = {
   apps: [
     {
-      name: 'content-aqcuisition',
+      name: 'content-acquisition',
       script: 'pnpm',
       args: 'start',
       interpreter: 'none',     
