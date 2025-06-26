@@ -8,4 +8,4 @@ COPY . .
 
 RUN pnpm install && pnpm --filter inventory build
 
-CMD ["pnpm", "exec", "pm2-runtime", "start", "ecosystem.config.js", "--only", "service-name"]
+CMD ["pnpm", "exec", "pm2-runtime", "start", "ecosystem.config.js", "--only", "inventory"]
