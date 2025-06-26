@@ -138,7 +138,7 @@ Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/bui
         {
             "name": "inventory",
             "directory": "apps/inventory",
-            "port": 4000
+            "port": 3002
         }
         {
             "name": "service-name", //name of your service
