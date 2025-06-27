@@ -6,6 +6,8 @@ WORKDIR /app
 
 COPY . .
 
-RUN pnpm install && pnpm --filter service-name build
+RUN npm install -g pm2
 
-CMD ["pnpm", "exec", "pm2-runtime", "start", "ecosystem.config.js", "--only", "service-name"]
+RUN pnpm install && pnpm --filter qualification build
+
+CMD ["pnpm", "exec", "pm2-runtime", "start", "ecosystem.config.js", "--only", "qualification"]
