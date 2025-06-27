@@ -18,12 +18,8 @@ echo "🛠 Building the app..."
 npm install
 npm run build
 
-# Start or restart the application with PM2
-
-echo "🛑 Deleting existing PM2 process..."
-pm2 delete all
-pm2 flush
-echo "🚀 Starting app with PM2..."
-PORT=3000 pm2 start npm --name "content-acquisition-crawler" -- start ecosystem.config.js --env production --update-env
+#Build docker via docker-compose
+echo "🛠 Building docker images..."
+docker compose --build -d
 
 echo "✅ Deployment complete."
