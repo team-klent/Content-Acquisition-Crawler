@@ -2,13 +2,13 @@ version: '3.9'
 services:
   content-acquisition:
     build:
-      context: .
+      context: ./apps/content-acquisition
       dockerfile: Dockerfile
     ports:
       - "3000:3000"
   qualification:
     build:
-      context: .
+      context: ./apps/inventory
       dockerfile: Dockerfile
     ports:
       - "3002:3002"
