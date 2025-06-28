@@ -4,11 +4,25 @@ services:
     build:
       context: ./apps/content-acquisition
       dockerfile: Dockerfile
+      args:
+        BASE_PATH: "/content"
     ports:
       - "3000:3000"
+    environment:
+      NODE_ENV: production
+      PORT: 3000
+      BASE_PATH: /content
+      USE_BASE_PATH: "true"
   qualification:
     build:
       context: ./apps/inventory
       dockerfile: Dockerfile
+      args:
+        BASE_PATH: "/qualification"
     ports:
       - "3002:3002"
+    environment:
+      NODE_ENV: production
+      PORT: 3002
+      BASE_PATH: /qualification
+      USE_BASE_PATH: "true"
