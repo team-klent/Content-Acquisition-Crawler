@@ -1,13 +1,35 @@
 # ---- Base ----
 # Use a base image to install pnpm, so it's cached and can be reused.
 FROM node:18-alpine AS base
-RUN corepack enable && corepack prepare pnpm@latest --activate
+
+
+# Install build dependencies for native packages
+RUN apk add --no-cache \
+    python3 \
+    make \
+    g++ \
+    cairo-dev \
+    jpeg-dev \
+    pango-dev \
+    musl-dev \
+    giflib-dev \
+    pixman-dev \
+    pangomm-dev \
+    libjpeg-turbo-dev \
+    freetype-dev
+
+RUN npm install -g pnpm@9.12.0
 WORKDIR /app
 
 
 # ---- Builder ----
 # Build the application and all its dependencies.
 FROM base AS builder
+
+# Set the environment variables for the build
+ENV BASE_PATH=/content-acquisition
+ENV NEXT_PUBLIC_URL=https://unifiedworkflow.innodata.com/app1
+
 # First, copy only the files needed for dependency installation
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.json ./
 COPY apps/content-acquisition/package.json ./apps/content-acquisition/
@@ -26,6 +48,9 @@ FROM base AS runner
 
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 COPY apps/content-acquisition/package.json ./apps/content-acquisition/
+COPY packages/shared/package.json ./packages/shared/
+COPY packages/ui/package.json ./packages/ui/
+COPY packages/utils/package.json ./packages/utils/
 
 # Install only production dependencies
 RUN pnpm install --prod
@@ -39,6 +64,7 @@ COPY --from=builder /app/ecosystem.config.js ./
 # Set the BASE_PATH environment variable
 ARG BASE_PATH
 ENV BASE_PATH=${BASE_PATH}
+ENV USE_BASE_PATH=true
 
 # Install pm2 for process management
 RUN npm install -g pm2
