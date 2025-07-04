@@ -40,7 +40,10 @@ COPY packages/utils/package.json ./packages/utils/
 # Install all dependencies (including devDependencies for the build)
 RUN pnpm install
 
-COPY . .
+# Copy source code (excluding node_modules to avoid conflicts)
+COPY apps ./apps
+COPY packages ./packages
+COPY turbo.json tsconfig.json ecosystem.config.js ./
 
 RUN pnpm --filter content-acquisition build
 
