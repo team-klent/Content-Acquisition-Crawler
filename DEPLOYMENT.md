@@ -7,9 +7,7 @@ The application uses a `.env.production` file for environment variables in produ
 ```
 NODE_ENV=production
 PORT=3000
-USE_BASE_PATH=true
-BASE_PATH=/app1
-NEXT_PUBLIC_URL=https://unifiedworkflow.innodata.com/app1
+NEXT_PUBLIC_URL=https://unifiedworkflow.innodata.com
 API_TOKEN=your_api_token_here
 NEXT_PUBLIC_IA_API_URL=your_intelligent_automation_api_url_here
 ```

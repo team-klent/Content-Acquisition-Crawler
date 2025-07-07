@@ -27,8 +27,7 @@ WORKDIR /app
 FROM base AS builder
 
 # Set the environment variables for the build
-ENV BASE_PATH=/content-acquisition
-ENV NEXT_PUBLIC_URL=https://unifiedworkflow.innodata.com/app1
+ENV NEXT_PUBLIC_URL=https://unifiedworkflow.innodata.com
 
 # First, copy only the files needed for dependency installation
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.json ./
@@ -63,11 +62,6 @@ COPY --from=builder /app/apps/content-acquisition/.next ./apps/content-acquisiti
 COPY --from=builder /app/apps/content-acquisition/public ./apps/content-acquisition/public
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/ecosystem.config.js ./
-
-# Set the BASE_PATH environment variable
-ARG BASE_PATH
-ENV BASE_PATH=${BASE_PATH}
-ENV USE_BASE_PATH=true
 
 # Install pm2 for process management
 RUN npm install -g pm2

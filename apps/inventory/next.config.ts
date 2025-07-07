@@ -1,12 +1,6 @@
 import type { NextConfig } from 'next';
 
-console.log("using base path: ", process.env.USE_BASE_PATH === 'true');  
-console.log("base path: ", process.env.BASE_PATH);
 const nextConfig: NextConfig = {
-  basePath:
-    process.env.USE_BASE_PATH === 'true'
-      ? process.env.BASE_PATH || '/qualification'
-      : '',
   webpack: (config) => {
     config.resolve.alias.canvas = false;
     return config;
