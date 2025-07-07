@@ -7,6 +7,8 @@ ARG NEXT_PUBLIC_IA_API_URL
 
 # Install build dependencies for native packages
 RUN apk add --no-cache \
+    build-base \
+    pkgconf \
     python3 \
     make \
     g++ \
