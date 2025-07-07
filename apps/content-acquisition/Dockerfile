@@ -2,7 +2,6 @@
 # Use a base image to install pnpm, so it's cached and can be reused.
 FROM node:18-alpine AS base
 
-
 # Install build dependencies for native packages
 RUN apk add --no-cache \
     python3 \
@@ -21,7 +20,6 @@ RUN apk add --no-cache \
 RUN npm install -g pnpm@9.12.0
 WORKDIR /app
 
-
 # ---- Builder ----
 # Build the application and all its dependencies.
 FROM base AS builder
@@ -29,39 +27,31 @@ FROM base AS builder
 # Set the environment variables for the build
 ENV NEXT_PUBLIC_URL=https://unifiedworkflow.innodata.com
 
-# First, copy only the files needed for dependency installation
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml turbo.json tsconfig.json ./
-COPY apps/content-acquisition/package.json ./apps/content-acquisition/
-COPY packages/shared/package.json ./packages/shared/
-COPY packages/ui/package.json ./packages/ui/
-COPY packages/utils/package.json ./packages/utils/
+# Copy package.json for dependency installation
+COPY package.json ./
 
-# Install all dependencies (including devDependencies for the build)
+# Install dependencies (will use npm if no pnpm-lock.yaml exists)
 RUN pnpm install
 
-# Copy source code (excluding node_modules to avoid conflicts)
-COPY apps ./apps
-COPY packages ./packages
-COPY turbo.json tsconfig.json ecosystem.config.js ./
+# Copy source code
+COPY . ./
 
-RUN pnpm --filter content-acquisition build
+# Build the application
+RUN pnpm build
 
+# ---- Runner ----
 FROM base AS runner
 
-COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
-COPY apps/content-acquisition/package.json ./apps/content-acquisition/
-COPY packages/shared/package.json ./packages/shared/
-COPY packages/ui/package.json ./packages/ui/
-COPY packages/utils/package.json ./packages/utils/
+# Copy package.json for production dependencies
+COPY package.json ./
 
 # Install only production dependencies
 RUN pnpm install --prod
 
 # Copy the built application artifacts from the builder stage
-COPY --from=builder /app/apps/content-acquisition/.next ./apps/content-acquisition/.next
-COPY --from=builder /app/apps/content-acquisition/public ./apps/content-acquisition/public
+COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/ecosystem.config.js ./
 
 # Install pm2 for process management
 RUN npm install -g pm2
@@ -70,4 +60,4 @@ RUN npm install -g pm2
 EXPOSE 3000
 
 # The command to run the application
-CMD ["pnpm", "exec", "pm2-runtime", "start", "ecosystem.config.js", "--only", "content-acquisition", "--env", "production"]
+CMD ["pnpm", "start"]
