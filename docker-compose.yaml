@@ -1,14 +1,17 @@
-version: '3.9'
 services:
   content-acquisition:
     build:
       context: ./apps/content-acquisition
       dockerfile: Dockerfile
+      args:
+        NEXT_PUBLIC_URL: https://unifiedworkflow.innodata.com
+        NEXT_PUBLIC_IA_API_URL: ${NEXT_PUBLIC_IA_API_URL}
     ports:
       - "3000:3000"
     environment:
       NODE_ENV: production
       PORT: 3000
+      API_TOKEN: ${API_TOKEN}
   qualification:
     build:
       context: ./apps/inventory
