@@ -32,8 +32,6 @@ FROM base AS builder
 # Copy package.json for dependency installation
 COPY apps/content-acquisition/package.json ./
 
-# Install dependencies (will use npm if no pnpm-lock.yaml exists)
-RUN pnpm install
 
 # Copy source code
 COPY apps/content-acquisition ./
@@ -43,6 +41,9 @@ ARG NEXT_PUBLIC_IA_API_URL
 ARG NEXT_PUBLIC_URL
 ENV NEXT_PUBLIC_IA_API_URL=$NEXT_PUBLIC_IA_API_URL
 ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
+
+# Install dependencies (will use npm if no pnpm-lock.yaml exists)
+RUN pnpm install
 
 # Build the application
 RUN pnpm build

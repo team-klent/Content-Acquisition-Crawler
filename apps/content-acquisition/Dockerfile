@@ -38,6 +38,9 @@ RUN pnpm install
 # Copy source code
 COPY . ./
 
+# Copy public directory
+COPY public /app/public
+
 # Set build-time environment variables (these will be baked into the build)
 ARG NEXT_PUBLIC_IA_API_URL
 ARG NEXT_PUBLIC_URL
@@ -65,8 +68,8 @@ COPY --from=builder /app/package.json ./package.json
 
 # Install pm2
 RUN npm install pm2 -g
-COPY ecosystem.config.js .
-COPY ./.env ./.env
+COPY apps/content-acquisition/ecosystem.config.js .
+COPY .env ./.env
 
 # Expose port
 EXPOSE 3000
