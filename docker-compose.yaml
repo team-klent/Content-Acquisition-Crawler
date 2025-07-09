@@ -1,8 +1,8 @@
 services:
   content-acquisition:
     build:
-      context: ./apps/content-acquisition
-      dockerfile: Dockerfile
+      context: .
+      dockerfile: Dockerfile.content-acquisition
       args:
         NEXT_PUBLIC_URL: https://unifiedworkflow.innodata.com
         NEXT_PUBLIC_IA_API_URL: ${NEXT_PUBLIC_IA_API_URL}
