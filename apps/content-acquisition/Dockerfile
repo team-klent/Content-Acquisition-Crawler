@@ -73,8 +73,12 @@ COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/apps/content-acquisition/package.json ./package.json
 COPY --from=builder /app/apps/content-acquisition/ecosystem.config.js ./ecosystem.config.js
 
-# Install pm2 and next globally for runtime
-RUN npm install pm2 -g && npm install next -g
+# Install pm2 and runtime dependencies
+RUN npm install pm2 -g
+
+# Create a simple start script that uses the correct next path
+RUN echo '#!/bin/sh\nexec ./node_modules/.bin/next start --port 3000' > /usr/local/bin/start-next && \
+    chmod +x /usr/local/bin/start-next
 
 # Expose port
 EXPOSE 3000
