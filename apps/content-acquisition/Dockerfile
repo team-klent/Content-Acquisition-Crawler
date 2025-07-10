@@ -30,7 +30,7 @@ WORKDIR /app
 FROM base AS builder
 
 # Copy package.json for dependency installation
-COPY package.json ./
+COPY apps/content-acquisition/package.json /app/package.json
 
 # Install dependencies (will use npm if no pnpm-lock.yaml exists)
 RUN pnpm install
@@ -40,7 +40,7 @@ COPY . ./
 
 # Copy public directory
 COPY apps/content-acquisition/public /app/public
-COPY apps/content-acquisition/package.json /app/package.json
+
 
 # Set build-time environment variables (these will be baked into the build)
 ARG NEXT_PUBLIC_IA_API_URL
