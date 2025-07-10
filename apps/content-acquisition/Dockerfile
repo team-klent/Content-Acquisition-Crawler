@@ -40,6 +40,7 @@ COPY . ./
 
 # Copy public directory
 COPY apps/content-acquisition/public /app/public
+COPY apps/content-acquisition/package.json /app/package.json
 
 # Set build-time environment variables (these will be baked into the build)
 ARG NEXT_PUBLIC_IA_API_URL
