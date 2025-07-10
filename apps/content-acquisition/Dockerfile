@@ -69,7 +69,7 @@ COPY --from=builder /app/package.json ./package.json
 
 # Install pm2
 RUN npm install pm2 -g
-COPY apps/content-acquisition/ecosystem.config.js .
+COPY apps/content-acquisition/ecosystem.config.js ./ecosystem.config.js
 COPY .env ./.env
 
 # Expose port
