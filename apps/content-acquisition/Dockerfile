@@ -36,7 +36,9 @@ COPY apps/content-acquisition/package.json /app/package.json
 RUN pnpm install
 
 # Copy source code
-COPY apps/content-acquisition/ ./
+COPY . ./
+
+COPY apps/content-acquisition/package.json /app/package.json
 
 # Copy public directory
 COPY apps/content-acquisition/public /app/public
