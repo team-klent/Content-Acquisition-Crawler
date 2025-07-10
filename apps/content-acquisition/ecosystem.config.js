@@ -4,8 +4,8 @@ const config = {
   apps: [
     {
       name: 'content-acquisition',
-      script: 'npx',
-      args: 'next start --port 3000',
+      script: 'npm',
+      args: 'start',
       interpreter: 'none',
       exec_mode: 'fork',
       port: 3000,

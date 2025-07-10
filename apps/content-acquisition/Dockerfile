@@ -53,8 +53,8 @@ ARG NEXT_PUBLIC_URL
 ENV NEXT_PUBLIC_IA_API_URL=$NEXT_PUBLIC_IA_API_URL
 ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
 
-# Build the application
-RUN pnpm build
+# Build the application using npx to locate next binary
+RUN npx next build
 
 # ---- Runner ----
 # Production image
@@ -66,22 +66,32 @@ ENV NEXT_PUBLIC_IA_API_URL=$NEXT_PUBLIC_IA_API_URL
 ARG NEXT_PUBLIC_URL
 ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
 
-# Copy the built application artifacts from the builder stage
-COPY --from=builder /app/apps/content-acquisition/.next ./.next
-COPY --from=builder /app/apps/content-acquisition/public ./public
+# Copy workspace files for proper module resolution
+COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/pnpm-workspace.yaml ./pnpm-workspace.yaml
+COPY --from=builder /app/pnpm-lock.yaml ./pnpm-lock.yaml
+
+# Copy shared packages to maintain workspace structure
+COPY --from=builder /app/packages ./packages
+
+# Copy the entire node_modules with proper structure
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/apps/content-acquisition/package.json ./package.json
-COPY --from=builder /app/apps/content-acquisition/ecosystem.config.js ./ecosystem.config.js
 
-# Install pm2 and runtime dependencies
+# Copy the built application with proper directory structure
+COPY --from=builder /app/apps/content-acquisition/.next ./apps/content-acquisition/.next
+COPY --from=builder /app/apps/content-acquisition/public ./apps/content-acquisition/public
+COPY --from=builder /app/apps/content-acquisition/package.json ./apps/content-acquisition/package.json
+COPY --from=builder /app/apps/content-acquisition/ecosystem.config.js ./apps/content-acquisition/ecosystem.config.js
+COPY --from=builder /app/apps/content-acquisition/next.config.ts ./apps/content-acquisition/next.config.ts
+
+# Set working directory to the app
+WORKDIR /app/apps/content-acquisition
+
+# Install pm2 globally
 RUN npm install pm2 -g
-
-# Create a simple start script that uses the correct next path
-RUN echo '#!/bin/sh\nexec ./node_modules/.bin/next start --port 3000' > /usr/local/bin/start-next && \
-    chmod +x /usr/local/bin/start-next
 
 # Expose port
 EXPOSE 3000
 
-# Run application with pm2
+# Use Next.js start command directly from the workspace
 CMD ["pm2-runtime", "start", "ecosystem.config.js", "--env", "production"]
