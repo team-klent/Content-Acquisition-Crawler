@@ -4,10 +4,9 @@ const config = {
   apps: [
     {
       name: 'content-acquisition',
-      script: 'pnpm',
+      script: 'npm',
       args: 'start',
       interpreter: 'none',
-      cwd: 'apps/content-acquisition',
       exec_mode: 'fork',
       port: 3000,
       log: './logs/content-acquisition.log',

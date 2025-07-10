@@ -29,14 +29,23 @@ WORKDIR /app
 # Build the application and all its dependencies.
 FROM base AS builder
 
-# Copy package.json for dependency installation
-COPY package.json ./
+# Copy workspace files for pnpm workspace support
+COPY package.json pnpm-workspace.yaml pnpm-lock.yaml ./
 
-# Install dependencies (will use npm if no pnpm-lock.yaml exists)
+# Copy shared packages if they exist
+COPY packages/ ./packages/
+
+# Copy the app's package.json first
+COPY apps/content-acquisition/package.json ./apps/content-acquisition/package.json
+
+# Install dependencies using workspace
 RUN pnpm install
 
-# Copy source code
-COPY . ./
+# Copy application source
+COPY apps/content-acquisition/ ./apps/content-acquisition/
+
+# Set working directory to the app for build
+WORKDIR /app/apps/content-acquisition
 
 # Set build-time environment variables (these will be baked into the build)
 ARG NEXT_PUBLIC_IA_API_URL
@@ -58,15 +67,14 @@ ARG NEXT_PUBLIC_URL
 ENV NEXT_PUBLIC_URL=$NEXT_PUBLIC_URL
 
 # Copy the built application artifacts from the builder stage
-COPY --from=builder /app/.next ./.next
-COPY --from=builder /app/public ./public
+COPY --from=builder /app/apps/content-acquisition/.next ./.next
+COPY --from=builder /app/apps/content-acquisition/public ./public
 COPY --from=builder /app/node_modules ./node_modules
-COPY --from=builder /app/package.json ./package.json
+COPY --from=builder /app/apps/content-acquisition/package.json ./package.json
+COPY --from=builder /app/apps/content-acquisition/ecosystem.config.js ./ecosystem.config.js
 
-# Install pm2
-RUN npm install pm2 -g
-COPY ecosystem.config.js .
-COPY ./.env.local ./.env
+# Install pm2 and next globally for runtime
+RUN npm install pm2 -g && npm install next -g
 
 # Expose port
 EXPOSE 3000
