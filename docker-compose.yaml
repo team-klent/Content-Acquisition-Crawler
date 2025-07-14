@@ -13,12 +13,4 @@ services:
       PORT: 3000
       API_TOKEN: ${API_TOKEN}
       NEXT_PUBLIC_IA_API_URL: ${NEXT_PUBLIC_IA_API_URL}
-  qualification:
-    build:
-      context: ./apps/inventory
-      dockerfile: Dockerfile
-    ports:
-      - "3002:3002"
-    environment:
-      NODE_ENV: production
-      PORT: 3002
+ 

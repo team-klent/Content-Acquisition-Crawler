@@ -5,7 +5,7 @@ const config = {
     {
       name: 'content-acquisition',
       script: 'pnpm',
-      args: 'start',
+      args: "start --port 3000 --hostname 0.0.0.0",
       interpreter: 'none',     
       cwd: 'apps/content-acquisition',
       exec_mode: 'fork',
