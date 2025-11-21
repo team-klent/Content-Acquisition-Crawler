@@ -38,7 +38,7 @@ export async function GET(request: NextRequest) {
       headers: {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${process.env.API_TOKEN}`
+        'api-token': `${process.env.API_TOKEN}`
       }
     });
     

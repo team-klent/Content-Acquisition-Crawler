@@ -47,7 +47,7 @@ def register_job_batch_file(project_code, workflow_code, content_acquisition_tas
     headers = {
         'Accept': 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': ia_api_token
+        'api-token': ia_api_token
     }
     
     try:

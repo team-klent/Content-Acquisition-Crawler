@@ -1,4 +1,3 @@
-
 interface WorkflowUrlParams {
   project_id?: string;
   job_id?: string;
@@ -74,43 +73,44 @@ interface WorkflowTaskResponse {
   };
 }
 
-
-export const getTaskOngoingFiles = async (params: WorkflowUrlParams): Promise<WorkflowTaskResponse> => {
+export const getTaskOngoingFiles = async (
+  params: WorkflowUrlParams
+): Promise<WorkflowTaskResponse> => {
   try {
-    
-    const baseApiUrl = typeof window !== 'undefined' 
-      ? window.process?.env?.NEXT_PUBLIC_IA_API_URL || process.env.NEXT_PUBLIC_IA_API_URL
-      : process.env.NEXT_PUBLIC_IA_API_URL;
-    
+    const baseApiUrl =
+      typeof window !== 'undefined'
+        ? window.process?.env?.NEXT_PUBLIC_IA_API_URL ||
+          process.env.NEXT_PUBLIC_IA_API_URL
+        : process.env.NEXT_PUBLIC_IA_API_URL;
+
     if (!baseApiUrl) {
       throw new Error('Missing NEXT_PUBLIC_IA_API_URL environment variable');
     }
-    
+
     const apiUrl = `${baseApiUrl}/api/get-task-ongoing-file`;
-    
+
     const queryParams = new URLSearchParams({
       project_id: params.project_id || '',
       task_id: params.task_id || '',
       job_id: params.job_id || '',
-      file_id: params.file_id || ''
+      file_id: params.file_id || '',
     });
-    
-    // Add authorization token
-    const apiToken = typeof window !== 'undefined' 
-      ? window.process?.env?.API_TOKEN || process.env.API_TOKEN
-      : process.env.API_TOKEN;
-    
 
+    // Add authorization token
+    const apiToken =
+      typeof window !== 'undefined'
+        ? window.process?.env?.API_TOKEN || process.env.API_TOKEN
+        : process.env.API_TOKEN;
 
     console.log('apiToken:', apiToken);
 
     const response = await fetch(`${apiUrl}?${queryParams.toString()}`, {
       method: 'GET',
       headers: {
-        'Accept': 'application/json',
+        Accept: 'application/json',
         'Content-Type': 'application/json',
-        'Authorization': `Bearer ${apiToken}`,
-      }
+        'api-token': `${process.env.API_TOKEN}`,
+      },
     });
 
     if (!response.ok) {
@@ -124,12 +124,11 @@ export const getTaskOngoingFiles = async (params: WorkflowUrlParams): Promise<Wo
   }
 };
 
-
 export const extractUrlParams = (url: string): WorkflowUrlParams => {
   try {
     const urlObj = new URL(url);
     const params = new URLSearchParams(urlObj.search);
-    
+
     return {
       project_id: params.get('project_id') || undefined,
       job_id: params.get('job_id') || undefined,
