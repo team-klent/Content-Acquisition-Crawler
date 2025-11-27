@@ -80,7 +80,7 @@ export async function registerJobBatchFile(
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.API_TOKEN}`,
+        'api-token': `Bearer ${process.env.API_TOKEN}`,
       },
       body: JSON.stringify(enhancedPayload),
     });
@@ -288,7 +288,7 @@ export async function updateFileStatus(
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.API_TOKEN}`,
+        'api-token': `Bearer ${process.env.API_TOKEN}`,
       },
       body: JSON.stringify(payload),
     });
