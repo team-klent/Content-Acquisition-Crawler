@@ -10,10 +10,10 @@ export function getBasePath(): string {
   // Check for client-side and server-side environment variables
   if (typeof window !== 'undefined') {
     // Client-side
-    return window.location.pathname.startsWith('/apps') ? '/apps' : '';
+    return '';
   } else {
     // Server-side
-    return process.env.USE_BASE_PATH === 'true' ? (process.env.BASE_PATH || '/apps') : '';
+    return '';
   }
 }
 
