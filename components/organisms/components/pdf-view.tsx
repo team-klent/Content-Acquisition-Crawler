@@ -27,7 +27,7 @@ export default function PdfView() {
   const createdBy = searchParams.get('createdBy');
   const updatedAt = searchParams.get('updatedAt');
 
-  const editedPath = `/app1${path}`;
+  const editedPath = `/apps${path}`;
 
   useEffect(() => {
     if (containerRef.current && path) {

@@ -157,7 +157,7 @@ const PdfConfirmationButton = ({ pdf }: { pdf: PdfDocument }) => {
  
     // Handle basePath for client-side routing -- removed for now for temporary fix in vercel
     // const isLocalhost = typeof window !== 'undefined' && window.location.hostname === 'localhost';
-    // const basePath = isLocalhost ? '' : '/app1';
+    // const basePath = isLocalhost ? '' : '/apps';
     // router.push(`${basePath}/pdf?${params.toString()}`);
  
     router.push(`/pdf?${params.toString()}`);
