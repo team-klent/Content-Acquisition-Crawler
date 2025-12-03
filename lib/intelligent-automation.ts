@@ -46,8 +46,22 @@ export interface FileUploadResponse {
 export async function registerJobBatchFile(
   payload: RegisterJobBatchFileRequest
 ): Promise<RegisterJobBatchFileResponse> {
-  const baseUrl = process.env.NEXT_PUBLIC_IA_API_URL!;
+  console.log('[registerJobBatchFile] Starting registration...');
+  console.log(
+    '[registerJobBatchFile] Payload:',
+    JSON.stringify(payload, null, 2)
+  );
+
+  const baseUrl = process.env.NEXT_PUBLIC_IA_API_URL;
+
+  if (!baseUrl) {
+    const error = 'NEXT_PUBLIC_IA_API_URL environment variable is not set';
+    console.error('[registerJobBatchFile] ERROR:', error);
+    throw new Error(error);
+  }
+
   const url = `${baseUrl}/api/register-job-batch-file`;
+  console.log('[registerJobBatchFile] API URL:', url);
 
   try {
     const requiredFields = [
@@ -73,15 +87,34 @@ export async function registerJobBatchFile(
       workflow_id: payload.workflow_id || '',
     };
 
+    const apiToken = process.env.API_TOKEN;
+    if (!apiToken) {
+      const error = 'API_TOKEN environment variable is not set';
+      console.error('[registerJobBatchFile] ERROR:', error);
+      throw new Error(error);
+    }
+
+    console.log(
+      '[registerJobBatchFile] Enhanced payload:',
+      JSON.stringify(enhancedPayload, null, 2)
+    );
+    console.log('[registerJobBatchFile] Making API request...');
+
     const response = await fetch(url, {
       method: 'POST',
       headers: {
         Accept: 'application/json',
         'Content-Type': 'application/json',
-        'api-token': `${process.env.API_TOKEN}`,
+        'api-token': apiToken,
       },
       body: JSON.stringify(enhancedPayload),
     });
+
+    console.log('[registerJobBatchFile] Response status:', response.status);
+    console.log(
+      '[registerJobBatchFile] Response headers:',
+      Object.fromEntries(response.headers.entries())
+    );
 
     if (!response.ok) {
       const contentType = response.headers.get('content-type');
@@ -90,17 +123,20 @@ export async function registerJobBatchFile(
       try {
         if (contentType && contentType.includes('application/json')) {
           const errorJson = await response.json();
-          errorDetails = JSON.stringify(errorJson);
+          errorDetails = JSON.stringify(errorJson, null, 2);
         } else {
           errorDetails = await response.text();
         }
-        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
-        errorDetails = 'Could not parse error response';
+        errorDetails = `Could not parse error response: ${e}`;
       }
 
-      console.error(`API Error: ${response.status} ${response.statusText}`);
-      console.error(`Error details: ${errorDetails}`);
+      console.error('[registerJobBatchFile] API Error:', {
+        status: response.status,
+        statusText: response.statusText,
+        contentType,
+        errorDetails,
+      });
 
       throw new Error(
         `Failed to register job batch file: ${response.status} ${response.statusText} - ${errorDetails}`
@@ -110,16 +146,34 @@ export async function registerJobBatchFile(
     const contentType = response.headers.get('content-type');
     if (!contentType || !contentType.includes('application/json')) {
       const text = await response.text();
-      console.error('Expected JSON but received:', text);
+      console.error('[registerJobBatchFile] Expected JSON but received:', text);
       throw new Error(
         `Expected JSON response but received: ${text.substring(0, 100)}...`
       );
     }
 
-    const data = await response.json();
-    return data;
+    const responseData = await response.json();
+    console.log(
+      '[registerJobBatchFile] Success! Response data:',
+      JSON.stringify(responseData, null, 2)
+    );
+
+    // Check if the response has a nested 'data' object (common API pattern)
+    if (responseData.data && typeof responseData.data === 'object') {
+      console.log(
+        '[registerJobBatchFile] Extracting data from nested response'
+      );
+      return responseData.data as RegisterJobBatchFileResponse;
+    }
+
+    // Otherwise return the response as-is
+    return responseData as RegisterJobBatchFileResponse;
   } catch (error) {
-    console.error('Error in registerJobBatchFile:', error);
+    console.error('[registerJobBatchFile] FINAL ERROR:', error);
+    if (error instanceof Error) {
+      console.error('[registerJobBatchFile] Error message:', error.message);
+      console.error('[registerJobBatchFile] Error stack:', error.stack);
+    }
     throw error;
   }
 }
@@ -146,28 +200,78 @@ export async function registerAndUploadFile(
   upload: FileUploadResponse;
   statusUpdate?: UpdateFileStatusResponse;
 }> {
+  console.log('[registerAndUploadFile] Starting...');
+  console.log(
+    '[registerAndUploadFile] Payload:',
+    JSON.stringify(registrationPayload, null, 2)
+  );
+  console.log('[registerAndUploadFile] Local file path:', localFilePath);
+
   try {
     // Step 1: Register the job batch file
+    console.log(
+      '[registerAndUploadFile] Step 1: Calling registerJobBatchFile...'
+    );
     const registrationResponse = await registerJobBatchFile(
       registrationPayload
     );
 
-    console.log('Registration Response:', registrationResponse);
+    console.log(
+      '[registerAndUploadFile] Registration Response:',
+      JSON.stringify(registrationResponse, null, 2)
+    );
 
-    // Validate the response before stepping to the next stage
-    if (typeof registrationResponse.file_output_path !== 'string') {
-      throw new Error('file_output_path is not a valid string');
+    // Check if file upload is required (some workflows may not need file upload)
+    const uploadUrl = registrationResponse.file_output_upload_url;
+    const outputPath = registrationResponse.file_output_path;
+
+    console.log('[registerAndUploadFile] Upload URL:', uploadUrl);
+    console.log('[registerAndUploadFile] Output Path:', outputPath);
+
+    // If upload URL is null or empty, skip the upload step
+    if (!uploadUrl || uploadUrl === null || uploadUrl === '') {
+      console.log(
+        '[registerAndUploadFile] No upload URL provided - skipping file upload step'
+      );
+      console.log(
+        '[registerAndUploadFile] This workflow may not require file upload to S3'
+      );
+
+      const result = {
+        registration: registrationResponse,
+        upload: {
+          success: true,
+          message: 'File upload skipped - no upload URL provided by API',
+        } as FileUploadResponse,
+        statusUpdate: undefined,
+      };
+
+      console.log(
+        '[registerAndUploadFile] Complete! Final result:',
+        JSON.stringify(result, null, 2)
+      );
+      return result;
     }
-    //step 2: Upload the file to S3
+
+    // If we reach here, upload URL is valid
+    console.log('[registerAndUploadFile] Step 2: Uploading file...');
+    console.log('[registerAndUploadFile] Local File Path:', localFilePath);
+    console.log('[registerAndUploadFile] Upload URL:', uploadUrl);
+
     const uploadResponse = await uploadFileToS3(
       localFilePath,
-      registrationResponse.file_output_upload_url as string
+      uploadUrl as string
+    );
+
+    console.log(
+      '[registerAndUploadFile] Upload Response:',
+      JSON.stringify(uploadResponse, null, 2)
     );
 
     // If upload was successful and update status options are provided, proceed to Step 3
     let statusUpdateResponse;
     if (uploadResponse.success && registrationResponse.file_id) {
-      // Step 3: Update file status
+      console.log('[registerAndUploadFile] Step 3: Updating file status...');
       const previousFileStatus = updateStatusOptions?.previousFileStatus || 'I';
       const fileStatus = updateStatusOptions?.fileStatus || 'C';
 
@@ -179,18 +283,41 @@ export async function registerAndUploadFile(
           previous_file_status: previousFileStatus,
           file_status: fileStatus,
         });
+        console.log(
+          '[registerAndUploadFile] Status update response:',
+          JSON.stringify(statusUpdateResponse, null, 2)
+        );
       } catch (updateError) {
-        console.error('Error updating file status:', updateError);
+        console.error(
+          '[registerAndUploadFile] Error updating file status:',
+          updateError
+        );
       }
+    } else {
+      console.log(
+        '[registerAndUploadFile] Skipping status update - upload success:',
+        uploadResponse.success,
+        'file_id:',
+        registrationResponse.file_id
+      );
     }
 
-    return {
+    const result = {
       registration: registrationResponse,
       upload: uploadResponse,
       statusUpdate: statusUpdateResponse,
     };
+    console.log(
+      '[registerAndUploadFile] Complete! Final result:',
+      JSON.stringify(result, null, 2)
+    );
+    return result;
   } catch (error) {
-    console.error('Error in registerAndUploadFile:', error);
+    console.error('[registerAndUploadFile] FINAL ERROR:', error);
+    if (error instanceof Error) {
+      console.error('[registerAndUploadFile] Error message:', error.message);
+      console.error('[registerAndUploadFile] Error stack:', error.stack);
+    }
     throw error;
   }
 }
