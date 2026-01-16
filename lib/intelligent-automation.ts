@@ -98,7 +98,13 @@ export async function registerJobBatchFile(
       '[registerJobBatchFile] Enhanced payload:',
       JSON.stringify(enhancedPayload, null, 2)
     );
-    console.log('[registerJobBatchFile] Making API request...');
+    console.log('[registerJobBatchFile] Payload file_name:', enhancedPayload.file_name);
+    console.log('[registerJobBatchFile] Payload file_path:', enhancedPayload.file_path);
+    console.log('[registerJobBatchFile] Making API request to:', url);
+    
+    const requestBody = JSON.stringify(enhancedPayload);
+    console.log('[registerJobBatchFile] Request body length:', requestBody.length);
+    console.log('[registerJobBatchFile] Request body:', requestBody);
 
     const response = await fetch(url, {
       method: 'POST',
@@ -107,7 +113,7 @@ export async function registerJobBatchFile(
         'Content-Type': 'application/json',
         'api-token': apiToken,
       },
-      body: JSON.stringify(enhancedPayload),
+      body: requestBody,
     });
 
     console.log('[registerJobBatchFile] Response status:', response.status);

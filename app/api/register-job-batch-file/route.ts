@@ -65,15 +65,18 @@ export async function POST(request: NextRequest) {
 
       const fileId = uuidv4();
       tempFilePath = path.join(tempDir, `${fileId}-${file.name}`);
+      console.log('[API Route] Generated temp file path:', tempFilePath);
       const fileBuffer = Buffer.from(await file.arrayBuffer());
       await writeFile(tempFilePath, fileBuffer);
+      console.log('[API Route] File written to temp location');
 
       requestData.file_path = tempFilePath;
+      console.log('[API Route] Updated requestData.file_path to:', requestData.file_path);
     } else {
       requestData = await request.json();
     }
 
-    console.log('Request Data:', requestData);
+    console.log('[API Route] Final Request Data before validation:', JSON.stringify(requestData, null, 2));
 
     const requiredFields = [
       'project_code',
