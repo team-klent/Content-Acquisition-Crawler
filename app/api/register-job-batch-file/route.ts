@@ -38,6 +38,16 @@ export async function POST(request: NextRequest) {
         '[API Route] File:',
         file ? `${file.name} (${file.size} bytes)` : 'null'
       );
+      
+      // Log all form data fields for debugging
+      console.log('[API Route] All FormData fields:');
+      for (const [key, value] of formData.entries()) {
+        if (value instanceof File) {
+          console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
+        } else {
+          console.log(`  ${key}: ${value}`);
+        }
+      }
 
       if (!file) {
         console.error('[API Route] ERROR: No file uploaded');
@@ -49,6 +59,14 @@ export async function POST(request: NextRequest) {
 
       const rawProjectId = formData.get('project_id');
       const rawWorkflowId = formData.get('workflow_id');
+      
+      // Get file_name from FormData first, fallback to file.name
+      const fileName = (formData.get('file_name') as string) || file.name;
+      // Get file_path from FormData if provided
+      const filePath = (formData.get('file_path') as string) || '';
+
+      console.log('[API Route] Resolved file_name:', fileName);
+      console.log('[API Route] Resolved file_path from FormData:', filePath);
 
       requestData = {
         project_code: formData.get('project_code') as string,
@@ -56,8 +74,8 @@ export async function POST(request: NextRequest) {
         first_task_uid: formData.get('first_task_uid') as string,
         file_unique_identifier:
           (formData.get('file_unique_identifier') as string) || '',
-        file_name: file.name,
-        file_path: '',
+        file_name: fileName,
+        file_path: filePath,
         project_id: rawProjectId ? String(rawProjectId) : '',
         workflow_id: rawWorkflowId ? String(rawWorkflowId) : '',
         meta_data: JSON.parse((formData.get('meta_data') as string) || '{}'),
