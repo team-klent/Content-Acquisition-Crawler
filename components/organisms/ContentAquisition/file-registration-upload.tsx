@@ -69,6 +69,9 @@ export default function PdfRegisterButton() {
       file_name: file.name,
       file_unique_identifier: `file-uid-${file.name}-${Date.now()}`,
     };
+
+    console.log('[PdfRegisterButton] Current Search Params:', Object.fromEntries(searchParams.entries()));
+    console.log('[PdfRegisterButton] Constructed FormData:', formData);
  
     setLoading(true);
  
@@ -105,6 +108,10 @@ export default function PdfRegisterButton() {
         formDataToSend.append('project_code', formData.project_code);
         formDataToSend.append('workflow_code', formData.workflow_code);
         formDataToSend.append('first_task_uid', formData.first_task_uid);
+        
+        // Explicitly include file_name and file_path for server compatibility
+        formDataToSend.append('file_name', file.name);
+        formDataToSend.append('file_path', formData.file_path || '-');
         
         // Add project_id and workflow_id if available
         if (formData.project_id) {
