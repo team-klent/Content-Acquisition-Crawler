@@ -10,47 +10,23 @@ import * as path from 'path';
 import { v4 as uuidv4 } from 'uuid';
 
 export async function POST(request: NextRequest) {
-  console.log(
-    '[API Route] POST /api/register-job-batch-file - Request received'
-  );
-
   try {
     const tempDir = path.join(os.tmpdir(), 'content-acquisition-uploads');
-    console.log('[API Route] Temp directory:', tempDir);
 
     if (!fs.existsSync(tempDir)) {
       fs.mkdirSync(tempDir, { recursive: true });
-      console.log('[API Route] Created temp directory');
     }
 
     const contentType = request.headers.get('content-type') || '';
-    console.log('[API Route] Content-Type:', contentType);
 
     let requestData: RegisterJobBatchFileRequest;
     let tempFilePath: string | null = null;
 
     if (contentType.includes('multipart/form-data')) {
-      console.log('[API Route] Processing multipart/form-data');
       const formData = await request.formData();
       const file = formData.get('file') as File | null;
 
-      console.log(
-        '[API Route] File:',
-        file ? `${file.name} (${file.size} bytes)` : 'null'
-      );
-      
-      // Log all form data fields for debugging
-      console.log('[API Route] All FormData fields:');
-      for (const [key, value] of formData.entries()) {
-        if (value instanceof File) {
-          console.log(`  ${key}: [File] ${value.name} (${value.size} bytes)`);
-        } else {
-          console.log(`  ${key}: ${value}`);
-        }
-      }
-
       if (!file) {
-        console.error('[API Route] ERROR: No file uploaded');
         return NextResponse.json(
           { error: 'No file uploaded' },
           { status: 400 }
@@ -64,9 +40,6 @@ export async function POST(request: NextRequest) {
       const fileName = (formData.get('file_name') as string) || file.name;
       // Get file_path from FormData if provided
       const filePath = (formData.get('file_path') as string) || '';
-
-      console.log('[API Route] Resolved file_name:', fileName);
-      console.log('[API Route] Resolved file_path from FormData:', filePath);
 
       requestData = {
         project_code: formData.get('project_code') as string,
@@ -83,18 +56,13 @@ export async function POST(request: NextRequest) {
 
       const fileId = uuidv4();
       tempFilePath = path.join(tempDir, `${fileId}-${file.name}`);
-      console.log('[API Route] Generated temp file path:', tempFilePath);
       const fileBuffer = Buffer.from(await file.arrayBuffer());
       await writeFile(tempFilePath, fileBuffer);
-      console.log('[API Route] File written to temp location');
 
       requestData.file_path = tempFilePath;
-      console.log('[API Route] Updated requestData.file_path to:', requestData.file_path);
     } else {
       requestData = await request.json();
     }
-
-    console.log('[API Route] Final Request Data before validation:', JSON.stringify(requestData, null, 2));
 
     const requiredFields = [
       'project_code',
@@ -142,35 +110,11 @@ export async function POST(request: NextRequest) {
 
     const filePath = requestData.file_path;
 
-    console.log('[API Route] Calling registerAndUploadFile...');
-    console.log(
-      '[API Route] Request data:',
-      JSON.stringify(requestData, null, 2)
-    );
-    console.log('[API Route] File path:', filePath);
-
     const response = await registerAndUploadFile(requestData, filePath);
 
-    console.log(
-      '[API Route] Success! Response:',
-      JSON.stringify(response, null, 2)
-    );
     return NextResponse.json(response, { status: 200 });
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
-    console.error('[API Route] ========== ERROR CAUGHT ==========');
-    console.error('[API Route] Error type:', typeof error);
-    console.error('[API Route] Error:', error);
-    console.error('[API Route] Error message:', error?.message);
-    console.error('[API Route] Error stack:', error?.stack);
-    console.error('[API Route] Error cause:', error?.cause);
-    console.error('[API Route] Error name:', error?.name);
-    console.error(
-      '[API Route] Full error object:',
-      JSON.stringify(error, Object.getOwnPropertyNames(error), 2)
-    );
-    console.error('[API Route] ====================================');
-
     return NextResponse.json(
       {
         error: error.message || 'Failed to register job batch file',
