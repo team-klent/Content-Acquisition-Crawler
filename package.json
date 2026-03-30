@@ -4,7 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev --turbopack",
+    "dev:spa": "vite build --config vite.config.spa.ts && vite preview --config vite.config.spa.ts",
     "build": "next build",
+    "build:spa": "vite build --config vite.config.spa.ts",
+    "preview:spa": "vite preview --config vite.config.spa.ts",
     "start": "next start --port 3000",
     "lint": "next lint",
     "type-check": "tsc --noEmit",
@@ -34,6 +37,7 @@
     "react": "^19.0.0",
     "react-dom": "^19.0.0",
     "react-hook-form": "^7.56.3",
+    "single-spa-react": "^6.0.2",
     "sonner": "^2.0.3",
     "tailwind-merge": "^3.2.0",
     "uuid": "^11.1.0",
@@ -42,16 +46,19 @@
   "devDependencies": {
     "@eslint/eslintrc": "^3",
     "@tailwindcss/postcss": "^4.1.8",
+    "@tailwindcss/vite": "^4.2.2",
     "@types/node": "^20",
     "@types/pdfobject": "^2.2.5",
     "@types/react": "^19",
     "@types/react-dom": "^19",
     "@types/uuid": "^10.0.0",
+    "@vitejs/plugin-react": "^6.0.1",
     "autoprefixer": "^10.4.21",
     "eslint": "^9",
     "eslint-config-next": "15.3.2",
     "tailwindcss": "^4",
     "tw-animate-css": "^1.2.9",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vite": "^8.0.3"
   }
 }

@@ -19,6 +19,7 @@
 
 # production
 /build
+/dist-spa
 
 # misc
 .DS_Store

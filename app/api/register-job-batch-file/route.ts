@@ -65,12 +65,15 @@ export async function POST(request: NextRequest) {
 
       const fileId = uuidv4();
       tempFilePath = path.join(tempDir, `${fileId}-${file.name}`);
+      console.log('[API Route] Temporary file path:', tempFilePath);
+
       const fileBuffer = Buffer.from(await file.arrayBuffer());
       await writeFile(tempFilePath, fileBuffer);
 
       requestData.file_path = tempFilePath;
     } else {
       requestData = await request.json();
+      console.log('[API Route] Processing application/json');
     }
 
     console.log('Request Data:', requestData);
